@@ -31,6 +31,10 @@
 .pub-cache/
 .pub/
 /build/
+**/generated_plugin_*
+**/generated_plugin_*.dart
+**/generated_plugins*
+**/GeneratedPluginRegistrant.*
 
 # Web related
 
