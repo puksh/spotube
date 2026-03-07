@@ -13,7 +13,6 @@ import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/logger/logger.dart';
 
 class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
@@ -82,8 +81,6 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         initialIndex: currentIndex,
         autoPlay: false,
       );
-      // media_kit resets volume to 100% on open(); restore the saved value.
-      await audioPlayer.setVolume(KVStoreService.volume);
       state = state.copyWith(
         tracks: tracks,
         currentIndex: currentIndex,

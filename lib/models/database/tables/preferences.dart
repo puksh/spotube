@@ -89,6 +89,8 @@ class PreferencesTable extends Table {
       boolean().withDefault(const Constant(false))();
   IntColumn get connectPort => integer().withDefault(const Constant(-1))();
   BoolColumn get cacheMusic => boolean().withDefault(const Constant(true))();
+  BoolColumn get disableGlassEffect =>
+      boolean().withDefault(const Constant(false))();
 
   // Default values as PreferencesTableData
   static PreferencesTableData defaults() {
@@ -119,6 +121,7 @@ class PreferencesTable extends Table {
       enableConnect: false,
       cacheMusic: true,
       connectPort: -1,
+      disableGlassEffect: false,
     );
   }
 }

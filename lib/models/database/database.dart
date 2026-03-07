@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:drift/remote.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
@@ -66,7 +65,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration {
@@ -124,10 +123,10 @@ class AppDatabase extends _$AppDatabase {
               schema.preferencesTable,
               schema.preferencesTable.connectPort,
             );
-          } on DriftRemoteException catch (e) {
+          } catch (e) {
             // If the column already exists, ignore the error
-            if (e.remoteCause !=
-                'duplicate column name: ${schema.preferencesTable.connectPort.name}') {
+            if (!e.toString().contains(
+                'duplicate column name: ${schema.preferencesTable.connectPort.name}')) {
               rethrow;
             }
           }
@@ -236,6 +235,23 @@ class AppDatabase extends _$AppDatabase {
           await m
               .dropColumn(schema.sourceMatchTable, "source_id")
               .catchError((e, stack) => AppLogger.reportError(e, stack));
+        },
+        from10To11: (m, schema) async {
+          await m
+              .addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.disableGlassEffect,
+          )
+              .catchError((e, stack) {
+            if (e.toString().contains(
+                  'duplicate column name: ${schema.preferencesTable.disableGlassEffect.name}',
+                )) {
+              return;
+            }
+
+            AppLogger.reportError(e, stack);
+            throw e;
+          });
         },
       ),
     );

@@ -167,6 +167,8 @@ class Spotube extends HookConsumerWidget {
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+    final disableGlassEffect =
+        ref.watch(userPreferencesProvider.select((s) => s.disableGlassEffect));
     final router = useMemoized(() => AppRouter(ref), []);
     final hasTouchSupport = useHasTouch();
 
@@ -243,8 +245,8 @@ class Spotube extends HookConsumerWidget {
         colorScheme:
             colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.light) ??
                 LegacyColorSchemes.lightSlate(),
-        surfaceOpacity: .8,
-        surfaceBlur: 10,
+        surfaceOpacity: disableGlassEffect ? 1 : .8,
+        surfaceBlur: disableGlassEffect ? 0 : 10,
       ),
       darkTheme: ThemeData(
         radius: .5,
@@ -252,8 +254,8 @@ class Spotube extends HookConsumerWidget {
         colorScheme:
             colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.dark) ??
                 LegacyColorSchemes.darkSlate(),
-        surfaceOpacity: .8,
-        surfaceBlur: 10,
+        surfaceOpacity: disableGlassEffect ? 1 : .8,
+        surfaceBlur: disableGlassEffect ? 0 : 10,
       ),
       materialTheme: material.ThemeData(
         brightness: switch (themeMode) {

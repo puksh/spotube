@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show ListTile;
+import 'package:flutter/material.dart' as material;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,6 +21,7 @@ class SettingsAppearanceSection extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
     final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
+    final transparencyEnabled = !preferences.disableGlassEffect;
     final pickColorScheme = useCallback(() {
       return () => showDialog(
           context: context,
@@ -87,7 +88,7 @@ class SettingsAppearanceSection extends HookConsumerWidget {
       //       value: preferences.amoledDarkTheme,
       //       onChanged: preferencesNotifier.setAmoledDarkTheme,
       //     )),
-      ListTile(
+      material.ListTile(
         leading: const Icon(SpotubeIcons.palette),
         title: Text(context.l10n.accent_color),
         contentPadding: const EdgeInsets.symmetric(
@@ -101,6 +102,17 @@ class SettingsAppearanceSection extends HookConsumerWidget {
           isActive: false,
         ),
         onTap: pickColorScheme(),
+      ),
+      material.ListTile(
+        leading: const Icon(material.Icons.opacity),
+        title: const Text("Transparency"),
+        subtitle: const Text("Use transparent surfaces throughout the app"),
+        trailing: material.Switch(
+          value: transparencyEnabled,
+          onChanged: (enabled) {
+            preferencesNotifier.setDisableGlassEffect(!enabled);
+          },
+        ),
       ),
       // ListTile(
       //     leading: const Icon(SpotubeIcons.colorSync),

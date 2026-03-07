@@ -234,6 +234,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   void setCacheMusic(bool cache) {
     setData(PreferencesTableCompanion(cacheMusic: Value(cache)));
   }
+
+  void setDisableGlassEffect(bool disable) {
+    setData(PreferencesTableCompanion(disableGlassEffect: Value(disable)));
+  }
 }
 
 final userPreferencesProvider =

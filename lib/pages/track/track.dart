@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/routes.gr.dart';
@@ -17,6 +18,7 @@ import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/track.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 import 'package:spotube/extensions/constrains.dart';
@@ -39,6 +41,9 @@ class TrackPage extends HookConsumerWidget {
 
     final playlist = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+    final disableGlassEffect = ref.watch(
+      userPreferencesProvider.select((s) => s.disableGlassEffect),
+    );
 
     final isActive = playlist.activeTrack?.id == trackId;
 
@@ -66,29 +71,30 @@ class TrackPage extends HookConsumerWidget {
         floatingHeader: true,
         child: Stack(
           children: [
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: UniversalImage.imageProvider(
-                      track.album.images.asUrlString(
-                        placeholder: ImagePlaceholder.albumArt,
+            if (!disableGlassEffect) ...[
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: UniversalImage.imageProvider(
+                        track.album.images.asUrlString(
+                          placeholder: ImagePlaceholder.albumArt,
+                        ),
                       ),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        colorScheme.background.withValues(alpha: 0.5),
+                        BlendMode.srcOver,
+                      ),
+                      alignment: Alignment.topCenter,
                     ),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      colorScheme.background.withValues(alpha: 0.5),
-                      BlendMode.srcOver,
-                    ),
-                    alignment: Alignment.topCenter,
                   ),
                 ),
               ),
-            ),
+            ],
             Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Skeletonizer(
+              child: Builder(builder: (context) {
+                Widget content = Skeletonizer(
                   enabled: trackQuery.isLoading,
                   child: Container(
                     alignment: Alignment.topCenter,
@@ -96,7 +102,9 @@ class TrackPage extends HookConsumerWidget {
                       gradient: LinearGradient(
                         colors: [
                           colorScheme.background,
-                          Colors.transparent,
+                          disableGlassEffect
+                              ? colorScheme.background
+                              : Colors.transparent,
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -246,8 +254,9 @@ class TrackPage extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+                return content;
+              }),
             ),
           ],
         ),

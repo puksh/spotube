@@ -764,6 +764,16 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("cache_music" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _disableGlassEffectMeta =
+      const VerificationMeta('disableGlassEffect');
+  @override
+  late final GeneratedColumn<bool> disableGlassEffect = GeneratedColumn<bool>(
+      'disable_glass_effect', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("disable_glass_effect" IN (0, 1))'),
+      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -789,7 +799,8 @@ class $PreferencesTableTable extends PreferencesTable
         endlessPlayback,
         enableConnect,
         connectPort,
-        cacheMusic
+        cacheMusic,
+        disableGlassEffect
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -889,6 +900,12 @@ class $PreferencesTableTable extends PreferencesTable
           cacheMusic.isAcceptableOrUnknown(
               data['cache_music']!, _cacheMusicMeta));
     }
+    if (data.containsKey('disable_glass_effect')) {
+      context.handle(
+          _disableGlassEffectMeta,
+          disableGlassEffect.isAcceptableOrUnknown(
+              data['disable_glass_effect']!, _disableGlassEffectMeta));
+    }
     return context;
   }
 
@@ -956,6 +973,8 @@ class $PreferencesTableTable extends PreferencesTable
           .read(DriftSqlType.int, data['${effectivePrefix}connect_port'])!,
       cacheMusic: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}cache_music'])!,
+      disableGlassEffect: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}disable_glass_effect'])!,
     );
   }
 
@@ -1012,6 +1031,7 @@ class PreferencesTableData extends DataClass
   final bool enableConnect;
   final int connectPort;
   final bool cacheMusic;
+  final bool disableGlassEffect;
   const PreferencesTableData(
       {required this.id,
       required this.albumColorSync,
@@ -1036,7 +1056,8 @@ class PreferencesTableData extends DataClass
       required this.endlessPlayback,
       required this.enableConnect,
       required this.connectPort,
-      required this.cacheMusic});
+      required this.cacheMusic,
+      required this.disableGlassEffect});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1096,6 +1117,7 @@ class PreferencesTableData extends DataClass
     map['enable_connect'] = Variable<bool>(enableConnect);
     map['connect_port'] = Variable<int>(connectPort);
     map['cache_music'] = Variable<bool>(cacheMusic);
+    map['disable_glass_effect'] = Variable<bool>(disableGlassEffect);
     return map;
   }
 
@@ -1127,6 +1149,7 @@ class PreferencesTableData extends DataClass
       enableConnect: Value(enableConnect),
       connectPort: Value(connectPort),
       cacheMusic: Value(cacheMusic),
+      disableGlassEffect: Value(disableGlassEffect),
     );
   }
 
@@ -1166,6 +1189,7 @@ class PreferencesTableData extends DataClass
       enableConnect: serializer.fromJson<bool>(json['enableConnect']),
       connectPort: serializer.fromJson<int>(json['connectPort']),
       cacheMusic: serializer.fromJson<bool>(json['cacheMusic']),
+      disableGlassEffect: serializer.fromJson<bool>(json['disableGlassEffect']),
     );
   }
   @override
@@ -1204,6 +1228,7 @@ class PreferencesTableData extends DataClass
       'enableConnect': serializer.toJson<bool>(enableConnect),
       'connectPort': serializer.toJson<int>(connectPort),
       'cacheMusic': serializer.toJson<bool>(cacheMusic),
+      'disableGlassEffect': serializer.toJson<bool>(disableGlassEffect),
     };
   }
 
@@ -1231,7 +1256,8 @@ class PreferencesTableData extends DataClass
           bool? endlessPlayback,
           bool? enableConnect,
           int? connectPort,
-          bool? cacheMusic}) =>
+          bool? cacheMusic,
+          bool? disableGlassEffect}) =>
       PreferencesTableData(
         id: id ?? this.id,
         albumColorSync: albumColorSync ?? this.albumColorSync,
@@ -1258,6 +1284,7 @@ class PreferencesTableData extends DataClass
         enableConnect: enableConnect ?? this.enableConnect,
         connectPort: connectPort ?? this.connectPort,
         cacheMusic: cacheMusic ?? this.cacheMusic,
+        disableGlassEffect: disableGlassEffect ?? this.disableGlassEffect,
       );
   PreferencesTableData copyWithCompanion(PreferencesTableCompanion data) {
     return PreferencesTableData(
@@ -1320,6 +1347,9 @@ class PreferencesTableData extends DataClass
           data.connectPort.present ? data.connectPort.value : this.connectPort,
       cacheMusic:
           data.cacheMusic.present ? data.cacheMusic.value : this.cacheMusic,
+      disableGlassEffect: data.disableGlassEffect.present
+          ? data.disableGlassEffect.value
+          : this.disableGlassEffect,
     );
   }
 
@@ -1349,7 +1379,8 @@ class PreferencesTableData extends DataClass
           ..write('endlessPlayback: $endlessPlayback, ')
           ..write('enableConnect: $enableConnect, ')
           ..write('connectPort: $connectPort, ')
-          ..write('cacheMusic: $cacheMusic')
+          ..write('cacheMusic: $cacheMusic, ')
+          ..write('disableGlassEffect: $disableGlassEffect')
           ..write(')'))
         .toString();
   }
@@ -1379,7 +1410,8 @@ class PreferencesTableData extends DataClass
         endlessPlayback,
         enableConnect,
         connectPort,
-        cacheMusic
+        cacheMusic,
+        disableGlassEffect
       ]);
   @override
   bool operator ==(Object other) =>
@@ -1408,7 +1440,8 @@ class PreferencesTableData extends DataClass
           other.endlessPlayback == this.endlessPlayback &&
           other.enableConnect == this.enableConnect &&
           other.connectPort == this.connectPort &&
-          other.cacheMusic == this.cacheMusic);
+          other.cacheMusic == this.cacheMusic &&
+          other.disableGlassEffect == this.disableGlassEffect);
 }
 
 class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
@@ -1436,6 +1469,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<bool> enableConnect;
   final Value<int> connectPort;
   final Value<bool> cacheMusic;
+  final Value<bool> disableGlassEffect;
   const PreferencesTableCompanion({
     this.id = const Value.absent(),
     this.albumColorSync = const Value.absent(),
@@ -1461,6 +1495,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.enableConnect = const Value.absent(),
     this.connectPort = const Value.absent(),
     this.cacheMusic = const Value.absent(),
+    this.disableGlassEffect = const Value.absent(),
   });
   PreferencesTableCompanion.insert({
     this.id = const Value.absent(),
@@ -1487,6 +1522,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.enableConnect = const Value.absent(),
     this.connectPort = const Value.absent(),
     this.cacheMusic = const Value.absent(),
+    this.disableGlassEffect = const Value.absent(),
   });
   static Insertable<PreferencesTableData> custom({
     Expression<int>? id,
@@ -1513,6 +1549,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<bool>? enableConnect,
     Expression<int>? connectPort,
     Expression<bool>? cacheMusic,
+    Expression<bool>? disableGlassEffect,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1542,6 +1579,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       if (enableConnect != null) 'enable_connect': enableConnect,
       if (connectPort != null) 'connect_port': connectPort,
       if (cacheMusic != null) 'cache_music': cacheMusic,
+      if (disableGlassEffect != null)
+        'disable_glass_effect': disableGlassEffect,
     });
   }
 
@@ -1569,7 +1608,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<bool>? endlessPlayback,
       Value<bool>? enableConnect,
       Value<int>? connectPort,
-      Value<bool>? cacheMusic}) {
+      Value<bool>? cacheMusic,
+      Value<bool>? disableGlassEffect}) {
     return PreferencesTableCompanion(
       id: id ?? this.id,
       albumColorSync: albumColorSync ?? this.albumColorSync,
@@ -1595,6 +1635,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       enableConnect: enableConnect ?? this.enableConnect,
       connectPort: connectPort ?? this.connectPort,
       cacheMusic: cacheMusic ?? this.cacheMusic,
+      disableGlassEffect: disableGlassEffect ?? this.disableGlassEffect,
     );
   }
 
@@ -1686,6 +1727,9 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (cacheMusic.present) {
       map['cache_music'] = Variable<bool>(cacheMusic.value);
     }
+    if (disableGlassEffect.present) {
+      map['disable_glass_effect'] = Variable<bool>(disableGlassEffect.value);
+    }
     return map;
   }
 
@@ -1715,7 +1759,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('endlessPlayback: $endlessPlayback, ')
           ..write('enableConnect: $enableConnect, ')
           ..write('connectPort: $connectPort, ')
-          ..write('cacheMusic: $cacheMusic')
+          ..write('cacheMusic: $cacheMusic, ')
+          ..write('disableGlassEffect: $disableGlassEffect')
           ..write(')'))
         .toString();
   }
@@ -4506,6 +4551,7 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<bool> enableConnect,
   Value<int> connectPort,
   Value<bool> cacheMusic,
+  Value<bool> disableGlassEffect,
 });
 typedef $$PreferencesTableTableUpdateCompanionBuilder
     = PreferencesTableCompanion Function({
@@ -4533,6 +4579,7 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<bool> enableConnect,
   Value<int> connectPort,
   Value<bool> cacheMusic,
+  Value<bool> disableGlassEffect,
 });
 
 class $$PreferencesTableTableFilterComposer
@@ -4642,6 +4689,10 @@ class $$PreferencesTableTableFilterComposer
 
   ColumnFilters<bool> get cacheMusic => $composableBuilder(
       column: $table.cacheMusic, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get disableGlassEffect => $composableBuilder(
+      column: $table.disableGlassEffect,
+      builder: (column) => ColumnFilters(column));
 }
 
 class $$PreferencesTableTableOrderingComposer
@@ -4739,6 +4790,10 @@ class $$PreferencesTableTableOrderingComposer
 
   ColumnOrderings<bool> get cacheMusic => $composableBuilder(
       column: $table.cacheMusic, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get disableGlassEffect => $composableBuilder(
+      column: $table.disableGlassEffect,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$PreferencesTableTableAnnotationComposer
@@ -4827,6 +4882,9 @@ class $$PreferencesTableTableAnnotationComposer
 
   GeneratedColumn<bool> get cacheMusic => $composableBuilder(
       column: $table.cacheMusic, builder: (column) => column);
+
+  GeneratedColumn<bool> get disableGlassEffect => $composableBuilder(
+      column: $table.disableGlassEffect, builder: (column) => column);
 }
 
 class $$PreferencesTableTableTableManager extends RootTableManager<
@@ -4882,6 +4940,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<bool> enableConnect = const Value.absent(),
             Value<int> connectPort = const Value.absent(),
             Value<bool> cacheMusic = const Value.absent(),
+            Value<bool> disableGlassEffect = const Value.absent(),
           }) =>
               PreferencesTableCompanion(
             id: id,
@@ -4908,6 +4967,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             enableConnect: enableConnect,
             connectPort: connectPort,
             cacheMusic: cacheMusic,
+            disableGlassEffect: disableGlassEffect,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -4935,6 +4995,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<bool> enableConnect = const Value.absent(),
             Value<int> connectPort = const Value.absent(),
             Value<bool> cacheMusic = const Value.absent(),
+            Value<bool> disableGlassEffect = const Value.absent(),
           }) =>
               PreferencesTableCompanion.insert(
             id: id,
@@ -4961,6 +5022,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             enableConnect: enableConnect,
             connectPort: connectPort,
             cacheMusic: cacheMusic,
+            disableGlassEffect: disableGlassEffect,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

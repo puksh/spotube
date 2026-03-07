@@ -90,7 +90,7 @@ class PlayerView extends HookConsumerWidget {
       },
       child: SurfaceCard(
         borderWidth: 0,
-        surfaceOpacity: 0.9,
+        surfaceOpacity: (theme.surfaceOpacity ?? 1) >= 1 ? 1 : 0.9,
         padding: EdgeInsets.zero,
         child: Scaffold(
           backgroundColor: Colors.transparent,
