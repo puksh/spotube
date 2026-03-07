@@ -130,6 +130,7 @@ class Sidebar extends HookConsumerWidget {
                       )
                     : NavigationRail(
                         alignment: NavigationRailAlignment.start,
+                        labelType: NavigationLabelType.none,
                         selectedKey: selectedKey,
                         onSelected: (key) {
                           if (key == null) return;
