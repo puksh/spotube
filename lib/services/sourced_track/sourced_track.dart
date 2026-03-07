@@ -1,15 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
@@ -86,6 +89,36 @@ class SourcedTrack extends BasicSourcedTrack {
     final item = SpotubeAudioSourceMatchObject.fromJson(
       jsonDecode(cachedSource.sourceInfo),
     );
+
+    // If the audio file is already fully cached on disk, skip the network
+    // stream-resolution call and serve straight from the disk cache.
+    final prefs = ref.read(userPreferencesProvider);
+    if (prefs.cacheMusic) {
+      final presetState = ref.read(audioSourcePresetsProvider);
+      final preset = presetState.presets
+          .elementAtOrNull(presetState.selectedStreamingContainerIndex);
+      if (preset != null) {
+        final cacheDir = await UserPreferencesNotifier.getMusicCacheDir();
+        final filename = ServiceUtils.sanitizeFilename(
+          '${query.name} - ${query.artists.map((a) => a.name).join(",")} (${item.id}).${preset.getFileExtension()}',
+        );
+        final cacheFile = File(join(cacheDir, filename));
+        if (await cacheFile.exists() && await cacheFile.length() > 0) {
+          AppLogger.log.i(
+            "${query.name}: disk cache hit (${await cacheFile.length()} bytes), skipping stream resolution",
+          );
+          return SourcedTrack(
+            ref: ref,
+            siblings: [],
+            sources: const [],
+            info: item,
+            query: query,
+            source: audioSourceConfig.slug,
+          );
+        }
+      }
+    }
+
     final manifest = await audioSource.audioSource.streams(item);
 
     final sourcedTrack = SourcedTrack(
