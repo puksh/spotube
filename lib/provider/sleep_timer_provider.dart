@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/services/app_exit/app_exit.dart';
+import 'package:spotube/utils/platform.dart';
 
 class SleepTimerNotifier extends StateNotifier<Duration?> {
   SleepTimerNotifier() : super(null);
@@ -11,8 +13,18 @@ class SleepTimerNotifier extends StateNotifier<Duration?> {
   void setSleepTimer(Duration duration) {
     state = duration;
 
-    _timer = Timer(duration, () {
+    _timer?.cancel();
+
+    _timer = Timer(duration, () async {
       //! This can be a reason  for app termination in iOS AppStore
+      if (kIsDesktop) {
+        await AppExitService.requestExit(
+          reason: 'sleep timer elapsed',
+          forceDesktopWindowClose: true,
+        );
+        return;
+      }
+
       exit(0);
     });
   }

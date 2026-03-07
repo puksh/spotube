@@ -10,16 +10,23 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 
 class DiscordNotifier extends AsyncNotifier<void> {
+  static DiscordNotifier? _current;
+
+  final List<StreamSubscription> _subscriptions = [];
+  Future<void>? _shutdownFuture;
+
   @override
   FutureOr<void> build() async {
     if (!kIsDesktop) return;
+
+    _current = this;
 
     final enabled = ref.watch(
         userPreferencesProvider.select((s) => s.discordPresence && kIsDesktop));
 
     var lastPosition = audioPlayer.position;
 
-    final subscriptions = [
+    _subscriptions.addAll([
       FlutterDiscordRPC.instance.isConnectedStream.listen((connected) async {
         try {
           final playback = ref.read(audioPlayerProvider);
@@ -54,15 +61,17 @@ class DiscordNotifier extends AsyncNotifier<void> {
           AppLogger.reportError(e, stack);
         }
       })
-    ];
+    ]);
 
-    ref.onDispose(() async {
-      for (final subscription in subscriptions) {
+    ref.onDispose(() {
+      if (identical(_current, this)) {
+        _current = null;
+      }
+
+      for (final subscription in _subscriptions) {
         subscription.cancel();
       }
-      await clear();
-      await close();
-      await FlutterDiscordRPC.instance.dispose();
+      _subscriptions.clear();
     });
 
     if (!enabled && FlutterDiscordRPC.instance.isConnected) {
@@ -115,6 +124,41 @@ class DiscordNotifier extends AsyncNotifier<void> {
   Future<void> close() async {
     if (!kIsDesktop) return;
     await FlutterDiscordRPC.instance.disconnect();
+  }
+
+  Future<void> shutdown() {
+    return _shutdownFuture ??= _shutdownInternal();
+  }
+
+  static Future<void> shutdownCurrent() async {
+    await _current?.shutdown();
+  }
+
+  Future<void> _shutdownInternal() async {
+    for (final subscription in _subscriptions) {
+      await subscription.cancel();
+    }
+    _subscriptions.clear();
+
+    try {
+      await clear();
+    } catch (e, stack) {
+      AppLogger.reportError(
+          e, stack, 'Discord clear activity failed during shutdown');
+    }
+
+    try {
+      await close();
+    } catch (e, stack) {
+      AppLogger.reportError(
+          e, stack, 'Discord disconnect failed during shutdown');
+    }
+
+    try {
+      await FlutterDiscordRPC.instance.dispose();
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack, 'Discord dispose failed during shutdown');
+    }
   }
 }
 

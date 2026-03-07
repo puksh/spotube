@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/app_exit/app_exit.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
@@ -99,8 +98,11 @@ final trayMenuProvider = Provider((ref) {
       MenuItem.separator(),
       MenuItem(
         label: "Quit",
-        onClick: (menuItem) {
-          exit(0);
+        onClick: (menuItem) async {
+          await AppExitService.requestExit(
+            reason: 'tray quit menu',
+            forceDesktopWindowClose: true,
+          );
         },
       ),
     ],

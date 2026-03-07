@@ -62,6 +62,14 @@ class WindowManagerTools with WidgetsBindingObserver {
     );
   }
 
+  static Future<void> dispose() async {
+    final current = _instance;
+    if (current == null) return;
+
+    WidgetsBinding.instance.removeObserver(current);
+    _instance = null;
+  }
+
   Size? _prevSize;
 
   @override

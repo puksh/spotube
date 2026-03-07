@@ -27,6 +27,7 @@ class SystemTrayManager with TrayListener {
                 ? 'com.github.KRTirtho.Spotube'
                 : 'assets/branding/spotube-logo.png',
       );
+      await trayManager.setContextMenu(ref.read(trayMenuProvider));
       trayManager.addListener(this);
     } else {
       await trayManager.destroy();

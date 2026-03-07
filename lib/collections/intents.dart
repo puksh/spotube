@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +6,7 @@ import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/modules/player/player_controls.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/app_exit/app_exit.dart';
 import 'package:spotube/utils/platform.dart';
 
 class PlayPauseIntent extends Intent {
@@ -129,11 +128,14 @@ class CloseAppIntent extends Intent {}
 
 class CloseAppAction extends Action<CloseAppIntent> {
   @override
-  invoke(intent) {
+  invoke(intent) async {
     if (kIsDesktop) {
-      exit(0);
+      await AppExitService.requestExit(
+        reason: 'keyboard close shortcut',
+        forceDesktopWindowClose: true,
+      );
     } else {
-      SystemNavigator.pop();
+      await SystemNavigator.pop();
     }
     return null;
   }

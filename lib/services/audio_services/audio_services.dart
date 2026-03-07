@@ -10,12 +10,18 @@ import 'package:spotube/services/audio_services/windows_audio_service.dart';
 import 'package:spotube/utils/platform.dart';
 
 class AudioServices with WidgetsBindingObserver {
+  static AudioServices? _current;
+
   final MobileAudioService? mobile;
   final WindowsAudioService? smtc;
+  bool _disposed = false;
+  Future<void>? _disposeFuture;
 
   AudioServices(this.mobile, this.smtc) {
     WidgetsBinding.instance.addObserver(this);
   }
+
+  static AudioServices? get current => _current;
 
   static Future<AudioServices> create(
     Ref ref,
@@ -41,8 +47,9 @@ class AudioServices with WidgetsBindingObserver {
           )
         : null;
     final smtc = kIsWindows ? WindowsAudioService(ref, playback) : null;
-
-    return AudioServices(mobile, smtc);
+    final instance = AudioServices(mobile, smtc);
+    _current = instance;
+    return instance;
   }
 
   Future<void> addTrack(SpotubeTrackObject track) async {
@@ -80,8 +87,25 @@ class AudioServices with WidgetsBindingObserver {
     }
   }
 
-  void dispose() {
-    smtc?.dispose();
+  Future<void> dispose() {
+    return _disposeFuture ??= _disposeInternal();
+  }
+
+  static Future<void> disposeCurrent() async {
+    final current = _current;
+    if (current == null) return;
+
+    await current.dispose();
+    if (identical(_current, current)) {
+      _current = null;
+    }
+  }
+
+  Future<void> _disposeInternal() async {
+    if (_disposed) return;
+    _disposed = true;
+
     WidgetsBinding.instance.removeObserver(this);
+    await smtc?.dispose();
   }
 }
