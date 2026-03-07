@@ -78,43 +78,50 @@ Future<void> main(List<String> rawArgs) async {
 
     MediaKit.ensureInitialized();
 
-    await migrateMacOsFromSandboxToNoSandbox();
-
-    // force High Refresh Rate on some Android devices (like One Plus)
-    if (kIsAndroid) {
-      await FlutterDisplayMode.setHighRefreshRate();
-    }
-    if (kIsAndroid || kIsDesktop) {
-      await NewPipeExtractor.init();
-    }
-
     if (!kIsWeb) {
       MetadataGod.initialize();
     }
 
+    // Phase 1: Run independent pre-KVStore initializations in parallel
+    await Future.wait([
+      migrateMacOsFromSandboxToNoSandbox(),
+      if (kIsAndroid) FlutterDisplayMode.setHighRefreshRate(),
+      if (kIsAndroid || kIsDesktop) NewPipeExtractor.init(),
+    ]);
+
+    // Phase 2: KVStore must complete before anything that reads from it
     await KVStoreService.initialize();
 
+    // Phase 3: Parallelize all tasks that are independent of EncryptedKvStore
+    // or only depend on KVStore (already initialized above)
+    final phase3 = <Future<void>>[
+      EncryptedKvStoreService.initialize(),
+    ];
     if (kIsDesktop) {
-      await windowManager.setPreventClose(true);
-      await YtDlp.instance
-          .setBinaryLocation(
-            KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
-                "yt-dlp${kIsWindows ? '.exe' : ''}",
-          )
-          .catchError((e, stack) => null);
-      await FlutterDiscordRPC.initialize(Env.discordAppId);
+      phase3.addAll([
+        windowManager.setPreventClose(true),
+        () async {
+          await YtDlp.instance
+              .setBinaryLocation(
+                KVStoreService.getYoutubeEnginePath(
+                        YoutubeClientEngine.ytDlp) ??
+                    "yt-dlp${kIsWindows ? '.exe' : ''}",
+              )
+              .catchError((e, stack) => null);
+        }(),
+        FlutterDiscordRPC.initialize(Env.discordAppId),
+        localNotifier.setup(appName: "Spotube"),
+      ]);
     }
-
     if (kIsWindows) {
-      await SMTCWindows.initialize();
+      phase3.add(SMTCWindows.initialize());
     }
+    await Future.wait(phase3);
 
-    await EncryptedKvStoreService.initialize();
-
+    // Phase 4: AppDatabase construction is O(1) (LazyDatabase); window init
+    // depends on KVStore window-size which is ready after Phase 2
     final database = AppDatabase();
-
     if (kIsDesktop) {
-      await localNotifier.setup(appName: "Spotube");
       await WindowManagerTools.initialize();
     }
 
