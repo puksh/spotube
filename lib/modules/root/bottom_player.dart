@@ -51,6 +51,10 @@ class BottomPlayer extends HookConsumerWidget {
       return PlayerOverlay(albumArt: albumArt);
     }
 
+    if (playlist.activeTrack == null) {
+      return const SizedBox.shrink();
+    }
+
     return SurfaceCard(
       borderRadius: BorderRadius.zero,
       surfaceBlur: context.theme.surfaceBlur,
