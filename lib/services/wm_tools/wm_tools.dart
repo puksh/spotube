@@ -33,6 +33,53 @@ class WindowManagerTools with WidgetsBindingObserver {
 
   WindowManagerTools._();
 
+  /// Shows the window immediately so the startup splash is visible right away.
+  ///
+  /// Must be called **after** [KVStoreService.initialize] so the saved window
+  /// size can be restored. Call [runApp] with [StartupSplash] straight after
+  /// this, then call [initializeObserverOnly] once full init completes.
+  static Future<void> initializeForSplash() async {
+    await windowManager.ensureInitialized();
+
+    final savedSize = KVStoreService.windowSize;
+    final width = savedSize?.width ?? 920.0;
+    final height = savedSize?.height ?? 700.0;
+    final maximized = savedSize?.maximized ?? false;
+
+    await windowManager.waitUntilReadyToShow(
+      WindowOptions(
+        size: Size(width, height),
+        center: true,
+        title: "Spotube",
+        // Opaque dark background matches the splash widget colour so no
+        // flash is visible before Flutter paints the first frame.
+        backgroundColor: const Color(0xFF0F172A),
+        minimumSize: const Size(300, 700),
+        titleBarStyle: TitleBarStyle.hidden,
+      ),
+      () async {
+        await windowManager.setResizable(true);
+        if (maximized && !(await windowManager.isMaximized())) {
+          await windowManager.maximize();
+        }
+        await windowManager.show();
+        await windowManager.focus();
+      },
+    );
+  }
+
+  /// Registers the window-size observer without touching the window itself.
+  ///
+  /// Use after [initializeForSplash] + all heavy initialisation, just before
+  /// the real [runApp] call. The window is already correctly sized and visible.
+  static Future<void> initializeObserverOnly() async {
+    // Reset the window background to transparent so the real app's blur /
+    // acrylic effects are not masked by the opaque splash background.
+    await windowManager.setBackgroundColor(Colors.transparent);
+    _instance = WindowManagerTools._();
+    WidgetsBinding.instance.addObserver(instance);
+  }
+
   static Future<void> initialize() async {
     await windowManager.ensureInitialized();
     _instance = WindowManagerTools._();

@@ -26,6 +26,7 @@ import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.da
 import 'package:spotube/hooks/configurators/use_fix_window_stretching.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/hooks/configurators/use_has_touch.dart';
+import 'package:spotube/components/startup_splash.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
@@ -74,12 +75,23 @@ Future<void> main(List<String> rawArgs) async {
 
     tz.initializeTimeZones();
 
-    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
     MediaKit.ensureInitialized();
 
     if (!kIsWeb) {
       MetadataGod.initialize();
+    }
+
+    if (kIsDesktop) {
+      // On desktop: show the window + splash screen immediately so the user
+      // sees something right away instead of staring at a blank taskbar icon.
+      // KVStoreService is cheap (SharedPreferences read) and must come first
+      // so we can restore the saved window dimensions.
+      await KVStoreService.initialize();
+      await WindowManagerTools.initializeForSplash();
+      runApp(const StartupSplash());
+    } else {
+      // On mobile / web keep the native splash until the app is ready.
+      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
     }
 
     // Phase 1: Run independent pre-KVStore initializations in parallel
@@ -89,8 +101,10 @@ Future<void> main(List<String> rawArgs) async {
       if (kIsAndroid || kIsDesktop) NewPipeExtractor.init(),
     ]);
 
-    // Phase 2: KVStore must complete before anything that reads from it
-    await KVStoreService.initialize();
+    // Phase 2: KVStore — already initialised above for desktop
+    if (!kIsDesktop) {
+      await KVStoreService.initialize();
+    }
 
     // Phase 3: Parallelize all tasks that are independent of EncryptedKvStore
     // or only depend on KVStore (already initialized above)
@@ -118,11 +132,11 @@ Future<void> main(List<String> rawArgs) async {
     }
     await Future.wait(phase3);
 
-    // Phase 4: AppDatabase construction is O(1) (LazyDatabase); window init
-    // depends on KVStore window-size which is ready after Phase 2
+    // Phase 4: AppDatabase construction is O(1) (LazyDatabase).
+    // On desktop the window is already shown; just register the size observer.
     final database = AppDatabase();
     if (kIsDesktop) {
-      await WindowManagerTools.initialize();
+      await WindowManagerTools.initializeObserverOnly();
     }
 
     if (kIsIOS) {
