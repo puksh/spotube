@@ -78,7 +78,10 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                       child: Icon(tile.icon),
                     ),
                     onChanged: (selected) async {
-                      if (selected) await context.navigateTo(tile.route);
+                      if (selected &&
+                          !router.currentPath.startsWith(tile.pathPrefix)) {
+                        await context.navigateTo(tile.route);
+                      }
                     },
                   )
               ],

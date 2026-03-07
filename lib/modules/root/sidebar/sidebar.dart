@@ -45,10 +45,8 @@ class Sidebar extends HookConsumerWidget {
       (e) => router.currentPath.startsWith(e.pathPrefix),
     );
 
-    if (layoutMode == LayoutMode.compact ||
-        (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
-      return child;
-    }
+    final showSidebar = !(layoutMode == LayoutMode.compact ||
+        (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive));
 
     final selectedKey =
         selectedIndex >= 0 ? ValueKey(tileList[selectedIndex].id) : null;
@@ -66,7 +64,7 @@ class Sidebar extends HookConsumerWidget {
                 child: const Text("Spotube"),
               )
             : const Text(""),
-        children: [],
+        children: const [],
       ),
       for (final tile in sidebarTileList)
         NavigationItem(
@@ -78,19 +76,26 @@ class Sidebar extends HookConsumerWidget {
             child: Icon(tile.icon),
           ),
           onChanged: (selected) async {
-            if (selected) await context.navigateTo(tile.route);
+            if (selected && !router.currentPath.startsWith(tile.pathPrefix)) {
+              await context.navigateTo(tile.route);
+            }
           },
         ),
       const NavigationDivider(),
       if (mediaQuery.lgAndUp)
-        NavigationGroup(label: Text(context.l10n.library), children: []),
+        NavigationGroup(
+          label: Text(context.l10n.library),
+          children: const [],
+        ),
       for (final tile in sidebarLibraryTileList)
         NavigationItem(
           key: ValueKey(tile.id),
           selected: router.currentPath.startsWith(tile.pathPrefix),
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           onChanged: (selected) async {
-            if (selected) await context.navigateTo(tile.route);
+            if (selected && !router.currentPath.startsWith(tile.pathPrefix)) {
+              await context.navigateTo(tile.route);
+            }
           },
           child: Tooltip(
             tooltip: TooltipContainer(child: Text(tile.title)).call,
@@ -102,38 +107,56 @@ class Sidebar extends HookConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          children: [
-            Expanded(
-              child: mediaQuery.lgAndUp
-                  ? NavigationSidebar(
-                      selectedKey: selectedKey,
-                      onSelected: (key) {
-                        if (key == null) return;
-                        final idx =
-                            tileList.indexWhere((t) => ValueKey(t.id) == key);
-                        if (idx >= 0) context.navigateTo(tileList[idx].route);
-                      },
-                      children: navigationButtons,
-                    )
-                  : NavigationRail(
-                      alignment: NavigationRailAlignment.start,
-                      selectedKey: selectedKey,
-                      onSelected: (key) {
-                        if (key == null) return;
-                        final idx =
-                            tileList.indexWhere((t) => ValueKey(t.id) == key);
-                        if (idx >= 0) context.navigateTo(tileList[idx].route);
-                      },
-                      children: navigationButtons,
-                    ),
-            ),
-            const SidebarFooter(),
-            if (mediaQuery.lgAndUp) const Gap(130) else const Gap(65),
-          ],
+        if (showSidebar)
+          Column(
+            children: [
+              Expanded(
+                child: mediaQuery.lgAndUp
+                    ? NavigationSidebar(
+                        selectedKey: selectedKey,
+                        onSelected: (key) {
+                          if (key == null) return;
+                          final idx = tileList.indexWhere(
+                            (t) => ValueKey(t.id) == key,
+                          );
+                          if (idx >= 0 &&
+                              !router.currentPath.startsWith(
+                                tileList[idx].pathPrefix,
+                              )) {
+                            context.navigateTo(tileList[idx].route);
+                          }
+                        },
+                        children: navigationButtons,
+                      )
+                    : NavigationRail(
+                        alignment: NavigationRailAlignment.start,
+                        selectedKey: selectedKey,
+                        onSelected: (key) {
+                          if (key == null) return;
+                          final idx = tileList.indexWhere(
+                            (t) => ValueKey(t.id) == key,
+                          );
+                          if (idx >= 0 &&
+                              !router.currentPath.startsWith(
+                                tileList[idx].pathPrefix,
+                              )) {
+                            context.navigateTo(tileList[idx].route);
+                          }
+                        },
+                        children: navigationButtons,
+                      ),
+              ),
+              const SidebarFooter(),
+              if (mediaQuery.lgAndUp) const Gap(130) else const Gap(65),
+            ],
+          ),
+        if (showSidebar) const VerticalDivider(),
+        Expanded(
+          child: KeyedSubtree(
+            key: const ValueKey('root-sidebar-child'),
+            child: child,
+          ),
         ),
-        const VerticalDivider(),
-        Expanded(child: child),
       ],
     );
   }
