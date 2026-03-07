@@ -98,6 +98,13 @@ List<SideBarTiles> getNavbarTileList(AppLocalizations l10n) => [
         title: l10n.search,
       ),
       SideBarTiles(
+        id: "lyrics",
+        pathPrefix: "/lyrics",
+        route: const LyricsRoute(),
+        icon: SpotubeIcons.music,
+        title: l10n.lyrics,
+      ),
+      SideBarTiles(
         id: "library",
         pathPrefix: "/library",
         route: const UserPlaylistsRoute(),
