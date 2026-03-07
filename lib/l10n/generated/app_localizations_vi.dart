@@ -1571,4 +1571,7 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'Dành cho người yêu âm nhạc chất lượng cao. Cung cấp luồng âm thanh chất lượng cao/không nén. Phù hợp bài hát dựa trên ISRC chính xác.';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }

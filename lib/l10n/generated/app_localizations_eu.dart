@@ -1574,4 +1574,7 @@ class AppLocalizationsEu extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'Audiozaleentzat. Kalitate handiko/galerarik gabeko audio-streamak eskaintzen ditu. ISRC oinarritutako pistaren parekatze zehatza.';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }

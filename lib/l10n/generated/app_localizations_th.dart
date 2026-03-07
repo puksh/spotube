@@ -1558,4 +1558,7 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'สำหรับคนรักเสียงเพลง ให้สตรีมเสียงคุณภาพสูง/ไร้การสูญเสียการบีบอัด การจับคู่แทร็กแม่นยำตาม ISRC';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }

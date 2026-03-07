@@ -1563,4 +1563,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'لمحبي الصوتيات. يوفر تدفقات صوتية عالية الجودة/بدون فقدان. مطابقة دقيقة للمسارات بناءً على ISRC.';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }

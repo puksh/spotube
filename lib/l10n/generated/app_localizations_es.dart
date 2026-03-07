@@ -1577,4 +1577,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'Para audiófilos. Proporciona transmisiones de audio de alta calidad/sin pérdida. Coincidencia precisa de pistas basada en ISRC.';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }

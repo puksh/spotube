@@ -1563,4 +1563,7 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'অডিওফাইলদের জন্য। উচ্চ-মানের/লসলেস অডিও স্ট্রিম প্রদান করে। সঠিক ISRC ভিত্তিক ট্র্যাক ম্যাচিং।';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }

@@ -1569,4 +1569,7 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'Per audiophile. Fornisce flussi audio di alta qualità/senza perdita. Abbinamento traccia accurato basato su ISRC.';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }

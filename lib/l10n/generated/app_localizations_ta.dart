@@ -1576,4 +1576,7 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get dab_music_source_description =>
       'ஆடியோஃபைல்களுக்காக. உயர்தர/லாஸ்லெஸ் ஆடியோ ஸ்ட்ரீம்களை வழங்குகிறது. ISRC அடிப்படையில் துல்லியமான பாடல் பொருத்தம்.';
+
+  @override
+  String get playlist_owner => 'Playlist Owner';
 }
