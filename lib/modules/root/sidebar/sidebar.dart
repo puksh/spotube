@@ -77,8 +77,8 @@ class Sidebar extends HookConsumerWidget {
             tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
-          onChanged: (selected) {
-            if (selected) context.navigateTo(tile.route);
+          onChanged: (selected) async {
+            if (selected) await context.navigateTo(tile.route);
           },
         ),
       const NavigationDivider(),
@@ -89,8 +89,8 @@ class Sidebar extends HookConsumerWidget {
           key: ValueKey(tile.id),
           selected: router.currentPath.startsWith(tile.pathPrefix),
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
-          onChanged: (selected) {
-            if (selected) context.navigateTo(tile.route);
+          onChanged: (selected) async {
+            if (selected) await context.navigateTo(tile.route);
           },
           child: Tooltip(
             tooltip: TooltipContainer(child: Text(tile.title)).call,

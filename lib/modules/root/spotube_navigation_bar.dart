@@ -77,8 +77,8 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                       label: Text(downloadCount.toString()),
                       child: Icon(tile.icon),
                     ),
-                    onChanged: (selected) {
-                      if (selected) context.navigateTo(tile.route);
+                    onChanged: (selected) async {
+                      if (selected) await context.navigateTo(tile.route);
                     },
                   )
               ],
