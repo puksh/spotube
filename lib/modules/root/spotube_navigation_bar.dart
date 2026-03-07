@@ -42,12 +42,11 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final panelHeight = ref.watch(navigationPanelHeight);
 
     final router = context.watchRouter;
-    final selectedIndex = max(
-      0,
-      navbarTileList.indexWhere(
-        (e) => router.currentPath.startsWith(e.pathPrefix),
-      ),
+    final selectedIndex = navbarTileList.indexWhere(
+      (e) => router.currentPath.startsWith(e.pathPrefix),
     );
+    final selectedKey =
+        selectedIndex >= 0 ? ValueKey(navbarTileList[selectedIndex].id) : null;
 
     if (layoutMode == LayoutMode.extended ||
         (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||
@@ -63,22 +62,25 @@ class SpotubeNavigationBar extends HookConsumerWidget {
           children: [
             const Divider(),
             NavigationBar(
-              index: selectedIndex,
+              selectedKey: selectedKey,
               surfaceBlur: context.theme.surfaceBlur,
               surfaceOpacity: context.theme.surfaceOpacity,
               children: [
                 for (final tile in navbarTileList)
-                  NavigationButton(
-                    style: navbarTileList[selectedIndex] == tile
-                        ? const ButtonStyle.fixed(density: ButtonDensity.icon)
-                        : const ButtonStyle.muted(density: ButtonDensity.icon),
+                  NavigationItem(
+                    key: ValueKey(tile.id),
+                    selected: selectedIndex >= 0 &&
+                        navbarTileList[selectedIndex] == tile,
+                    selectedStyle:
+                        const ButtonStyle.fixed(density: ButtonDensity.icon),
+                    style: const ButtonStyle.muted(density: ButtonDensity.icon),
                     child: Badge(
                       isLabelVisible: tile.id == "library" && downloadCount > 0,
                       label: Text(downloadCount.toString()),
                       child: Icon(tile.icon),
                     ),
-                    onPressed: () {
-                      context.navigateTo(tile.route);
+                    onChanged: (selected) {
+                      if (selected) context.navigateTo(tile.route);
                     },
                   )
               ],

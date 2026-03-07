@@ -50,9 +50,12 @@ class Sidebar extends HookConsumerWidget {
       return child;
     }
 
+    final selectedKey =
+        selectedIndex >= 0 ? ValueKey(tileList[selectedIndex].id) : null;
+
     final navigationButtons = [
-      NavigationLabel(
-        child: mediaQuery.lgAndUp
+      NavigationGroup(
+        label: mediaQuery.lgAndUp
             ? DefaultTextStyle(
                 style: TextStyle(
                   fontFamily: "Cookie",
@@ -63,32 +66,31 @@ class Sidebar extends HookConsumerWidget {
                 child: const Text("Spotube"),
               )
             : const Text(""),
+        children: [],
       ),
       for (final tile in sidebarTileList)
-        NavigationButton(
-          style: router.currentPath.startsWith(tile.pathPrefix)
-              ? const ButtonStyle.secondary()
-              : null,
+        NavigationItem(
+          key: ValueKey(tile.id),
+          selected: router.currentPath.startsWith(tile.pathPrefix),
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           child: Tooltip(
             tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
-          onPressed: () {
-            context.navigateTo(tile.route);
+          onChanged: (selected) {
+            if (selected) context.navigateTo(tile.route);
           },
         ),
       const NavigationDivider(),
       if (mediaQuery.lgAndUp)
-        NavigationLabel(child: Text(context.l10n.library)),
+        NavigationGroup(label: Text(context.l10n.library), children: []),
       for (final tile in sidebarLibraryTileList)
-        NavigationButton(
-          style: router.currentPath.startsWith(tile.pathPrefix)
-              ? const ButtonStyle.secondary()
-              : null,
+        NavigationItem(
+          key: ValueKey(tile.id),
+          selected: router.currentPath.startsWith(tile.pathPrefix),
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
-          onPressed: () {
-            context.navigateTo(tile.route);
+          onChanged: (selected) {
+            if (selected) context.navigateTo(tile.route);
           },
           child: Tooltip(
             tooltip: TooltipContainer(child: Text(tile.title)).call,
@@ -105,19 +107,23 @@ class Sidebar extends HookConsumerWidget {
             Expanded(
               child: mediaQuery.lgAndUp
                   ? NavigationSidebar(
-                      index: selectedIndex,
-                      onSelected: (index) {
-                        final tile = tileList[index];
-                        context.navigateTo(tile.route);
+                      selectedKey: selectedKey,
+                      onSelected: (key) {
+                        if (key == null) return;
+                        final idx =
+                            tileList.indexWhere((t) => ValueKey(t.id) == key);
+                        if (idx >= 0) context.navigateTo(tileList[idx].route);
                       },
                       children: navigationButtons,
                     )
                   : NavigationRail(
                       alignment: NavigationRailAlignment.start,
-                      index: selectedIndex,
-                      onSelected: (index) {
-                        final tile = tileList[index];
-                        context.navigateTo(tile.route);
+                      selectedKey: selectedKey,
+                      onSelected: (key) {
+                        if (key == null) return;
+                        final idx =
+                            tileList.indexWhere((t) => ValueKey(t.id) == key);
+                        if (idx >= 0) context.navigateTo(tileList[idx].route);
                       },
                       children: navigationButtons,
                     ),

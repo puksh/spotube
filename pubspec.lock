@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.7.1"
+  animation_kit:
+    dependency: transitive
+    description:
+      name: animation_kit
+      sha256: d9b0944b3ee02fae3fedbc6cb04d9a9ea26ad1d29f3261e0b55443b1e0bfba63
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   ansicolor:
     dependency: transitive
     description:
@@ -470,10 +478,10 @@ packages:
     dependency: transitive
     description:
       name: data_widget
-      sha256: "95388df890189014f702b7e93f9de6bcf7d45143a99f6288f31899f10be441ba"
+      sha256: "4947aae3c50635496d56f94ad18de98e19015c5ebf01abee0f39a2c098c7021a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   dbus:
     dependency: transitive
     description:
@@ -2011,10 +2019,10 @@ packages:
     dependency: "direct main"
     description:
       name: shadcn_flutter
-      sha256: "1fd4f798c39d6308dc8f7e94d9e870b5db39fbf417ea95c423c7555ce8227a1c"
+      sha256: b04e2f790e182007d02b78234c647df393f2ea95b39d8da88d7cbdaed56f7701
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.47"
+    version: "0.0.52"
   shared_preferences:
     dependency: "direct main"
     description:
