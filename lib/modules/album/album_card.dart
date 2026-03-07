@@ -164,7 +164,8 @@ class AlbumCard extends HookConsumerWidget {
     if (_isTile) {
       return PlaybuttonTile(
         imageUrl: imageUrl,
-        isPlaying: isPlaylistPlaying,
+        isActive: isPlaylistPlaying,
+        isPlaying: isPlaylistPlaying && playing,
         isLoading: isLoading,
         title: album.name,
         description: description,
@@ -176,7 +177,8 @@ class AlbumCard extends HookConsumerWidget {
 
     return PlaybuttonCard(
       imageUrl: imageUrl,
-      isPlaying: isPlaylistPlaying,
+      isActive: isPlaylistPlaying,
+      isPlaying: isPlaylistPlaying && playing,
       isLoading: isLoading,
       title: album.name,
       description: description,

@@ -13,12 +13,14 @@ class PlaybuttonTile extends StatelessWidget {
 
   final String? imageUrl;
   final Widget? image;
+  final bool isActive;
   final bool isPlaying;
   final bool isLoading;
   final String title;
   final bool isOwner;
 
   const PlaybuttonTile({
+    required this.isActive,
     required this.isPlaying,
     required this.isLoading,
     required this.title,
@@ -71,7 +73,8 @@ class PlaybuttonTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Tooltip(
-            tooltip: TooltipContainer(child: Text(context.l10n.add_to_queue)).call,
+            tooltip:
+                TooltipContainer(child: Text(context.l10n.add_to_queue)).call,
             child: IconButton.outline(
               icon: const Icon(SpotubeIcons.queueAdd),
               onPressed: onAddToQueuePressed,

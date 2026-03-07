@@ -13,6 +13,7 @@ import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 const _dummyPlaybuttonCard = PlaybuttonCard(
   imageUrl: 'https://placehold.co/150x150.png',
+  isActive: false,
   isLoading: false,
   isPlaying: false,
   title: "Playbutton",
@@ -22,6 +23,7 @@ const _dummyPlaybuttonCard = PlaybuttonCard(
 
 const _dummyPlaybuttonTile = PlaybuttonTile(
   imageUrl: 'https://placehold.co/150x150.png',
+  isActive: false,
   isLoading: false,
   isPlaying: false,
   title: "Playbutton",

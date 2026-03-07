@@ -13,12 +13,14 @@ class PlaybuttonCard extends StatelessWidget {
 
   final String? imageUrl;
   final Widget? image;
+  final bool isActive;
   final bool isPlaying;
   final bool isLoading;
   final String title;
   final bool isOwner;
 
   const PlaybuttonCard({
+    required this.isActive,
     required this.isPlaying,
     required this.isLoading,
     required this.title,
@@ -105,7 +107,7 @@ class PlaybuttonCard extends StatelessWidget {
                         duration: const Duration(milliseconds: 150),
                         scale: states.contains(WidgetState.hovered) ||
                                 kIsMobile ||
-                                isPlaying ||
+                                isActive ||
                                 isLoading
                             ? 1
                             : 0.7,
@@ -113,7 +115,7 @@ class PlaybuttonCard extends StatelessWidget {
                           duration: const Duration(milliseconds: 150),
                           opacity: states.contains(WidgetState.hovered) ||
                                   kIsMobile ||
-                                  isPlaying ||
+                                  isActive ||
                                   isLoading
                               ? 1
                               : 0,

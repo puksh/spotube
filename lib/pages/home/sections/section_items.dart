@@ -16,6 +16,7 @@ import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 const _dummyPlaybuttonCard = PlaybuttonCard(
   imageUrl: 'https://placehold.co/150x150.png',
+  isActive: false,
   isLoading: false,
   isPlaying: false,
   title: "Playbutton",
