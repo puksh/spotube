@@ -2978,6 +2978,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.'**
   String get dab_music_source_description;
+
+  /// No description provided for @playlist_owner.
+  ///
+  /// In en, this message translates to:
+  /// **'Playlist Owner'**
+  String get playlist_owner;
 }
 
 class _AppLocalizationsDelegate

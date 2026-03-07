@@ -469,5 +469,6 @@
   "scrobbling": "Scrobbling",
   "source": "Source: ",
   "uncompressed": "Uncompressed",
-  "dab_music_source_description": "For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching."
+  "dab_music_source_description": "For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.",
+  "playlist_owner": "Playlist Owner"
 }

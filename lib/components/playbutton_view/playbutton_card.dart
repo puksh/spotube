@@ -3,6 +3,7 @@ import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/string.dart';
+import 'package:spotube/l10n/generated/app_localizations.dart';
 import 'package:spotube/utils/platform.dart';
 
 class PlaybuttonCard extends StatelessWidget {
@@ -45,6 +46,7 @@ class PlaybuttonCard extends StatelessWidget {
     return SizedBox(
       width: 150 * scale,
       child: CardImage(
+        hoverScale: 1.0,
         image: Stack(
           children: [
             if (imageUrl != null)
@@ -80,56 +82,64 @@ class PlaybuttonCard extends StatelessWidget {
                   child: Column(
                     children: [
                       AnimatedScale(
-                        curve: Curves.easeOutBack,
-                        duration: const Duration(milliseconds: 300),
-                        scale: (states.contains(WidgetState.hovered) ||
-                                    kIsMobile) &&
-                                !isLoading
-                            ? 1
-                            : 0.7,
+                        duration: const Duration(milliseconds: 200),
+                        scale: 1,
                         child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 200),
                           opacity: (states.contains(WidgetState.hovered) ||
                                       kIsMobile) &&
                                   !isLoading
                               ? 1
                               : 0,
-                          child: IconButton.secondary(
-                            icon: const Icon(SpotubeIcons.queueAdd),
-                            onPressed: onAddToQueuePressed,
-                            size: ButtonSize.small,
+                          child: Tooltip(
+                            tooltip: TooltipContainer(
+                              child: Text(
+                                  AppLocalizations.of(context)!.add_to_queue),
+                            ).call,
+                            child: IconButton.secondary(
+                              icon: const Icon(SpotubeIcons.queueAdd),
+                              onPressed: onAddToQueuePressed,
+                              size: ButtonSize.small,
+                            ),
                           ),
                         ),
                       ),
                       const Gap(5),
                       AnimatedScale(
-                        curve: Curves.easeOutBack,
-                        duration: const Duration(milliseconds: 150),
-                        scale: states.contains(WidgetState.hovered) ||
-                                kIsMobile ||
-                                isActive ||
-                                isLoading
-                            ? 1
-                            : 0.7,
+                        curve: Curves.easeOut,
+                        duration: const Duration(milliseconds: 200),
+                        scale: 1,
                         child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 150),
+                          duration: const Duration(milliseconds: 200),
                           opacity: states.contains(WidgetState.hovered) ||
                                   kIsMobile ||
                                   isActive ||
                                   isLoading
                               ? 1
                               : 0,
-                          child: IconButton.secondary(
-                            icon: switch ((isLoading, isPlaying)) {
-                              (true, _) => const CircularProgressIndicator(
-                                  size: 15,
-                                ),
-                              (false, false) => const Icon(SpotubeIcons.play),
-                              (false, true) => const Icon(SpotubeIcons.pause)
-                            },
-                            enabled: !isLoading,
-                            onPressed: onPlaybuttonPressed,
-                            size: ButtonSize.small,
+                          child: Tooltip(
+                            tooltip: TooltipContainer(
+                              child: Text(switch ((isLoading, isPlaying)) {
+                                (true, _) =>
+                                  AppLocalizations.of(context)!.loading,
+                                (false, false) =>
+                                  AppLocalizations.of(context)!.play,
+                                (false, true) =>
+                                  AppLocalizations.of(context)!.pause_playback,
+                              }),
+                            ).call,
+                            child: IconButton.secondary(
+                              icon: switch ((isLoading, isPlaying)) {
+                                (true, _) => const CircularProgressIndicator(
+                                    size: 15,
+                                  ),
+                                (false, false) => const Icon(SpotubeIcons.play),
+                                (false, true) => const Icon(SpotubeIcons.pause)
+                              },
+                              enabled: !isLoading,
+                              onPressed: onPlaybuttonPressed,
+                              size: ButtonSize.small,
+                            ),
                           ),
                         ),
                       ),
@@ -139,16 +149,30 @@ class PlaybuttonCard extends StatelessWidget {
               },
             ),
             if (isOwner)
-              const Positioned(
-                right: 5,
-                top: 5,
-                child: SecondaryBadge(
-                  style: ButtonStyle.secondaryIcon(
-                    shape: ButtonShape.circle,
-                    size: ButtonSize.small,
-                  ),
-                  child: Icon(SpotubeIcons.user),
-                ),
+              StatedWidget.builder(
+                builder: (context, states) {
+                  return Positioned(
+                    right: 5,
+                    top: 5,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 200),
+                      opacity: states.contains(WidgetState.hovered) ? 1 : 0.5,
+                      child: Tooltip(
+                        tooltip: TooltipContainer(
+                          child: Text(
+                              AppLocalizations.of(context)!.playlist_owner),
+                        ).call,
+                        child: const SecondaryBadge(
+                          style: ButtonStyle.secondaryIcon(
+                            shape: ButtonShape.circle,
+                            size: ButtonSize.small,
+                          ),
+                          child: Icon(SpotubeIcons.user),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
           ],
         ),
