@@ -33,7 +33,8 @@ class HomePage extends HookConsumerWidget {
         bottom: false,
         child: Scaffold(
           headers: [
-            if (kTitlebarVisible) const TitleBar(height: 30),
+            if (kTitlebarVisible)
+              const TitleBar(height: 30, automaticallyImplyLeading: false),
           ],
           child: CustomScrollView(
             controller: controller,
@@ -41,6 +42,7 @@ class HomePage extends HookConsumerWidget {
               if (mediaQuery.smAndDown || layoutMode == LayoutMode.compact)
                 SliverAppBar(
                   floating: true,
+                  automaticallyImplyLeading: false,
                   title: DefaultTextStyle(
                     style: TextStyle(
                       fontFamily: "Cookie",
