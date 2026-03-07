@@ -44,7 +44,7 @@ class LibraryPage extends HookConsumerWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        context.navigateTo(const HomeRoute());
+        if (!didPop) context.navigateTo(const HomeRoute());
       },
       child: SafeArea(
         bottom: false,
