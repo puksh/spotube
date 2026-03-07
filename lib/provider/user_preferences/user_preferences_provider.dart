@@ -13,6 +13,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:open_file/open_file.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
 
 typedef UserPreferences = PreferencesTableData;
 
@@ -164,6 +165,13 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setCloseBehavior(CloseBehavior behavior) {
     setData(PreferencesTableCompanion(closeBehavior: Value(behavior)));
+
+    // Reset background notification shown flag when user chooses to fully
+    // close the app so that if they later switch to minimize-to-tray the
+    // notification will show again.
+    if (behavior == CloseBehavior.close) {
+      KVStoreService.setBackgroundNotificationShown(false);
+    }
   }
 
   void setShowSystemTrayIcon(bool show) {

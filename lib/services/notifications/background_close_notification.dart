@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:local_notifier/local_notifier.dart';
 import 'package:spotube/services/app_exit/app_exit.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/utils/platform.dart';
 
 final backgroundCloseNotification = !kIsDesktop
@@ -26,8 +27,10 @@ final backgroundCloseNotification = !kIsDesktop
 Future<void> showBackgroundCloseNotification() async {
   final notification = backgroundCloseNotification;
   if (notification == null) return;
+  if (KVStoreService.backgroundNotificationShown) return;
 
   await notification.show();
+  await KVStoreService.setBackgroundNotificationShown(true);
 }
 
 Future<void> dismissBackgroundCloseNotification() async {

@@ -89,6 +89,11 @@ abstract class KVStoreService {
   static Future<void> setHasMigratedToDrift(bool value) async =>
       await sharedPreferences.setBool('hasMigratedToDrift', value);
 
+  static bool get backgroundNotificationShown =>
+      sharedPreferences.getBool('backgroundNotificationShown') ?? false;
+  static Future<void> setBackgroundNotificationShown(bool value) async =>
+      await sharedPreferences.setBool('backgroundNotificationShown', value);
+
   static Map<String, dynamic>? get _youtubeEnginePaths {
     final jsonRaw = sharedPreferences.getString('ytDlpPath');
 
