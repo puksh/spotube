@@ -6,11 +6,13 @@ import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/use_action_callbacks.dart';
 import 'package:spotube/components/track_presentation/use_is_user_playlist.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 
 class TrackPresentationTopSection extends HookConsumerWidget {
@@ -217,23 +219,35 @@ class TrackPresentationTopSection extends HookConsumerWidget {
                                   spacing: 8 * scale,
                                   children: [
                                     if (options.owner != null)
-                                      OutlineBadge(
-                                        leading: options.ownerImage != null
-                                            ? Avatar(
-                                                initials:
-                                                    options.owner?[0] ?? "U",
-                                                provider: UniversalImage
-                                                    .imageProvider(
-                                                  options.ownerImage!,
-                                                ),
-                                                size: 20 * scale,
-                                              )
-                                            : null,
-                                        child: Text(
-                                          options.owner!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ).small(),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(SpotubeIcons.artist,
+                                              size: 16 * scale),
+                                          Gap(5 * scale),
+                                          if (options.collection
+                                              is SpotubeSimpleAlbumObject)
+                                            Flexible(
+                                              child: ArtistLink(
+                                                artists: (options.collection
+                                                        as SpotubeSimpleAlbumObject)
+                                                    .artists,
+                                                hideOverflowArtist: false,
+                                                textStyle: context
+                                                    .theme.typography.small,
+                                              ),
+                                            )
+                                          else
+                                            Flexible(
+                                              child: Text(
+                                                options.owner!,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ).small(),
+                                            ),
+                                        ],
                                       ),
                                     additionalActions,
                                   ],
