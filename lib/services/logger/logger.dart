@@ -129,15 +129,13 @@ class AppLogger {
   }
 
   static String _getXdgStateHome() {
-    // path_provider seems does not support XDG_STATE_HOME,
+    // path_provider does not support XDG_STATE_HOME,
     // which is the specification to store application logs on Linux.
     // See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
     // TODO: Use path_provider once it supports XDG_STATE_HOME
-    if (const bool.hasEnvironment("XDG_STATE_HOME")) {
-      String xdgStateHomeRaw = Platform.environment["XDG_STATE_HOME"] ?? "";
-      if (xdgStateHomeRaw.isNotEmpty) {
-        return xdgStateHomeRaw;
-      }
+    final String xdgStateHomeRaw = Platform.environment["XDG_STATE_HOME"] ?? "";
+    if (xdgStateHomeRaw.isNotEmpty) {
+      return xdgStateHomeRaw;
     }
     return join(Platform.environment["HOME"] ?? "", ".local", "state");
   }
