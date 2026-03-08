@@ -32,9 +32,13 @@ class SettingsPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         headers: [
-          TitleBar(
-            title: Text(context.l10n.settings),
-          )
+          if (kTitlebarVisible)
+            const TitleBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              surfaceBlur: 0,
+              height: 32,
+            ),
         ],
         child: Scrollbar(
           controller: controller,

@@ -34,12 +34,18 @@ class HomePage extends HookConsumerWidget {
         child: Scaffold(
           headers: [
             if (kTitlebarVisible)
-              const TitleBar(height: 30, automaticallyImplyLeading: false),
+              const TitleBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
+                surfaceBlur: 0,
+                height: 32,
+              ),
           ],
           child: CustomScrollView(
             controller: controller,
             slivers: [
-              if (mediaQuery.smAndDown || layoutMode == LayoutMode.compact)
+              if (layoutMode == LayoutMode.compact ||
+                  (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive))
                 SliverAppBar(
                   floating: true,
                   automaticallyImplyLeading: false,

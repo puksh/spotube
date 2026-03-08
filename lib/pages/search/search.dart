@@ -80,7 +80,12 @@ class SearchPage extends HookConsumerWidget {
         child: Scaffold(
           headers: [
             if (kTitlebarVisible)
-              const TitleBar(automaticallyImplyLeading: false, height: 30)
+              const TitleBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
+                surfaceBlur: 0,
+                height: 32,
+              )
           ],
           child: Builder(builder: (context) {
             if (searchChipSnapshot.error

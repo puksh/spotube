@@ -5,6 +5,8 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/titlebar/titlebar_buttons.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
@@ -74,8 +76,15 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
           final hasFullscreen =
               MediaQuery.sizeOf(context).width == constraints.maxWidth;
 
+          final layoutMode =
+              ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
+          final mediaQuery = MediaQuery.of(context);
+          final sidebarVisible = layoutMode == LayoutMode.extended ||
+              (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive);
+
           final canPop = leading.isEmpty &&
               automaticallyImplyLeading &&
+              !sidebarVisible &&
               (Navigator.canPop(context) || context.watchRouter.canPop());
 
           return GestureDetector(

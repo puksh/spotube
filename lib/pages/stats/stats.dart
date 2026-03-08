@@ -25,7 +25,12 @@ class StatsPage extends HookConsumerWidget {
         child: Scaffold(
           headers: [
             if (kTitlebarVisible)
-              const TitleBar(automaticallyImplyLeading: false),
+              const TitleBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
+                surfaceBlur: 0,
+                height: 32,
+              ),
           ],
           child: CustomScrollView(
             slivers: [

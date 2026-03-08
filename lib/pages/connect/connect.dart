@@ -6,6 +6,7 @@ import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/modules/connect/local_devices.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -27,7 +28,13 @@ class ConnectPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         headers: [
-          TitleBar(title: Text(context.l10n.devices)),
+          if (kTitlebarVisible)
+            const TitleBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              surfaceBlur: 0,
+              height: 32,
+            ),
         ],
         child: Padding(
           padding: const EdgeInsets.all(10.0),
