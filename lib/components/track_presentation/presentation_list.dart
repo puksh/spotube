@@ -15,6 +15,7 @@ import 'package:spotube/components/track_presentation/use_is_user_playlist.dart'
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 class PresentationListSection extends HookConsumerWidget {
   const PresentationListSection({super.key});
@@ -79,6 +80,7 @@ class PresentationListSection extends HookConsumerWidget {
             index: 0,
             playlist: playlist,
             track: FakeData.track,
+            showAlbum: options.collection is! SpotubeSimpleAlbumObject,
           ),
         );
       },
@@ -91,6 +93,7 @@ class PresentationListSection extends HookConsumerWidget {
               track: FakeData.track,
               index: index,
               playlist: playlist,
+              showAlbum: options.collection is! SpotubeSimpleAlbumObject,
             ),
           ),
         ),
@@ -102,6 +105,7 @@ class PresentationListSection extends HookConsumerWidget {
           [track.id, state.selectedTracks],
         );
         return TrackTile(
+          showAlbum: options.collection is! SpotubeSimpleAlbumObject,
           userPlaylist: isUserPlaylist,
           playlistId: options.collectionId,
           index: index,

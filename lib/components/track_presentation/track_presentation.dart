@@ -12,6 +12,7 @@ import 'package:spotube/components/track_presentation/presentation_modifiers.dar
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 class TrackPresentation extends HookConsumerWidget {
   final TrackPresentationOptions options;
@@ -70,6 +71,8 @@ class TrackPresentation extends HookConsumerWidget {
                     focusNode: focusNode,
                   ),
                   LayoutBuilder(builder: (context, constrains) {
+                    final isAlbum =
+                        options.collection is SpotubeSimpleAlbumObject;
                     return Basic(
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
@@ -82,7 +85,7 @@ class TrackPresentation extends HookConsumerWidget {
                             flex: constrains.lgAndUp ? 5 : 6,
                             child: Text(context.l10n.title),
                           ),
-                          if (constrains.mdAndUp)
+                          if (constrains.mdAndUp && !isAlbum)
                             Expanded(
                               flex: 3,
                               child: Text(context.l10n.album),

@@ -48,6 +48,7 @@ class TrackTile extends HookConsumerWidget {
   final bool userPlaylist;
   final String? playlistId;
   final AudioPlayerState playlist;
+  final bool showAlbum;
 
   final List<Widget>? leadingActions;
 
@@ -63,6 +64,7 @@ class TrackTile extends HookConsumerWidget {
     this.onChanged,
     this.userPlaylist = false,
     this.playlistId,
+    this.showAlbum = true,
     this.leadingActions,
   });
 
@@ -282,7 +284,7 @@ class TrackTile extends HookConsumerWidget {
                     ],
                   ),
                 ),
-                if (constrains.mdAndUp) ...[
+                if (constrains.mdAndUp && showAlbum) ...[
                   const SizedBox(width: 8),
                   Expanded(
                     flex: 4,

@@ -7,6 +7,7 @@ import 'package:spotube/components/track_presentation/track_presentation.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/library/albums.dart';
+import 'package:spotube/provider/metadata_plugin/album/album.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/album.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
@@ -32,9 +33,20 @@ class AlbumPage extends HookConsumerWidget {
     final isSavedAlbum =
         ref.watch(metadataPluginIsSavedAlbumProvider(album.id));
 
+    final fullAlbum = ref.watch(metadataPluginAlbumProvider(album.id));
+    final releaseDate =
+        fullAlbum.asData?.value.releaseDate ?? album.releaseDate;
+
+    final description = [
+      context.l10n.released,
+      if (releaseDate != null) releaseDate,
+      album.artists.first.name
+    ].join(" • ");
+
     return material.RefreshIndicator.adaptive(
       onRefresh: () async {
         ref.invalidate(metadataPluginAlbumTracksProvider(album.id));
+        ref.invalidate(metadataPluginAlbumProvider(album.id));
         ref.invalidate(metadataPluginIsSavedAlbumProvider(album.id));
         ref.invalidate(metadataPluginSavedAlbumsProvider);
       },
@@ -45,8 +57,7 @@ class AlbumPage extends HookConsumerWidget {
             placeholder: ImagePlaceholder.albumArt,
           ),
           title: album.name,
-          description:
-              "${context.l10n.released} • ${album.releaseDate} • ${album.artists.first.name}",
+          description: description,
           tracks: tracks.asData?.value.items ?? [],
           error: tracks.error,
           pagination: PaginationProps(
