@@ -9,7 +9,9 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 @RoutePage()
 class LibraryPage extends HookConsumerWidget {
@@ -23,6 +25,8 @@ class LibraryPage extends HookConsumerWidget {
             e.status == DownloadStatus.downloading ||
             e.status == DownloadStatus.queued)
         .length;
+    final layoutMode =
+        ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
     final router = context.watchRouter;
     final sidebarLibraryTileList = useMemoized(
       () => [
@@ -49,9 +53,12 @@ class LibraryPage extends HookConsumerWidget {
       child: SafeArea(
         bottom: false,
         child: LayoutBuilder(builder: (context, constraints) {
+          final mediaQuery = MediaQuery.of(context);
+          final showTabs = layoutMode == LayoutMode.compact ||
+              (layoutMode == LayoutMode.adaptive && !mediaQuery.mdAndUp);
           return Scaffold(
             headers: [
-              if (constraints.smAndDown)
+              if (showTabs)
                 TitleBar(
                   automaticallyImplyLeading: false,
                   child: SingleChildScrollView(
