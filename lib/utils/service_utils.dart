@@ -205,15 +205,18 @@ abstract class ServiceUtils {
             return a.name.compareTo(b.name);
           case SortBy.descending:
             return b.name.compareTo(a.name);
-          // TODO: We'll figure this one out later :')
-          // case SortBy.newest:
-          //   final aDate = parseSpotifyAlbumDate(a.album);
-          //   final bDate = parseSpotifyAlbumDate(b.album);
-          //   return bDate.compareTo(aDate);
-          // case SortBy.oldest:
-          //   final aDate = parseSpotifyAlbumDate(a.album);
-          //   final bDate = parseSpotifyAlbumDate(b.album);
-          // return aDate.compareTo(bDate);
+          case SortBy.newest:
+            final aNewest =
+                DateTime.tryParse(a.album.releaseDate ?? '') ?? DateTime(1975);
+            final bNewest =
+                DateTime.tryParse(b.album.releaseDate ?? '') ?? DateTime(1975);
+            return bNewest.compareTo(aNewest);
+          case SortBy.oldest:
+            final aOldest =
+                DateTime.tryParse(a.album.releaseDate ?? '') ?? DateTime(1975);
+            final bOldest =
+                DateTime.tryParse(b.album.releaseDate ?? '') ?? DateTime(1975);
+            return aOldest.compareTo(bOldest);
           case SortBy.duration:
             return a.durationMs.compareTo(b.durationMs);
           case SortBy.artist:
