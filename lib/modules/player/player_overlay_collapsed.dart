@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/player/player_track_details.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
@@ -68,6 +70,12 @@ class PlayerOverlayCollapsedSection extends HookConsumerWidget {
                           ),
                           Row(
                             children: [
+                              IconButton.ghost(
+                                icon: const Icon(SpotubeIcons.music),
+                                onPressed: () {
+                                  context.navigateTo(const LyricsRoute());
+                                },
+                              ),
                               IconButton.ghost(
                                 icon: const Icon(SpotubeIcons.skipBack),
                                 onPressed: isFetchingActiveTrack

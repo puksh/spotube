@@ -85,6 +85,16 @@ class PlayerActions extends HookConsumerWidget {
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       children: [
+        Tooltip(
+          tooltip: TooltipContainer(child: Text(context.l10n.lyrics)).call,
+          child: IconButton.ghost(
+            icon: const Icon(SpotubeIcons.music),
+            enabled: playlist.activeTrack != null,
+            onPressed: () {
+              context.navigateTo(const LyricsRoute());
+            },
+          ),
+        ),
         if (showQueue)
           Tooltip(
             tooltip: TooltipContainer(child: Text(context.l10n.queue)).call,
