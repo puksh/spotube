@@ -16,7 +16,7 @@
 /// Microsoft Copilot, Tutislav@github => Czech
 /// 510208@github => Traditional Chinese
 
-library l10n;
+library;
 
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 export 'package:spotube/l10n/generated/app_localizations.dart';

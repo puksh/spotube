@@ -21,7 +21,7 @@ class RootAppPage extends HookConsumerWidget {
     final backgroundColor = Theme.of(context).colorScheme.background;
     final brightness = Theme.of(context).brightness;
 
-    ref.listen(glanceProvider, (_, __) {});
+    ref.listen(glanceProvider, (_, _) {});
 
     useGlobalSubscriptions(ref);
     useEndlessPlayback(ref);
@@ -45,16 +45,14 @@ class RootAppPage extends HookConsumerWidget {
       child: SafeArea(
         top: false,
         child: Scaffold(
-          footers: const [
-            BottomPlayer(),
-            SpotubeNavigationBar(),
-          ],
+          footers: const [BottomPlayer(), SpotubeNavigationBar()],
           floatingFooter: true,
           child: Sidebar(
             child: MediaQuery(
               data: MediaQuery.of(context).copyWith(
-                padding: MediaQuery.paddingOf(context)
-                    .copyWith(bottom: 100 * context.theme.scaling),
+                padding: MediaQuery.paddingOf(
+                  context,
+                ).copyWith(bottom: 100 * context.theme.scaling),
               ),
               child: const AutoRouter(),
             ),

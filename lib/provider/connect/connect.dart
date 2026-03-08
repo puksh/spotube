@@ -125,7 +125,7 @@ class ConnectNotifier extends AsyncNotifier<ConnectState?> {
                         title: Text(
                           context.l10n.connection_request_denied,
                           style: theme.typography.normal.copyWith(
-                            color: theme.colorScheme.destructiveForeground,
+                            color: Colors.white,
                           ),
                         ),
                         leadingAlignment: Alignment.center,

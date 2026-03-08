@@ -33,22 +33,22 @@ class PlaylistCreateDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final userPlaylists = ref.watch(metadataPluginSavedPlaylistsProvider);
-    final playlist =
-        ref.watch(metadataPluginPlaylistProvider(playlistId ?? ""));
-    final playlistNotifier =
-        ref.watch(metadataPluginPlaylistProvider(playlistId ?? "").notifier);
+    final playlist = ref.watch(
+      metadataPluginPlaylistProvider(playlistId ?? ""),
+    );
+    final playlistNotifier = ref.watch(
+      metadataPluginPlaylistProvider(playlistId ?? "").notifier,
+    );
 
     final isSubmitting = useState(false);
 
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>(), []);
 
     final updatingPlaylist = useMemoized(
-      () => userPlaylists.asData?.value.items
-          .firstWhereOrNull((playlist) => playlist.id == playlistId),
-      [
-        userPlaylists.asData?.value.items,
-        playlistId,
-      ],
+      () => userPlaylists.asData?.value.items.firstWhereOrNull(
+        (playlist) => playlist.id == playlistId,
+      ),
+      [userPlaylists.asData?.value.items, playlistId],
     );
 
     final isUpdatingPlaylist = playlistId != null;
@@ -101,9 +101,9 @@ class PlaylistCreateDialog extends HookConsumerWidget {
           public: values['public'],
           description: values['description'],
           base64Image: (values['image'] as XFile?)?.path != null
-              ? await (values['image'] as XFile)
-                  .readAsBytes()
-                  .then((bytes) => base64Encode(bytes))
+              ? await (values['image'] as XFile).readAsBytes().then(
+                  (bytes) => base64Encode(bytes),
+                )
               : null,
         );
 
@@ -135,8 +135,9 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                 .read(metadataPluginPlaylistProvider(playlistId ?? ""))
                 .hasError) {
           context.router.maybePop<SpotubeFullPlaylistObject>(
-            await ref
-                .read(metadataPluginPlaylistProvider(playlistId ?? "").future),
+            await ref.read(
+              metadataPluginPlaylistProvider(playlistId ?? "").future,
+            ),
           );
         }
       }
@@ -197,7 +198,8 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                     spacing: 10,
                     children: [
                       UniversalImage(
-                        path: field.value?.path ??
+                        path:
+                            field.value?.path ??
                             (updatingPlaylist?.images).asUrlString(
                               placeholder: ImagePlaceholder.collection,
                             ),
@@ -244,7 +246,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                           style: theme.typography.normal.copyWith(
                             color: theme.colorScheme.destructive,
                           ),
-                        )
+                        ),
                     ],
                   );
                 },
@@ -286,13 +288,11 @@ class PlaylistCreateDialog extends HookConsumerWidget {
 class PlaylistCreateDialogButton extends HookConsumerWidget {
   const PlaylistCreateDialogButton({super.key});
 
-  showPlaylistDialog(BuildContext context) {
+  void showPlaylistDialog(BuildContext context) {
     showDialog(
       context: context,
       alignment: Alignment.center,
-      builder: (context) => const ToastLayer(
-        child: PlaylistCreateDialog(),
-      ),
+      builder: (context) => const ToastLayer(child: PlaylistCreateDialog()),
     );
   }
 

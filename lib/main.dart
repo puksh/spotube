@@ -108,9 +108,7 @@ Future<void> main(List<String> rawArgs) async {
 
     // Phase 3: Parallelize all tasks that are independent of EncryptedKvStore
     // or only depend on KVStore (already initialized above)
-    final phase3 = <Future<void>>[
-      EncryptedKvStoreService.initialize(),
-    ];
+    final phase3 = <Future<void>>[EncryptedKvStoreService.initialize()];
     if (kIsDesktop) {
       phase3.addAll([
         windowManager.setPreventClose(true),
@@ -118,7 +116,8 @@ Future<void> main(List<String> rawArgs) async {
           await YtDlp.instance
               .setBinaryLocation(
                 KVStoreService.getYoutubeEnginePath(
-                        YoutubeClientEngine.ytDlp) ??
+                      YoutubeClientEngine.ytDlp,
+                    ) ??
                     "yt-dlp${kIsWindows ? '.exe' : ''}",
               )
               .catchError((e, stack) => null);
@@ -145,12 +144,8 @@ Future<void> main(List<String> rawArgs) async {
 
     runApp(
       ProviderScope(
-        overrides: [
-          databaseProvider.overrideWith((ref) => database),
-        ],
-        observers: const [
-          AppLoggerProviderObserver(),
-        ],
+        overrides: [databaseProvider.overrideWith((ref) => database)],
+        observers: const [AppLoggerProviderObserver()],
         child: const Spotube(),
       ),
     );
@@ -162,26 +157,29 @@ class Spotube extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final themeMode =
-        ref.watch(userPreferencesProvider.select((s) => s.themeMode));
+    final themeMode = ref.watch(
+      userPreferencesProvider.select((s) => s.themeMode),
+    );
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
-    final accentMaterialColor =
-        ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
-    final disableGlassEffect =
-        ref.watch(userPreferencesProvider.select((s) => s.disableGlassEffect));
+    final accentMaterialColor = ref.watch(
+      userPreferencesProvider.select((s) => s.accentColorScheme),
+    );
+    final disableGlassEffect = ref.watch(
+      userPreferencesProvider.select((s) => s.disableGlassEffect),
+    );
     final router = useMemoized(() => AppRouter(ref), []);
     final hasTouchSupport = useHasTouch();
 
-    ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
-    ref.listen(bonsoirProvider, (_, __) {});
-    ref.listen(connectClientsProvider, (_, __) {});
-    ref.listen(serverProvider, (_, __) {});
-    ref.listen(trayManagerProvider, (_, __) {});
-    ref.listen(metadataPluginsProvider, (_, __) {});
-    ref.listen(metadataPluginProvider, (_, __) {});
-    ref.listen(audioSourcePluginProvider, (_, __) {});
-    ref.listen(metadataPluginUpdateCheckerProvider, (_, __) {});
-    ref.listen(audioSourcePluginUpdateCheckerProvider, (_, __) {});
+    ref.listen(audioPlayerStreamListenersProvider, (_, _) {});
+    ref.listen(bonsoirProvider, (_, _) {});
+    ref.listen(connectClientsProvider, (_, _) {});
+    ref.listen(serverProvider, (_, _) {});
+    ref.listen(trayManagerProvider, (_, _) {});
+    ref.listen(metadataPluginsProvider, (_, _) {});
+    ref.listen(metadataPluginProvider, (_, _) {});
+    ref.listen(audioSourcePluginProvider, (_, _) {});
+    ref.listen(metadataPluginUpdateCheckerProvider, (_, _) {});
+    ref.listen(audioSourcePluginUpdateCheckerProvider, (_, _) {});
 
     useFixWindowStretching();
     useDisableBatteryOptimizations();
@@ -230,10 +228,7 @@ class Spotube extends HookConsumerWidget {
         );
 
         if (kIsLinux) {
-          child = DragToResizeArea(
-            resizeEdgeSize: 2.5,
-            child: child,
-          );
+          child = DragToResizeArea(resizeEdgeSize: 2.5, child: child);
         }
 
         return child;
@@ -244,7 +239,7 @@ class Spotube extends HookConsumerWidget {
         iconTheme: const IconThemeProperties(),
         colorScheme:
             colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.light) ??
-                LegacyColorSchemes.lightSlate(),
+            LegacyColorSchemes.lightSlate(),
         surfaceOpacity: disableGlassEffect ? 1 : .8,
         surfaceBlur: disableGlassEffect ? 0 : 10,
       ),
@@ -253,7 +248,7 @@ class Spotube extends HookConsumerWidget {
         iconTheme: const IconThemeProperties(),
         colorScheme:
             colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.dark) ??
-                LegacyColorSchemes.darkSlate(),
+            LegacyColorSchemes.darkSlate(),
         surfaceOpacity: disableGlassEffect ? 1 : .8,
         surfaceBlur: disableGlassEffect ? 0 : 10,
       ),
@@ -286,42 +281,66 @@ class Spotube extends HookConsumerWidget {
           LogicalKeyboardKey.digit1,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.browse),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.browse,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.digit2,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.search),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.search,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.digit3,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.lyrics),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.lyrics,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.digit4,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.userPlaylists),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.userPlaylists,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.digit5,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.userArtists),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.userArtists,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.digit6,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.userAlbums),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.userAlbums,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.digit7,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.userLocalLibrary),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.userLocalLibrary,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.digit8,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(router, tab: HomeTabs.userDownloads),
+        ): HomeTabIntent(
+          router,
+          tab: HomeTabs.userDownloads,
+        ),
         LogicalKeySet(
           LogicalKeyboardKey.keyW,
           LogicalKeyboardKey.control,

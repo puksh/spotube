@@ -86,7 +86,7 @@ class PlayerView extends HookConsumerWidget {
 
     return AppPopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         await panelController.close();
       },
       child: SurfaceCard(

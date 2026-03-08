@@ -99,12 +99,12 @@ void useGlobalSubscriptions(WidgetRef ref) {
               child: Basic(
                 leading: Icon(
                   SpotubeIcons.noWifi,
-                  color: theme.colorScheme.destructiveForeground,
+                  color: Colors.white,
                 ),
                 trailing: Text(
                   context.l10n.you_are_offline,
                   style: TextStyle(
-                    color: theme.colorScheme.destructiveForeground,
+                    color: Colors.white,
                   ),
                 ),
               ),

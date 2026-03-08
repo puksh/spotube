@@ -28,7 +28,7 @@ class AppLogger {
   static late final Logger log;
   static late final File logFile;
 
-  static initialize(bool verbose) {
+  static void initialize(bool verbose) {
     log = Logger(
       level: kDebugMode || (verbose && kReleaseMode) ? Level.all : Level.info,
     );
