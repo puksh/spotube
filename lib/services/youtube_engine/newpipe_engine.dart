@@ -51,7 +51,14 @@ class NewPipeEngine implements YouTubeEngine {
   }
 
   Video _parseVideoResult(VideoSearchResultItem info) {
-    final id = Uri.parse(info.url).queryParameters["v"]!;
+    final uri = Uri.parse(info.url);
+    // Regular watch URL: /watch?v=ID
+    // Shorts URL:        /shorts/ID  (no ?v= param)
+    final id = uri.queryParameters["v"] ??
+        (uri.pathSegments.isNotEmpty ? uri.pathSegments.last : null);
+    if (id == null || id.isEmpty) {
+      throw StateError('Unable to extract video ID from URL: ${info.url}');
+    }
     return Video(
       VideoId(id),
       info.name,
@@ -105,7 +112,17 @@ class NewPipeEngine implements YouTubeEngine {
 
     final resultsWithVideos = results
         .whereType<VideoSearchResultItem>()
-        .map((e) => _parseVideoResult(e))
+        // Shorts are rarely correct music matches and use /shorts/ID URLs
+        // which can crash the ID extractor on older NewPipe builds.
+        .where((e) => !e.shortFormContent)
+        .map((e) {
+          try {
+            return _parseVideoResult(e);
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<Video>()
         .toList();
 
     return resultsWithVideos;
