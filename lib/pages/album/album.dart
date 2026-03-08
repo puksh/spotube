@@ -46,7 +46,7 @@ class AlbumPage extends HookConsumerWidget {
     final description = [
       context.l10n.released,
       if (formattedReleaseDate != null) formattedReleaseDate,
-      album.artists.first.name
+      if (album.artists.isNotEmpty) album.artists.first.name
     ].join(" • ");
 
     return material.RefreshIndicator.adaptive(
@@ -81,7 +81,7 @@ class AlbumPage extends HookConsumerWidget {
           routePath: "/album/${album.id}",
           shareUrl: album.externalUri,
           isLiked: isSavedAlbum.asData?.value ?? false,
-          owner: album.artists.first.name,
+          owner: album.artists.firstOrNull?.name ?? album.name,
           onHeart: isSavedAlbum.asData?.value == null
               ? null
               : () async {

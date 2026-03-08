@@ -29,6 +29,7 @@ class ArtistAlbumList extends HookConsumerWidget {
       hasNextPage: albumsQuery.asData?.value.hasMore ?? false,
       items: albums,
       onFetchMore: albumsQueryNotifier.fetchMore,
+      error: albumsQuery.hasError ? Text(albumsQuery.error.toString()) : null,
       title: Text(
         context.l10n.albums,
         style: theme.typography.h4,
