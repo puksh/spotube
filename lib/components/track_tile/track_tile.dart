@@ -11,6 +11,7 @@ import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/hover_builder.dart';
 import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/links/anchor_button.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/track_tile/track_options_button.dart';
@@ -250,22 +251,16 @@ class TrackTile extends HookConsumerWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Flexible(
-                                    child: Button(
-                                      style: ButtonVariance.link.copyWith(
-                                        padding: (context, states, value) =>
-                                            EdgeInsets.zero,
-                                      ),
-                                      onPressed: effectiveSelection
+                                    child: AnchorButton(
+                                      track.name,
+                                      onTap: effectiveSelection
                                           ? null
                                           : () {
                                               context.navigateTo(TrackRoute(
                                                   trackId: track.id));
                                             },
-                                      child: Text(
-                                        track.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
