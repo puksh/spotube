@@ -144,8 +144,8 @@ class SourcedTrack extends BasicSourcedTrack {
           int score = 0;
 
           for (final artist in track.artists) {
-            final isSameChannelArtist =
-                sibling.artists.any((a) => a.toLowerCase() == artist.name);
+            final isSameChannelArtist = sibling.artists
+                .any((a) => a.toLowerCase() == artist.name.toLowerCase());
 
             if (isSameChannelArtist) {
               score += 1;
