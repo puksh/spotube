@@ -35,6 +35,9 @@ class SiblingTracksSheet extends HookConsumerWidget {
       final sourcedTrackNotifier =
           ref.watch(sourcedTrackProvider(activeTrack).notifier);
 
+      // Track errors keyed by sibling ID
+      final siblingErrors = useState<Map<String, String>>({});
+
       final siblings = useMemoized<List<SpotubeAudioSourceMatchObject>>(
         () => !sourcedTrack.isLoading
             ? <SpotubeAudioSourceMatchObject>[
@@ -97,6 +100,15 @@ class SiblingTracksSheet extends HookConsumerWidget {
                     itemBuilder: (context, index) {
                       final sourceInfo = siblings[index];
 
+                      // Fall back to the Spotify track's own duration when the
+                      // audio source plugin returns zero (common with some plugins)
+                      final effectiveDuration =
+                          sourceInfo.duration == Duration.zero
+                              ? Duration(milliseconds: activeTrack.durationMs)
+                              : sourceInfo.duration;
+
+                      final errorMessage = siblingErrors.value[sourceInfo.id];
+
                       return ButtonTile(
                         style: ButtonVariance.ghost,
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -112,8 +124,30 @@ class SiblingTracksSheet extends HookConsumerWidget {
                                 width: 60,
                               )
                             : null,
-                        trailing:
-                            Text(sourceInfo.duration.toHumanReadableString()),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 4,
+                          children: [
+                            if (errorMessage != null)
+                              Tooltip(
+                                tooltip: (context) => ConstrainedBox(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 280),
+                                  child: Text(
+                                    errorMessage,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                                child: Icon(
+                                  RadixIcons.exclamationTriangle,
+                                  size: 16,
+                                  color:
+                                      Theme.of(context).colorScheme.destructive,
+                                ),
+                              ),
+                            Text(effectiveDuration.toHumanReadableString()),
+                          ],
+                        ),
                         subtitle: Text(
                           sourceInfo.artists.join(", "),
                           maxLines: 1,
@@ -126,18 +160,33 @@ class SiblingTracksSheet extends HookConsumerWidget {
                           if (!sourcedTrack.isLoading &&
                               sourceInfo.id !=
                                   sourcedTrack.asData?.value.info.id) {
-                            await sourcedTrackNotifier
-                                .swapWithSibling(sourceInfo);
-                            await ref
-                                .read(audioPlayerProvider.notifier)
-                                .swapActiveSource();
+                            try {
+                              await sourcedTrackNotifier
+                                  .swapWithSibling(sourceInfo);
+                              await ref
+                                  .read(audioPlayerProvider.notifier)
+                                  .swapActiveSource();
 
-                            if (context.mounted) {
-                              if (MediaQuery.sizeOf(context).mdAndUp) {
-                                closeOverlay(context);
-                              } else {
-                                closeDrawer(context);
+                              // Clear any previous error for this sibling
+                              if (siblingErrors.value
+                                  .containsKey(sourceInfo.id)) {
+                                siblingErrors.value = {
+                                  ...siblingErrors.value,
+                                }..remove(sourceInfo.id);
                               }
+
+                              if (context.mounted) {
+                                if (MediaQuery.sizeOf(context).mdAndUp) {
+                                  closeOverlay(context);
+                                } else {
+                                  closeDrawer(context);
+                                }
+                              }
+                            } catch (e) {
+                              siblingErrors.value = {
+                                ...siblingErrors.value,
+                                sourceInfo.id: e.toString(),
+                              };
                             }
                           }
                         },
