@@ -60,6 +60,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
           children: [
             const Divider(),
             NavigationBar(
+              alignment: NavigationBarAlignment.spaceAround,
               selectedKey: selectedKey,
               surfaceBlur: context.theme.surfaceBlur,
               surfaceOpacity: context.theme.surfaceOpacity,
