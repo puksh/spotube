@@ -13,11 +13,11 @@ environment:
   flutter: '>=3.29.0'
 
 dependencies:
-  app_links: ^6.4.0
+  app_links: ^7.0.0
   args: ^2.5.0
   audio_service: ^0.18.13
   audio_service_mpris: ^0.2.0
-  audio_session: ^0.1.19
+  audio_session: ^0.2.2
   auto_route: ^11.1.0
   auto_size_text: ^3.0.0
   bonsoir: ^5.1.10
@@ -27,7 +27,7 @@ dependencies:
     git:
       path: packages/desktop_webview_window
       url: https://github.com/KRTirtho/flutter-plugins.git
-  device_info_plus: ^11.3.0
+  device_info_plus: ^12.3.0
   dio: ^5.9.2
   disable_battery_optimization:
     git:
@@ -37,10 +37,10 @@ dependencies:
       ref: cfd570035bf393de541d32e9b28808b5d7e602df
       url: https://github.com/thielepaul/flutter-draggable-scrollbar.git
   drift: ^2.32.0
-  duration: ^3.0.12
+  duration: ^4.0.3
   encrypt: ^5.0.3
   envied: ^1.3.3
-  file_picker: 10.3.3
+  file_picker: ^10.3.10
   file_selector: ^1.0.3
   fluentui_system_icons: ^1.1.234
   flutter:
@@ -51,7 +51,7 @@ dependencies:
       ref: 63931dfe06733d4fb7452e9981e1f0b23414d97a
   flutter_cache_manager: ^3.3.0
   flutter_discord_rpc: ^1.1.0
-  flutter_displaymode: ^0.6.0
+  flutter_displaymode: ^0.7.0
   flutter_feather_icons: ^2.0.0+1
   flutter_form_builder: ^10.3.0
   flutter_hooks: ^0.21.3
@@ -60,7 +60,7 @@ dependencies:
     sdk: flutter
   flutter_native_splash: ^2.4.6
   flutter_riverpod: ^3.2.1
-  flutter_sharing_intent: ^1.1.0
+  flutter_sharing_intent: ^2.0.4
   flutter_undraw: ^0.2.1
   form_builder_validators: ^11.1.1
   freezed_annotation: ^3.1.0
@@ -112,8 +112,8 @@ dependencies:
   visibility_detector: ^0.4.0+2
   web_socket_channel: ^3.0.1
   wikipedia_api: ^0.1.0
-  win32_registry: ^1.1.5
-  window_manager: ^0.4.3
+  win32_registry: ^2.1.0
+  window_manager: ^0.5.1
   youtube_explode_dart: ^3.0.5
   yt_dlp_dart:
     git:
@@ -138,7 +138,7 @@ dependencies:
     git:
       url: https://github.com/KRTirtho/hetu_spotube_plugin.git
       ref: main
-  get_it: ^8.0.3
+  get_it: ^9.2.1
   flutter_markdown_plus: ^1.0.3
   pub_semver: ^2.2.0
   change_case: ^1.1.0
@@ -159,7 +159,7 @@ dev_dependencies:
   envied_generator: ^1.3.3
   flutter_gen_runner: ^5.4.0
   flutter_launcher_icons: ^0.14.2
-  flutter_lints: ^3.0.1
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   integration_test:
@@ -167,7 +167,7 @@ dev_dependencies:
   json_serializable: ^6.13.0
   json_annotation: ^4.11.0
   freezed: ^3.2.5
-  process_run: ^0.14.2
+  process_run: ^1.3.1+1
   pubspec_parse: ^1.3.0
   pub_api_client: ^3.0.0
   io: ^1.0.4

@@ -23,19 +23,18 @@ extension DurationToHumanReadableString on Duration {
     DurationLocale locale = const EnglishDurationLocale(),
     String? spacer,
     String? delimiter,
-    String? conjugation,
+    String? conjunction,
     bool abbreviated = false,
-  }) =>
-      printDuration(
-        this,
-        tersity: tersity,
-        upperTersity: upperTersity,
-        locale: locale,
-        spacer: spacer,
-        delimiter: delimiter,
-        conjugation: conjugation,
-        abbreviated: abbreviated,
-      );
+  }) => prettyDuration(
+    this,
+    tersity: tersity,
+    upperTersity: upperTersity,
+    locale: locale,
+    spacer: spacer,
+    delimiter: delimiter,
+    conjunction: conjunction,
+    abbreviated: abbreviated,
+  );
 }
 
 extension ParseDuration on Duration {
