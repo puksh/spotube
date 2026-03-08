@@ -16,6 +16,11 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
+import 'package:spotube/services/metadata/metadata.dart';
+import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
+import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
+import 'package:spotube/services/youtube_engine/youtube_engine.dart';
+import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -42,24 +47,32 @@ class SourcedTrack extends BasicSourcedTrack {
     required Ref ref,
   }) async {
     final audioSource = await ref.read(audioSourcePluginProvider.future);
-    final audioSourceConfig = await ref.read(metadataPluginsProvider
-        .selectAsync((data) => data.defaultAudioSourcePluginConfig));
+    final audioSourceConfig = await ref.read(
+      metadataPluginsProvider.selectAsync(
+        (data) => data.defaultAudioSourcePluginConfig,
+      ),
+    );
     if (audioSource == null || audioSourceConfig == null) {
       throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
 
     final database = ref.read(databaseProvider);
-    final cachedSource = await (database.select(database.sourceMatchTable)
-          ..where((s) =>
-              s.trackId.equals(query.id) &
-              s.sourceType.equals(audioSourceConfig.slug))
-          ..limit(1)
-          ..orderBy([
-            (s) =>
-                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
-          ]))
-        .get()
-        .then((s) => s.firstOrNull);
+    final cachedSource =
+        await (database.select(database.sourceMatchTable)
+              ..where(
+                (s) =>
+                    s.trackId.equals(query.id) &
+                    s.sourceType.equals(audioSourceConfig.slug),
+              )
+              ..limit(1)
+              ..orderBy([
+                (s) => OrderingTerm(
+                  expression: s.createdAt,
+                  mode: OrderingMode.desc,
+                ),
+              ]))
+            .get()
+            .then((s) => s.firstOrNull);
 
     if (cachedSource == null) {
       final siblings = await fetchSiblings(ref: ref, query: query);
@@ -67,7 +80,9 @@ class SourcedTrack extends BasicSourcedTrack {
         throw TrackNotFoundError(query);
       }
 
-      await database.into(database.sourceMatchTable).insert(
+      await database
+          .into(database.sourceMatchTable)
+          .insert(
             SourceMatchTableCompanion.insert(
               trackId: query.id,
               sourceInfo: Value(jsonEncode(siblings.first)),
@@ -95,8 +110,9 @@ class SourcedTrack extends BasicSourcedTrack {
     final prefs = ref.read(userPreferencesProvider);
     if (prefs.cacheMusic) {
       final presetState = ref.read(audioSourcePresetsProvider);
-      final preset = presetState.presets
-          .elementAtOrNull(presetState.selectedStreamingContainerIndex);
+      final preset = presetState.presets.elementAtOrNull(
+        presetState.selectedStreamingContainerIndex,
+      );
       if (preset != null) {
         final cacheDir = await UserPreferencesNotifier.getMusicCacheDir();
         final filename = ServiceUtils.sanitizeFilename(
@@ -144,26 +160,30 @@ class SourcedTrack extends BasicSourcedTrack {
           int score = 0;
 
           for (final artist in track.artists) {
-            final isSameChannelArtist = sibling.artists
-                .any((a) => a.toLowerCase() == artist.name.toLowerCase());
+            final isSameChannelArtist = sibling.artists.any(
+              (a) => a.toLowerCase() == artist.name.toLowerCase(),
+            );
 
             if (isSameChannelArtist) {
               score += 1;
             }
 
-            final titleContainsArtist =
-                sibling.title.toLowerCase().contains(artist.name.toLowerCase());
+            final titleContainsArtist = sibling.title.toLowerCase().contains(
+              artist.name.toLowerCase(),
+            );
 
             if (titleContainsArtist) {
               score += 1;
             }
           }
 
-          final titleContainsTrackName =
-              sibling.title.toLowerCase().contains(track.name.toLowerCase());
+          final titleContainsTrackName = sibling.title.toLowerCase().contains(
+            track.name.toLowerCase(),
+          );
 
-          final hasOfficialFlag =
-              officialMusicRegex.hasMatch(sibling.title.toLowerCase());
+          final hasOfficialFlag = officialMusicRegex.hasMatch(
+            sibling.title.toLowerCase(),
+          );
 
           if (titleContainsTrackName) {
             score += 3;
@@ -184,6 +204,87 @@ class SourcedTrack extends BasicSourcedTrack {
         .toList();
   }
 
+  /// Filters [results] to those whose duration is within [_maxDurationDrift]
+  /// of [trackDuration]. Results with an unknown (zero) duration are kept.
+  static const _maxDurationDrift = Duration(seconds: 15);
+
+  static List<SpotubeAudioSourceMatchObject> _filterByDuration(
+    List<SpotubeAudioSourceMatchObject> results,
+    Duration trackDuration,
+  ) {
+    if (trackDuration == Duration.zero) return results;
+    return results.where((r) {
+      if (r.duration == Duration.zero) return true;
+      return (r.duration - trackDuration).abs() <= _maxDurationDrift;
+    }).toList();
+  }
+
+  /// Tries the remaining available YouTube engines in order and returns the
+  /// first batch of duration-matching, ranked results. Returns an empty list
+  /// if every engine also fails to find a match.
+  static Future<List<SpotubeAudioSourceMatchObject>> _tryFallbackEngines(
+    Ref ref,
+    SpotubeFullTrackObject query,
+    Duration trackDuration,
+  ) async {
+    final audioSourceConfig = await ref.read(
+      metadataPluginsProvider.selectAsync(
+        (data) => data.defaultAudioSourcePluginConfig,
+      ),
+    );
+    if (audioSourceConfig == null) return [];
+
+    final pluginsNotifier = ref.read(metadataPluginsProvider.notifier);
+    final pluginByteCode = await pluginsNotifier.getPluginByteCode(
+      audioSourceConfig,
+    );
+
+    final currentEngineMode = ref.read(
+      userPreferencesProvider.select((p) => p.youtubeClientEngine),
+    );
+
+    final fallbackEngines = <YouTubeEngine>[];
+    if (currentEngineMode != YoutubeClientEngine.youtubeExplode) {
+      fallbackEngines.add(YouTubeExplodeEngine());
+    }
+    if (currentEngineMode != YoutubeClientEngine.ytDlp &&
+        YtDlpEngine.isAvailableForPlatform) {
+      fallbackEngines.add(YtDlpEngine());
+    }
+    if (currentEngineMode != YoutubeClientEngine.newPipe &&
+        NewPipeEngine.isAvailableForPlatform) {
+      fallbackEngines.add(NewPipeEngine());
+    }
+
+    for (final engine in fallbackEngines) {
+      try {
+        AppLogger.log.i(
+          "${query.name}: no match found, retrying with ${engine.runtimeType}",
+        );
+        final fallbackPlugin = await MetadataPlugin.create(
+          engine,
+          audioSourceConfig,
+          pluginByteCode,
+        );
+        final results = _filterByDuration(
+          await fallbackPlugin.audioSource.matches(query),
+          trackDuration,
+        );
+        if (results.isEmpty) continue;
+        final ranked = ServiceUtils.onlyContainsEnglish(query.name)
+            ? results
+            : rankResults(results, query);
+        if (ranked.isNotEmpty) return ranked;
+      } catch (e) {
+        AppLogger.log.e(
+          "${query.name}: fallback engine ${engine.runtimeType} error: $e",
+        );
+      }
+    }
+
+    return [];
+  }
+
   static Future<List<SpotubeAudioSourceMatchObject>> fetchSiblings({
     required SpotubeFullTrackObject query,
     required Ref ref,
@@ -194,14 +295,34 @@ class SourcedTrack extends BasicSourcedTrack {
       throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
 
+    final trackDuration = Duration(milliseconds: query.durationMs);
+    final rawResults = await audioSource.audioSource.matches(query);
+    final durationFiltered = _filterByDuration(rawResults, trackDuration);
+
+    if (rawResults.length != durationFiltered.length) {
+      AppLogger.log.i(
+        "${query.name}: removed ${rawResults.length - durationFiltered.length} "
+        "result(s) outside ±${_maxDurationDrift.inSeconds}s duration window",
+      );
+    }
+
     final videoResults = <SpotubeAudioSourceMatchObject>[];
 
-    final searchResults = await audioSource.audioSource.matches(query);
-
     if (ServiceUtils.onlyContainsEnglish(query.name)) {
-      videoResults.addAll(searchResults);
+      videoResults.addAll(durationFiltered);
     } else {
-      videoResults.addAll(rankResults(searchResults, query));
+      videoResults.addAll(rankResults(durationFiltered, query));
+    }
+
+    // For non-ASCII track names, fall back to other engines when the primary
+    // engine produced no duration-matching results (e.g. unavailable JP track).
+    if (videoResults.isEmpty && !ServiceUtils.onlyContainsEnglish(query.name)) {
+      AppLogger.log.i(
+        "${query.name}: no duration-matching results from primary engine, "
+        "trying fallback engines",
+      );
+      final fallback = await _tryFallbackEngines(ref, query, trackDuration);
+      videoResults.addAll(fallback);
     }
 
     return videoResults.toSet().toList();
@@ -231,8 +352,11 @@ class SourcedTrack extends BasicSourcedTrack {
     }
 
     final audioSource = await ref.read(audioSourcePluginProvider.future);
-    final audioSourceConfig = await ref.read(metadataPluginsProvider
-        .selectAsync((data) => data.defaultAudioSourcePluginConfig));
+    final audioSourceConfig = await ref.read(
+      metadataPluginsProvider.selectAsync(
+        (data) => data.defaultAudioSourcePluginConfig,
+      ),
+    );
     if (audioSource == null || audioSourceConfig == null) {
       throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
@@ -252,15 +376,16 @@ class SourcedTrack extends BasicSourcedTrack {
     final database = ref.read(databaseProvider);
 
     // Delete the old Entry
-    await (database.sourceMatchTable.delete()
-          ..where(
-            (table) =>
-                table.trackId.equals(query.id) &
-                table.sourceType.equals(audioSourceConfig.slug),
-          ))
+    await (database.sourceMatchTable.delete()..where(
+          (table) =>
+              table.trackId.equals(query.id) &
+              table.sourceType.equals(audioSourceConfig.slug),
+        ))
         .go();
 
-    await database.into(database.sourceMatchTable).insert(
+    await database
+        .into(database.sourceMatchTable)
+        .insert(
           SourceMatchTableCompanion.insert(
             trackId: query.id,
             sourceInfo: Value(jsonEncode(sibling)),
@@ -286,8 +411,11 @@ class SourcedTrack extends BasicSourcedTrack {
 
   Future<SourcedTrack> refreshStream() async {
     final audioSource = await ref.read(audioSourcePluginProvider.future);
-    final audioSourceConfig = await ref.read(metadataPluginsProvider
-        .selectAsync((data) => data.defaultAudioSourcePluginConfig));
+    final audioSourceConfig = await ref.read(
+      metadataPluginsProvider.selectAsync(
+        (data) => data.defaultAudioSourcePluginConfig,
+      ),
+    );
     if (audioSource == null || audioSourceConfig == null) {
       throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
@@ -298,8 +426,9 @@ class SourcedTrack extends BasicSourcedTrack {
     for (final source in sources) {
       final res = await globalDio.head(
         source.url,
-        options:
-            Options(validateStatus: (status) => status != null && status < 500),
+        options: Options(
+          validateStatus: (status) => status != null && status < 500,
+        ),
       );
 
       stringBuffer.writeln(
@@ -354,42 +483,45 @@ class SourcedTrack extends BasicSourcedTrack {
 
     final quality = preset.qualities[qualityIndex];
 
-    final exactMatch = sources.firstWhereOrNull(
-      (source) {
-        if (source.container != preset.name) return false;
+    final exactMatch = sources.firstWhereOrNull((source) {
+      if (source.container != preset.name) return false;
 
-        if (quality case SpotubeAudioLosslessContainerQuality()) {
-          return source.sampleRate == quality.sampleRate &&
-              source.bitDepth == quality.bitDepth;
-        } else {
-          return source.bitrate ==
-              (quality as SpotubeAudioLossyContainerQuality).bitrate;
-        }
-      },
-    );
+      if (quality case SpotubeAudioLosslessContainerQuality()) {
+        return source.sampleRate == quality.sampleRate &&
+            source.bitDepth == quality.bitDepth;
+      } else {
+        return source.bitrate ==
+            (quality as SpotubeAudioLossyContainerQuality).bitrate;
+      }
+    });
 
     if (exactMatch != null) {
       return exactMatch;
     }
 
     // Find the preset with closest quality to the supplied quality
-    return sources.where((source) {
-      return source.container == preset.name;
-    }).reduce((prev, curr) {
-      if (quality is SpotubeAudioLosslessContainerQuality) {
-        final prevDiff = ((prev.sampleRate ?? 0) - quality.sampleRate).abs() +
-            ((prev.bitDepth ?? 0) - quality.bitDepth).abs();
-        final currDiff = ((curr.sampleRate ?? 0) - quality.sampleRate).abs() +
-            ((curr.bitDepth ?? 0) - quality.bitDepth).abs();
-        return currDiff < prevDiff ? curr : prev;
-      } else {
-        final prevDiff = ((prev.bitrate ?? 0) -
-                (quality as SpotubeAudioLossyContainerQuality).bitrate)
-            .abs();
-        final currDiff = ((curr.bitrate ?? 0) - quality.bitrate).abs();
-        return currDiff < prevDiff ? curr : prev;
-      }
-    });
+    return sources
+        .where((source) {
+          return source.container == preset.name;
+        })
+        .reduce((prev, curr) {
+          if (quality is SpotubeAudioLosslessContainerQuality) {
+            final prevDiff =
+                ((prev.sampleRate ?? 0) - quality.sampleRate).abs() +
+                ((prev.bitDepth ?? 0) - quality.bitDepth).abs();
+            final currDiff =
+                ((curr.sampleRate ?? 0) - quality.sampleRate).abs() +
+                ((curr.bitDepth ?? 0) - quality.bitDepth).abs();
+            return currDiff < prevDiff ? curr : prev;
+          } else {
+            final prevDiff =
+                ((prev.bitrate ?? 0) -
+                        (quality as SpotubeAudioLossyContainerQuality).bitrate)
+                    .abs();
+            final currDiff = ((curr.bitrate ?? 0) - quality.bitrate).abs();
+            return currDiff < prevDiff ? curr : prev;
+          }
+        });
   }
 
   String? getUrlOfQuality(
@@ -401,7 +533,8 @@ class SourcedTrack extends BasicSourcedTrack {
 
   SpotubeAudioSourceContainerPreset? get qualityPreset {
     final presetState = ref.read(audioSourcePresetsProvider);
-    return presetState.presets
-        .elementAtOrNull(presetState.selectedStreamingContainerIndex);
+    return presetState.presets.elementAtOrNull(
+      presetState.selectedStreamingContainerIndex,
+    );
   }
 }
