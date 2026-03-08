@@ -348,6 +348,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get download_track => 'ट्रैक डाउनलोड करें';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracks ट्रैक कतार में हैं';
   }

@@ -348,6 +348,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get download_track => 'Download track';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracks tracks in queue';
   }

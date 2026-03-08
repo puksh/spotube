@@ -348,6 +348,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get download_track => 'গান ডাউনলোড করুন';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracksটি গান কিউতে রয়েছে';
   }

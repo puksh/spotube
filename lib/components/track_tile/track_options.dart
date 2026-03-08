@@ -42,7 +42,8 @@ class TrackOptions extends HookConsumerWidget {
       :isActiveTrack,
       :isAuthenticated,
       :isLiked,
-      :downloadTask
+      :downloadTask,
+      :isCached,
     ) = ref.watch(trackOptionsStateProvider(track));
     final isLocalTrack = track is SpotubeLocalTrackObject;
 
@@ -224,6 +225,20 @@ class TrackOptions extends HookConsumerWidget {
                   )
                 : const Icon(SpotubeIcons.download),
             title: Text(context.l10n.download_track),
+          ),
+        if (!isLocalTrack && isCached)
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                rootNavigatorKey.currentContext!,
+                TrackOptionValue.removeCache,
+                playlistId,
+              );
+              onTapItem?.call();
+            },
+            leading: const Icon(SpotubeIcons.trash),
+            title: Text(context.l10n.remove_cached_track),
           ),
         if (!isLocalTrack)
           ButtonTile(

@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path/path.dart' as p;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/routes.gr.dart';
@@ -14,13 +17,18 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
+import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
+import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 enum TrackOptionValue {
   album,
@@ -36,6 +44,7 @@ enum TrackOptionValue {
   details,
   download,
   startRadio,
+  removeCache,
 }
 
 class TrackOptionsActions {
@@ -252,6 +261,47 @@ class TrackOptionsActions {
       case TrackOptionValue.startRadio:
         actionStartRadio(context);
         break;
+      case TrackOptionValue.removeCache:
+        final database = ref.read(databaseProvider);
+        final audioSourceConfig = await ref.read(
+          metadataPluginsProvider
+              .selectAsync((data) => data.defaultAudioSourcePluginConfig),
+        );
+        if (audioSourceConfig == null) break;
+        final cachedSource = await (database.select(database.sourceMatchTable)
+              ..where(
+                (s) =>
+                    s.trackId.equals(track.id) &
+                    s.sourceType.equals(audioSourceConfig.slug),
+              )
+              ..limit(1))
+            .get()
+            .then((s) => s.firstOrNull);
+        if (cachedSource == null) break;
+        final item = SpotubeAudioSourceMatchObject.fromJson(
+          jsonDecode(cachedSource.sourceInfo) as Map<String, dynamic>,
+        );
+        final presetState = ref.read(audioSourcePresetsProvider);
+        final preset = presetState.presets
+            .elementAtOrNull(presetState.selectedStreamingContainerIndex);
+        if (preset == null) break;
+        final cacheDir = await UserPreferencesNotifier.getMusicCacheDir();
+        final filename = ServiceUtils.sanitizeFilename(
+          '${track.name} - ${track.artists.map((a) => a.name).join(',')} (${item.id}).${preset.getFileExtension()}',
+        );
+        final cacheFile = File(p.join(cacheDir, filename));
+        if (await cacheFile.exists()) {
+          await cacheFile.delete();
+        }
+        ref.invalidate(isCachedTrackProvider(track));
+        // If this track is currently playing, invalidate its source and reload from stream
+        final playerState = ref.read(audioPlayerProvider);
+        if (playerState.activeTrack?.id == track.id &&
+            track is SpotubeFullTrackObject) {
+          ref.invalidate(sourcedTrackProvider(track as SpotubeFullTrackObject));
+          await ref.read(audioPlayerProvider.notifier).swapActiveSource();
+        }
+        break;
     }
   }
 }
@@ -264,6 +314,7 @@ typedef TrackOptionFlags = ({
   bool isAuthenticated,
   bool isLiked,
   DownloadTask? downloadTask,
+  bool isCached,
 });
 
 final trackOptionActionsProvider =
@@ -302,5 +353,44 @@ final trackOptionsStateProvider =
     isAuthenticated: authenticated.asData?.value ?? false,
     isLiked: isSavedTrack.asData?.value ?? false,
     downloadTask: downloadTask,
+    isCached: ref.watch(isCachedTrackProvider(track)).asData?.value ?? false,
   );
 });
+
+final isCachedTrackProvider =
+    FutureProvider.autoDispose.family<bool, SpotubeTrackObject>(
+  (ref, track) async {
+    if (track is SpotubeLocalTrackObject) return false;
+    final prefs = ref.read(userPreferencesProvider);
+    if (!prefs.cacheMusic) return false;
+    final database = ref.read(databaseProvider);
+    final audioSourceConfig = await ref.read(
+      metadataPluginsProvider
+          .selectAsync((data) => data.defaultAudioSourcePluginConfig),
+    );
+    if (audioSourceConfig == null) return false;
+    final cachedSource = await (database.select(database.sourceMatchTable)
+          ..where(
+            (s) =>
+                s.trackId.equals(track.id) &
+                s.sourceType.equals(audioSourceConfig.slug),
+          )
+          ..limit(1))
+        .get()
+        .then((s) => s.firstOrNull);
+    if (cachedSource == null) return false;
+    final item = SpotubeAudioSourceMatchObject.fromJson(
+      jsonDecode(cachedSource.sourceInfo) as Map<String, dynamic>,
+    );
+    final presetState = ref.read(audioSourcePresetsProvider);
+    final preset = presetState.presets
+        .elementAtOrNull(presetState.selectedStreamingContainerIndex);
+    if (preset == null) return false;
+    final cacheDir = await UserPreferencesNotifier.getMusicCacheDir();
+    final filename = ServiceUtils.sanitizeFilename(
+      '${track.name} - ${track.artists.map((a) => a.name).join(',')} (${item.id}).${preset.getFileExtension()}',
+    );
+    final cacheFile = File(p.join(cacheDir, filename));
+    return await cacheFile.exists() && await cacheFile.length() > 0;
+  },
+);

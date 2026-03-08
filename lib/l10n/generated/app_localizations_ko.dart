@@ -348,6 +348,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get download_track => '곡 다운로드';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '대기열에 $tracks 곡이 있음';
   }

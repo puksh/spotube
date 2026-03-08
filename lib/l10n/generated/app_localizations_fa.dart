@@ -348,6 +348,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get download_track => 'بارگیری آهنگ';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracks آهنگ در صف';
   }

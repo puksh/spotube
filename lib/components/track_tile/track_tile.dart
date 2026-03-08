@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:drift/drift.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:path/path.dart' as p;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/routes.gr.dart';
@@ -26,12 +21,8 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/database/database.dart';
-import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.dart';
-import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/track_options/track_options_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 final isBlacklistedProvider =
     Provider.autoDispose.family<bool, SpotubeTrackObject>(
@@ -99,42 +90,8 @@ class TrackTile extends HookConsumerWidget {
     // disable inner navigation in both cases.
     final effectiveSelection = selectionMode || onChanged != null;
 
-    final isCachedFuture = useMemoized(() async {
-      if (track is SpotubeLocalTrackObject) return false;
-      final prefs = ref.read(userPreferencesProvider);
-      if (!prefs.cacheMusic) return false;
-      final database = ref.read(databaseProvider);
-      final audioSourceConfig = await ref.read(
-        metadataPluginsProvider
-            .selectAsync((data) => data.defaultAudioSourcePluginConfig),
-      );
-      if (audioSourceConfig == null) return false;
-      final cachedSource = await (database.select(database.sourceMatchTable)
-            ..where(
-              (s) =>
-                  s.trackId.equals(track.id) &
-                  s.sourceType.equals(audioSourceConfig.slug),
-            )
-            ..limit(1))
-          .get()
-          .then((s) => s.firstOrNull);
-      if (cachedSource == null) return false;
-      final item = SpotubeAudioSourceMatchObject.fromJson(
-        jsonDecode(cachedSource.sourceInfo) as Map<String, dynamic>,
-      );
-      final presetState = ref.read(audioSourcePresetsProvider);
-      final preset = presetState.presets
-          .elementAtOrNull(presetState.selectedStreamingContainerIndex);
-      if (preset == null) return false;
-      final cacheDir = await UserPreferencesNotifier.getMusicCacheDir();
-      final filename = ServiceUtils.sanitizeFilename(
-        '${track.name} - ${track.artists.map((a) => a.name).join(',')} (${item.id}).${preset.getFileExtension()}',
-      );
-      final cacheFile = File(p.join(cacheDir, filename));
-      return await cacheFile.exists() && await cacheFile.length() > 0;
-    }, [track]);
-    final isCachedSnapshot = useFuture(isCachedFuture);
-    final isCached = isCachedSnapshot.data == true;
+    final isCached =
+        ref.watch(isCachedTrackProvider(track)).asData?.value == true;
 
     return LayoutBuilder(builder: (context, constrains) {
       return Listener(

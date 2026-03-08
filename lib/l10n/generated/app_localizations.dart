@@ -771,6 +771,12 @@ abstract class AppLocalizations {
   /// **'Download track'**
   String get download_track;
 
+  /// No description provided for @remove_cached_track.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove cached version'**
+  String get remove_cached_track;
+
   /// No description provided for @tracks_in_queue.
   ///
   /// In en, this message translates to:

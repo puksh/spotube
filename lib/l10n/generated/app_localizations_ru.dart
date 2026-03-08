@@ -349,6 +349,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get download_track => 'Скачать трек';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracks треков в очереди';
   }

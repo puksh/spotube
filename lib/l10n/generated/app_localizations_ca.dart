@@ -348,6 +348,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get download_track => 'Descarregar cançó';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracks cançons a la llista';
   }

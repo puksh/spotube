@@ -348,6 +348,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get download_track => '下载歌曲';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracks 首歌曲在播放队列中';
   }

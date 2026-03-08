@@ -349,6 +349,9 @@ class AppLocalizationsNe extends AppLocalizations {
   String get download_track => 'ट्र्याक डाउनलोड गर्नुहोस्';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return 'कतारमा $tracks ट्र्याकहरू';
   }

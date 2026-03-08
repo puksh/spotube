@@ -351,6 +351,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get download_track => 'Télécharger la piste';
 
   @override
+  String get remove_cached_track => 'Remove cached version';
+
+  @override
   String tracks_in_queue(Object tracks) {
     return '$tracks pistes dans la file d\'attente';
   }
