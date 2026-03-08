@@ -138,7 +138,7 @@ _$SpotubeFullAlbumObjectImpl _$$SpotubeFullAlbumObjectImplFromJson(Map json) =>
           const [],
       releaseDate: json['releaseDate'] as String,
       externalUri: json['externalUri'] as String,
-      totalTracks: (json['totalTracks'] as num).toInt(),
+      totalTracks: (json['totalTracks'] as num?)?.toInt() ?? 0,
       albumType: $enumDecode(_$SpotubeAlbumTypeEnumMap, json['albumType']),
       recordLabel: json['recordLabel'] as String?,
       genres:

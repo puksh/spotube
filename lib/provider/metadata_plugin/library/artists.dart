@@ -1,6 +1,7 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
 
 class MetadataPluginSavedArtistNotifier
@@ -36,6 +37,9 @@ class MetadataPluginSavedArtistNotifier
         ],
       ),
     );
+    for (final artist in artists) {
+      ref.invalidate(metadataPluginIsSavedArtistProvider(artist.id));
+    }
     try {
       await (await metadataPlugin)
           .artist
@@ -61,7 +65,9 @@ class MetadataPluginSavedArtistNotifier
             .toList(),
       ),
     );
-
+    for (final artist in artists) {
+      ref.invalidate(metadataPluginIsSavedArtistProvider(artist.id));
+    }
     try {
       await (await metadataPlugin).artist.unsave(artistIds);
     } catch (e) {
@@ -80,15 +86,10 @@ final metadataPluginSavedArtistsProvider = AsyncNotifierProvider<
 final metadataPluginIsSavedArtistProvider =
     FutureProvider.autoDispose.family<bool, String>(
   (ref, artistId) async {
-    final savedArtists =
-        await ref.watch(metadataPluginSavedArtistsProvider.future);
-    final savedArtistsNotifier =
-        ref.read(metadataPluginSavedArtistsProvider.notifier);
+    final plugin = await ref.watch(metadataPluginProvider.future);
+    if (plugin == null) return false;
 
-    final allSavedArtists = savedArtists.hasMore
-        ? await savedArtistsNotifier.fetchAll()
-        : savedArtists.items;
-
-    return allSavedArtists.any((element) => element.id == artistId);
+    final results = await plugin.user.isSavedArtists([artistId]);
+    return results.first;
   },
 );

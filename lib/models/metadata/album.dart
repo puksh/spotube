@@ -15,7 +15,7 @@ class SpotubeFullAlbumObject with _$SpotubeFullAlbumObject {
     @Default([]) List<SpotubeImageObject> images,
     required String releaseDate,
     required String externalUri,
-    required int totalTracks,
+    @Default(0) int totalTracks,
     required SpotubeAlbumType albumType,
     String? recordLabel,
     List<String>? genres,

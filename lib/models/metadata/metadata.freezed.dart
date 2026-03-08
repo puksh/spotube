@@ -1731,7 +1731,7 @@ class _$SpotubeFullAlbumObjectImpl implements _SpotubeFullAlbumObject {
       final List<SpotubeImageObject> images = const [],
       required this.releaseDate,
       required this.externalUri,
-      required this.totalTracks,
+      this.totalTracks = 0,
       required this.albumType,
       this.recordLabel,
       final List<String>? genres})
@@ -1768,6 +1768,7 @@ class _$SpotubeFullAlbumObjectImpl implements _SpotubeFullAlbumObject {
   @override
   final String externalUri;
   @override
+  @JsonKey()
   final int totalTracks;
   @override
   final SpotubeAlbumType albumType;
@@ -1850,7 +1851,7 @@ abstract class _SpotubeFullAlbumObject implements SpotubeFullAlbumObject {
       final List<SpotubeImageObject> images,
       required final String releaseDate,
       required final String externalUri,
-      required final int totalTracks,
+      final int totalTracks,
       required final SpotubeAlbumType albumType,
       final String? recordLabel,
       final List<String>? genres}) = _$SpotubeFullAlbumObjectImpl;

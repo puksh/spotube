@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart' as material;
 import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/library/albums.dart';
-import 'package:spotube/provider/metadata_plugin/album/album.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/album.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
@@ -33,20 +33,25 @@ class AlbumPage extends HookConsumerWidget {
     final isSavedAlbum =
         ref.watch(metadataPluginIsSavedAlbumProvider(album.id));
 
-    final fullAlbum = ref.watch(metadataPluginAlbumProvider(album.id));
-    final releaseDate =
-        fullAlbum.asData?.value.releaseDate ?? album.releaseDate;
+    final releaseDate = album.releaseDate;
+    final formattedReleaseDate = switch (releaseDate) {
+      null => null,
+      final d when RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(d) =>
+        DateFormat.yMMMMd().format(DateTime.parse(d)),
+      final d when RegExp(r'^\d{4}-\d{2}$').hasMatch(d) =>
+        DateFormat.yMMMM().format(DateTime.parse('$d-01')),
+      _ => releaseDate,
+    };
 
     final description = [
       context.l10n.released,
-      if (releaseDate != null) releaseDate,
+      if (formattedReleaseDate != null) formattedReleaseDate,
       album.artists.first.name
     ].join(" • ");
 
     return material.RefreshIndicator.adaptive(
       onRefresh: () async {
         ref.invalidate(metadataPluginAlbumTracksProvider(album.id));
-        ref.invalidate(metadataPluginAlbumProvider(album.id));
         ref.invalidate(metadataPluginIsSavedAlbumProvider(album.id));
         ref.invalidate(metadataPluginSavedAlbumsProvider);
       },
