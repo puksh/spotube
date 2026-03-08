@@ -26,8 +26,11 @@ class $AssetsBrandingGen {
       const AssetGenImage('assets/branding/spotube-logo.png');
 
   /// List of all assets
-  List<dynamic> get values =>
-      [spotubeLogoLight, spotubeLogoIco, spotubeLogoPng];
+  List<dynamic> get values => [
+    spotubeLogoLight,
+    spotubeLogoIco,
+    spotubeLogoPng,
+  ];
 }
 
 class $AssetsImagesGen {
@@ -58,12 +61,12 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-        albumPlaceholder,
-        bengaliPatternsBg,
-        likedTracks,
-        placeholder,
-        userPlaceholder
-      ];
+    albumPlaceholder,
+    bengaliPatternsBg,
+    likedTracks,
+    placeholder,
+    userPlaceholder,
+  ];
 }
 
 class $AssetsPluginsGen {
@@ -71,8 +74,8 @@ class $AssetsPluginsGen {
 
   /// Directory path: assets/plugins/spotube-plugin-musicbrainz-listenbrainz
   $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen
-      get spotubePluginMusicbrainzListenbrainz =>
-          const $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen();
+  get spotubePluginMusicbrainzListenbrainz =>
+      const $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen();
 
   /// Directory path: assets/plugins/spotube-plugin-youtube-audio
   $AssetsPluginsSpotubePluginYoutubeAudioGen get spotubePluginYoutubeAudio =>
@@ -199,15 +202,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;

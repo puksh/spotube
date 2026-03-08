@@ -1,13 +1,9 @@
 part of 'metadata.dart';
 
-enum SpotubeAlbumType {
-  album,
-  single,
-  compilation,
-}
+enum SpotubeAlbumType { album, single, compilation }
 
 @freezed
-class SpotubeFullAlbumObject with _$SpotubeFullAlbumObject {
+abstract class SpotubeFullAlbumObject with _$SpotubeFullAlbumObject {
   factory SpotubeFullAlbumObject({
     required String id,
     required String name,
@@ -26,7 +22,7 @@ class SpotubeFullAlbumObject with _$SpotubeFullAlbumObject {
 }
 
 @freezed
-class SpotubeSimpleAlbumObject with _$SpotubeSimpleAlbumObject {
+abstract class SpotubeSimpleAlbumObject with _$SpotubeSimpleAlbumObject {
   factory SpotubeSimpleAlbumObject({
     required String id,
     required String name,

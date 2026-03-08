@@ -7,8 +7,10 @@ import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:spotube/services/logger/logger.dart';
 
 abstract class FamilyPaginatedAsyncNotifier<K, A>
-    extends FamilyAsyncNotifier<SpotubePaginationResponseObject<K>, A>
+    extends AsyncNotifier<SpotubePaginationResponseObject<K>>
     with MetadataPluginMixin<K> {
+  A get arg;
+
   Future<SpotubePaginationResponseObject<K>> fetch(int offset, int limit);
 
   Future<void> fetchMore() async {
@@ -17,15 +19,14 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
     final oldState = state.value;
 
     try {
-      state = AsyncLoadingNext(state.asData!.value);
-
       final newState = await fetch(
         state.value!.nextOffset!,
         state.value!.limit,
       );
 
-      final oldItems =
-          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final oldItems = state.value!.items.isEmpty
+          ? <K>[]
+          : state.value!.items.cast<K>();
       final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
       state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
@@ -41,32 +42,30 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
 
     bool hasMore = true;
     while (hasMore) {
-      final newState = await fetch(
-        state.value!.nextOffset!,
-        max(state.value!.limit, 100),
-      )
-          .catchError(
-            (e) => fetch(state.value!.nextOffset!, max(state.value!.limit, 50)),
-          )
-          .catchError(
-            (e) => fetch(state.value!.nextOffset!, state.value!.limit),
-          )
-          .catchError(
-        (e) async {
-          await Future.delayed(const Duration(milliseconds: 500));
-          return fetch(state.value!.nextOffset!, state.value!.limit);
-        },
-      );
+      final newState =
+          await fetch(state.value!.nextOffset!, max(state.value!.limit, 100))
+              .catchError(
+                (e) => fetch(
+                  state.value!.nextOffset!,
+                  max(state.value!.limit, 50),
+                ),
+              )
+              .catchError(
+                (e) => fetch(state.value!.nextOffset!, state.value!.limit),
+              )
+              .catchError((e) async {
+                await Future.delayed(const Duration(milliseconds: 500));
+                return fetch(state.value!.nextOffset!, state.value!.limit);
+              });
 
       hasMore = newState.hasMore;
 
-      final oldItems =
-          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final oldItems = state.value!.items.isEmpty
+          ? <K>[]
+          : state.value!.items.cast<K>();
       final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
-      state = AsyncData(
-        newState.copyWith(items: [...oldItems, ...items]),
-      );
+      state = AsyncData(newState.copyWith(items: [...oldItems, ...items]));
     }
 
     return state.value!.items.cast<K>();
@@ -74,8 +73,10 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
 }
 
 abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
-    extends AutoDisposeFamilyAsyncNotifier<SpotubePaginationResponseObject<K>,
-        A> with MetadataPluginMixin<K> {
+    extends AsyncNotifier<SpotubePaginationResponseObject<K>>
+    with MetadataPluginMixin<K> {
+  A get arg;
+
   Future<SpotubePaginationResponseObject<K>> fetch(int offset, int limit);
 
   Future<void> fetchMore() async {
@@ -83,18 +84,15 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
     final oldState = state.value;
 
     try {
-      state = AsyncLoadingNext(state.value!);
-
       final newState = await fetch(
         state.value!.nextOffset!,
         state.value!.limit,
       );
 
       state = AsyncData(
-        newState.copyWith(items: [
-          ...state.value!.items.cast<K>(),
-          ...newState.items.cast<K>(),
-        ]),
+        newState.copyWith(
+          items: [...state.value!.items.cast<K>(), ...newState.items.cast<K>()],
+        ),
       );
     } catch (e, stack) {
       AppLogger.reportError(e, stack);
@@ -108,32 +106,30 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
 
     bool hasMore = true;
     while (hasMore) {
-      final newState = await fetch(
-        state.value!.nextOffset!,
-        max(state.value!.limit, 100),
-      )
-          .catchError(
-            (e) => fetch(state.value!.nextOffset!, max(state.value!.limit, 50)),
-          )
-          .catchError(
-            (e) => fetch(state.value!.nextOffset!, state.value!.limit),
-          )
-          .catchError(
-        (e) async {
-          await Future.delayed(const Duration(milliseconds: 500));
-          return fetch(state.value!.nextOffset!, state.value!.limit);
-        },
-      );
+      final newState =
+          await fetch(state.value!.nextOffset!, max(state.value!.limit, 100))
+              .catchError(
+                (e) => fetch(
+                  state.value!.nextOffset!,
+                  max(state.value!.limit, 50),
+                ),
+              )
+              .catchError(
+                (e) => fetch(state.value!.nextOffset!, state.value!.limit),
+              )
+              .catchError((e) async {
+                await Future.delayed(const Duration(milliseconds: 500));
+                return fetch(state.value!.nextOffset!, state.value!.limit);
+              });
 
       hasMore = newState.hasMore;
 
-      final oldItems =
-          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final oldItems = state.value!.items.isEmpty
+          ? <K>[]
+          : state.value!.items.cast<K>();
       final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
-      state = AsyncData(
-        newState.copyWith(items: [...oldItems, ...items]),
-      );
+      state = AsyncData(newState.copyWith(items: [...oldItems, ...items]));
     }
 
     return state.value!.items.cast<K>();

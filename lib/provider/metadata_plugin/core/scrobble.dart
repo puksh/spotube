@@ -12,10 +12,10 @@ class MetadataPluginScrobbleNotifier
     final metadataPlugin = ref.watch(metadataPluginProvider);
     final pluginConfig = ref
         .watch(metadataPluginsProvider)
-        .valueOrNull
+        .value
         ?.defaultMetadataPluginConfig;
 
-    if (metadataPlugin.valueOrNull == null ||
+    if (metadataPlugin.value == null ||
         pluginConfig == null ||
         !pluginConfig.abilities.contains(PluginAbilities.scrobbling)) {
       return null;
@@ -25,19 +25,13 @@ class MetadataPluginScrobbleNotifier
 
     final subscription = controller.stream.listen((event) async {
       try {
-        await metadataPlugin.valueOrNull?.core.scrobble({
+        await metadataPlugin.value?.core.scrobble({
           "id": event.id,
           "title": event.name,
           "artists": event.artists
-              .map((artist) => {
-                    "id": artist.id,
-                    "name": artist.name,
-                  })
+              .map((artist) => {"id": artist.id, "name": artist.name})
               .toList(),
-          "album": {
-            "id": event.album.id,
-            "name": event.album.name,
-          },
+          "album": {"id": event.album.id, "name": event.album.name},
           "timestamp": DateTime.now().millisecondsSinceEpoch ~/ 1000,
           "duration_ms": event.durationMs,
           "isrc": event is SpotubeFullTrackObject ? event.isrc : null,
@@ -60,7 +54,8 @@ class MetadataPluginScrobbleNotifier
   }
 }
 
-final metadataPluginScrobbleProvider = NotifierProvider<
-    MetadataPluginScrobbleNotifier, StreamController<SpotubeTrackObject>?>(
-  MetadataPluginScrobbleNotifier.new,
-);
+final metadataPluginScrobbleProvider =
+    NotifierProvider<
+      MetadataPluginScrobbleNotifier,
+      StreamController<SpotubeTrackObject>?
+    >(MetadataPluginScrobbleNotifier.new);

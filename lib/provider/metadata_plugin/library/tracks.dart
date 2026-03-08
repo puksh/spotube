@@ -11,9 +11,9 @@ class MetadataPluginSavedTracksNotifier
   @override
   fetch(offset, limit) async {
     final tracks = await (await metadataPlugin).user.savedTracks(
-          offset: offset,
-          limit: limit,
-        );
+      offset: offset,
+      limit: limit,
+    );
 
     return tracks;
   }
@@ -36,7 +36,7 @@ class MetadataPluginSavedTracksNotifier
       state.value!.copyWith(
         items: [
           ...tracks.whereType<SpotubeFullTrackObject>(),
-          ...state.value!.items
+          ...state.value!.items,
         ],
       ),
     );
@@ -66,9 +66,9 @@ class MetadataPluginSavedTracksNotifier
     );
 
     try {
-      await (await metadataPlugin)
-          .track
-          .unsave(tracks.map((e) => e.id).toList());
+      await (await metadataPlugin).track.unsave(
+        tracks.map((e) => e.id).toList(),
+      );
     } catch (e) {
       state = AsyncData(oldState!);
       rethrow;
@@ -76,21 +76,22 @@ class MetadataPluginSavedTracksNotifier
   }
 }
 
-final metadataPluginSavedTracksProvider = AutoDisposeAsyncNotifierProvider<
-    MetadataPluginSavedTracksNotifier,
-    SpotubePaginationResponseObject<SpotubeFullTrackObject>>(
-  () => MetadataPluginSavedTracksNotifier(),
-);
+final metadataPluginSavedTracksProvider =
+    AsyncNotifierProvider.autoDispose<
+      MetadataPluginSavedTracksNotifier,
+      SpotubePaginationResponseObject<SpotubeFullTrackObject>
+    >(() => MetadataPluginSavedTracksNotifier());
 
-final metadataPluginIsSavedTrackProvider =
-    FutureProvider.autoDispose.family<bool, String>(
-  (ref, trackId) async {
-    final savedTracks =
-        await ref.watch(metadataPluginSavedTracksProvider.future);
-    final allSavedTracks = savedTracks.hasMore
-        ? await ref.read(metadataPluginSavedTracksProvider.notifier).fetchAll()
-        : savedTracks.items;
+final metadataPluginIsSavedTrackProvider = FutureProvider.autoDispose
+    .family<bool, String>((ref, trackId) async {
+      final savedTracks = await ref.watch(
+        metadataPluginSavedTracksProvider.future,
+      );
+      final allSavedTracks = savedTracks.hasMore
+          ? await ref
+                .read(metadataPluginSavedTracksProvider.notifier)
+                .fetchAll()
+          : savedTracks.items;
 
-    return allSavedTracks.any((track) => track.id == trackId);
-  },
-);
+      return allSavedTracks.any((track) => track.id == trackId);
+    });

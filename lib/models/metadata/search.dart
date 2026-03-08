@@ -1,7 +1,7 @@
 part of 'metadata.dart';
 
 @freezed
-class SpotubeSearchResponseObject with _$SpotubeSearchResponseObject {
+abstract class SpotubeSearchResponseObject with _$SpotubeSearchResponseObject {
   factory SpotubeSearchResponseObject({
     required List<SpotubeSimpleAlbumObject> albums,
     required List<SpotubeFullArtistObject> artists,

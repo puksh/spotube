@@ -1,7 +1,7 @@
 part of 'connect.dart';
 
 @freezed
-class WebSocketLoadEventData with _$WebSocketLoadEventData {
+abstract class WebSocketLoadEventData with _$WebSocketLoadEventData {
   const WebSocketLoadEventData._();
 
   factory WebSocketLoadEventData.playlist({
@@ -28,9 +28,9 @@ class WebSocketLoadEventData with _$WebSocketLoadEventData {
       _$WebSocketLoadEventDataFromJson(json);
 
   String? get collectionId => when(
-        playlist: (tracks, collection, _) => collection?.id,
-        album: (tracks, collection, _) => collection?.id,
-      );
+    playlist: (tracks, collection, _) => collection?.id,
+    album: (tracks, collection, _) => collection?.id,
+  );
 }
 
 class WebSocketLoadEvent extends WebSocketEvent<WebSocketLoadEventData> {

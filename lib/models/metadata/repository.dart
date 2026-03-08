@@ -1,7 +1,7 @@
 part of './metadata.dart';
 
 @freezed
-class MetadataPluginRepository with _$MetadataPluginRepository {
+abstract class MetadataPluginRepository with _$MetadataPluginRepository {
   factory MetadataPluginRepository({
     required String name,
     required String owner,

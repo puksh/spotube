@@ -6,12 +6,15 @@ part of 'quality_presets.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AudioSourcePresetsStateImpl _$$AudioSourcePresetsStateImplFromJson(
-        Map json) =>
-    _$AudioSourcePresetsStateImpl(
-      presets: (json['presets'] as List<dynamic>?)
-              ?.map((e) => SpotubeAudioSourceContainerPreset.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
+_AudioSourcePresetsState _$AudioSourcePresetsStateFromJson(Map json) =>
+    _AudioSourcePresetsState(
+      presets:
+          (json['presets'] as List<dynamic>?)
+              ?.map(
+                (e) => SpotubeAudioSourceContainerPreset.fromJson(
+                  Map<String, dynamic>.from(e as Map),
+                ),
+              )
               .toList() ??
           const [],
       selectedStreamingQualityIndex:
@@ -24,15 +27,13 @@ _$AudioSourcePresetsStateImpl _$$AudioSourcePresetsStateImplFromJson(
           (json['selectedDownloadingContainerIndex'] as num?)?.toInt() ?? 0,
     );
 
-Map<String, dynamic> _$$AudioSourcePresetsStateImplToJson(
-        _$AudioSourcePresetsStateImpl instance) =>
-    <String, dynamic>{
-      'presets': instance.presets.map((e) => e.toJson()).toList(),
-      'selectedStreamingQualityIndex': instance.selectedStreamingQualityIndex,
-      'selectedStreamingContainerIndex':
-          instance.selectedStreamingContainerIndex,
-      'selectedDownloadingQualityIndex':
-          instance.selectedDownloadingQualityIndex,
-      'selectedDownloadingContainerIndex':
-          instance.selectedDownloadingContainerIndex,
-    };
+Map<String, dynamic> _$AudioSourcePresetsStateToJson(
+  _AudioSourcePresetsState instance,
+) => <String, dynamic>{
+  'presets': instance.presets.map((e) => e.toJson()).toList(),
+  'selectedStreamingQualityIndex': instance.selectedStreamingQualityIndex,
+  'selectedStreamingContainerIndex': instance.selectedStreamingContainerIndex,
+  'selectedDownloadingQualityIndex': instance.selectedDownloadingQualityIndex,
+  'selectedDownloadingContainerIndex':
+      instance.selectedDownloadingContainerIndex,
+};

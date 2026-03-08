@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:spotube/modules/player/player_overlay_collapsed.dart';
@@ -14,10 +15,7 @@ final playerOverlayControllerProvider = StateProvider<PanelController>((ref) {
 class PlayerOverlay extends HookConsumerWidget {
   final String albumArt;
 
-  const PlayerOverlay({
-    required this.albumArt,
-    super.key,
-  });
+  const PlayerOverlay({required this.albumArt, super.key});
 
   @override
   Widget build(BuildContext context, ref) {

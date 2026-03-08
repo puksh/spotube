@@ -1,7 +1,7 @@
 part of 'metadata.dart';
 
 @freezed
-class SpotubeUserObject with _$SpotubeUserObject {
+abstract class SpotubeUserObject with _$SpotubeUserObject {
   factory SpotubeUserObject({
     required final String id,
     required final String name,

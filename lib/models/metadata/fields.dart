@@ -3,7 +3,7 @@ part of 'metadata.dart';
 enum FormFieldVariant { text, password, number }
 
 @Freezed(unionKey: 'objectType')
-class MetadataFormFieldObject with _$MetadataFormFieldObject {
+abstract class MetadataFormFieldObject with _$MetadataFormFieldObject {
   @FreezedUnionValue("input")
   factory MetadataFormFieldObject.input({
     required String objectType,

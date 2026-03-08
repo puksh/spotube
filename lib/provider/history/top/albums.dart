@@ -10,12 +10,18 @@ import 'package:spotube/provider/metadata_plugin/utils/family_paginated.dart';
 
 typedef PlaybackHistoryAlbum = ({int count, SpotubeSimpleAlbumObject album});
 
-class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
-    PlaybackHistoryAlbum, HistoryDuration> {
-  HistoryTopAlbumsNotifier() : super();
+class HistoryTopAlbumsNotifier
+    extends
+        FamilyPaginatedAsyncNotifier<PlaybackHistoryAlbum, HistoryDuration> {
+  HistoryTopAlbumsNotifier(this._arg);
+  final HistoryDuration _arg;
+  @override
+  HistoryDuration get arg => _arg;
 
-  Selectable<SpotubeSimpleAlbumObject> createAlbumsQuery(
-      {int? limit, int? offset}) {
+  Selectable<SpotubeSimpleAlbumObject> createAlbumsQuery({
+    int? limit,
+    int? offset,
+  }) {
     final database = ref.read(databaseProvider);
 
     final duration = switch (arg) {
@@ -29,17 +35,18 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
         "strftime('%s', date('now', '-1 years', 'start of year'))",
     };
 
-    return database.customSelect(
-      """
+    return database
+        .customSelect(
+          """
         SELECT 
             history_table.created_at,
       """
-      r"""
+          r"""
             json_extract(history_table.data, '$.album') as data,
             json_extract(history_table.data, '$.album.id') as item_id,
             'album' as type
         """
-      """
+          """
         FROM history_table 
         WHERE type = 'track' AND
               created_at >= $duration
@@ -55,12 +62,13 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
         ORDER BY created_at desc
         ${limit != null && offset != null ? 'LIMIT $limit OFFSET $offset' : ''}
       """,
-      readsFrom: {database.historyTable},
-    ).map((row) {
-      final data = row.read<String>('data');
-      final album = SpotubeSimpleAlbumObject.fromJson(jsonDecode(data));
-      return album;
-    });
+          readsFrom: {database.historyTable},
+        )
+        .map((row) {
+          final data = row.read<String>('data');
+          final album = SpotubeSimpleAlbumObject.fromJson(jsonDecode(data));
+          return album;
+        });
   }
 
   @override
@@ -79,13 +87,15 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
   }
 
   @override
-  build(arg) async {
+  build() async {
     final subscription = createAlbumsQuery().watch().listen((event) {
       if (state.asData == null) return;
-      state = AsyncData(state.asData!.value.copyWith(
-        items: getAlbumsWithCount(event),
-        hasMore: false,
-      ));
+      state = AsyncData(
+        state.asData!.value.copyWith(
+          items: getAlbumsWithCount(event),
+          hasMore: false,
+        ),
+      );
     });
 
     ref.onDispose(() {
@@ -98,8 +108,7 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
   List<PlaybackHistoryAlbum> getAlbumsWithCount(
     List<SpotubeSimpleAlbumObject> albumsWithTrackAlbums,
   ) {
-    return groupBy(albumsWithTrackAlbums, (album) => album.id)
-        .entries
+    return groupBy(albumsWithTrackAlbums, (album) => album.id).entries
         .map((entry) {
           return (count: entry.value.length, album: entry.value.first);
         })
@@ -108,9 +117,9 @@ class HistoryTopAlbumsNotifier extends FamilyPaginatedAsyncNotifier<
   }
 }
 
-final historyTopAlbumsProvider = AsyncNotifierProviderFamily<
-    HistoryTopAlbumsNotifier,
-    SpotubePaginationResponseObject<PlaybackHistoryAlbum>,
-    HistoryDuration>(
-  () => HistoryTopAlbumsNotifier(),
-);
+final historyTopAlbumsProvider =
+    AsyncNotifierProvider.family<
+      HistoryTopAlbumsNotifier,
+      SpotubePaginationResponseObject<PlaybackHistoryAlbum>,
+      HistoryDuration
+    >((arg) => HistoryTopAlbumsNotifier(arg));

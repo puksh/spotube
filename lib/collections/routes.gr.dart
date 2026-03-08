@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i41;
+import 'package:collection/collection.dart' as _i45;
 import 'package:flutter/material.dart' as _i42;
 import 'package:shadcn_flutter/shadcn_flutter.dart' as _i44;
 import 'package:spotube/models/metadata/metadata.dart' as _i43;
@@ -111,6 +112,16 @@ class AlbumRouteArgs {
   String toString() {
     return 'AlbumRouteArgs{key: $key, id: $id, album: $album}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AlbumRouteArgs) return false;
+    return key == other.key && id == other.id && album == other.album;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ id.hashCode ^ album.hashCode;
 }
 
 /// generated route for
@@ -152,6 +163,16 @@ class ArtistRouteArgs {
   String toString() {
     return 'ArtistRouteArgs{artistId: $artistId, key: $key}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ArtistRouteArgs) return false;
+    return artistId == other.artistId && key == other.key;
+  }
+
+  @override
+  int get hashCode => artistId.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -270,6 +291,18 @@ class HomeBrowseSectionItemsRouteArgs {
   String toString() {
     return 'HomeBrowseSectionItemsRouteArgs{key: $key, sectionId: $sectionId, section: $section}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! HomeBrowseSectionItemsRouteArgs) return false;
+    return key == other.key &&
+        sectionId == other.sectionId &&
+        section == other.section;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ sectionId.hashCode ^ section.hashCode;
 }
 
 /// generated route for
@@ -355,6 +388,16 @@ class LikedPlaylistRouteArgs {
   String toString() {
     return 'LikedPlaylistRouteArgs{key: $key, playlist: $playlist}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! LikedPlaylistRouteArgs) return false;
+    return key == other.key && playlist == other.playlist;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ playlist.hashCode;
 }
 
 /// generated route for
@@ -413,6 +456,23 @@ class LocalLibraryRouteArgs {
   String toString() {
     return 'LocalLibraryRouteArgs{location: $location, key: $key, isDownloads: $isDownloads, isCache: $isCache}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! LocalLibraryRouteArgs) return false;
+    return location == other.location &&
+        key == other.key &&
+        isDownloads == other.isDownloads &&
+        isCache == other.isCache;
+  }
+
+  @override
+  int get hashCode =>
+      location.hashCode ^
+      key.hashCode ^
+      isDownloads.hashCode ^
+      isCache.hashCode;
 }
 
 /// generated route for
@@ -482,6 +542,16 @@ class MiniLyricsRouteArgs {
   String toString() {
     return 'MiniLyricsRouteArgs{key: $key, prevSize: $prevSize}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MiniLyricsRouteArgs) return false;
+    return key == other.key && prevSize == other.prevSize;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ prevSize.hashCode;
 }
 
 /// generated route for
@@ -575,6 +645,16 @@ class PlaylistRouteArgs {
   String toString() {
     return 'PlaylistRouteArgs{key: $key, id: $id, playlist: $playlist}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PlaylistRouteArgs) return false;
+    return key == other.key && id == other.id && playlist == other.playlist;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ id.hashCode ^ playlist.hashCode;
 }
 
 /// generated route for
@@ -676,6 +756,24 @@ class SettingsMetadataProviderFormRouteArgs {
   String toString() {
     return 'SettingsMetadataProviderFormRouteArgs{key: $key, title: $title, fields: $fields}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SettingsMetadataProviderFormRouteArgs) return false;
+    return key == other.key &&
+        title == other.title &&
+        const _i45.ListEquality<_i43.MetadataFormFieldObject>().equals(
+          fields,
+          other.fields,
+        );
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      title.hashCode ^
+      const _i45.ListEquality<_i43.MetadataFormFieldObject>().hash(fields);
 }
 
 /// generated route for
@@ -877,6 +975,16 @@ class TrackRouteArgs {
   String toString() {
     return 'TrackRouteArgs{key: $key, trackId: $trackId}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! TrackRouteArgs) return false;
+    return key == other.key && trackId == other.trackId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ trackId.hashCode;
 }
 
 /// generated route for

@@ -5,9 +5,15 @@ import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:spotube/provider/metadata_plugin/utils/family_paginated.dart';
 
 class MetadataPluginSearchAlbumsNotifier
-    extends AutoDisposeFamilyPaginatedAsyncNotifier<SpotubeSimpleAlbumObject,
-        String> {
-  MetadataPluginSearchAlbumsNotifier() : super();
+    extends
+        AutoDisposeFamilyPaginatedAsyncNotifier<
+          SpotubeSimpleAlbumObject,
+          String
+        > {
+  MetadataPluginSearchAlbumsNotifier(this._arg);
+  final String _arg;
+  @override
+  String get arg => _arg;
 
   @override
   fetch(offset, limit) async {
@@ -22,16 +28,16 @@ class MetadataPluginSearchAlbumsNotifier
     }
 
     final res = await (await metadataPlugin).search.albums(
-          arg,
-          offset: offset,
-          limit: limit,
-        );
+      arg,
+      offset: offset,
+      limit: limit,
+    );
 
     return res;
   }
 
   @override
-  build(arg) async {
+  build() async {
     ref.cacheFor();
 
     ref.watch(metadataPluginProvider);
@@ -39,8 +45,9 @@ class MetadataPluginSearchAlbumsNotifier
   }
 }
 
-final metadataPluginSearchAlbumsProvider =
-    AutoDisposeAsyncNotifierProviderFamily<MetadataPluginSearchAlbumsNotifier,
-        SpotubePaginationResponseObject<SpotubeSimpleAlbumObject>, String>(
-  () => MetadataPluginSearchAlbumsNotifier(),
-);
+final metadataPluginSearchAlbumsProvider = AsyncNotifierProvider.autoDispose
+    .family<
+      MetadataPluginSearchAlbumsNotifier,
+      SpotubePaginationResponseObject<SpotubeSimpleAlbumObject>,
+      String
+    >((arg) => MetadataPluginSearchAlbumsNotifier(arg));

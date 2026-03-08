@@ -24,7 +24,6 @@ import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:sqlite3/sqlite3.dart';
-import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'database.g.dart';
 
@@ -126,7 +125,8 @@ class AppDatabase extends _$AppDatabase {
           } catch (e) {
             // If the column already exists, ignore the error
             if (!e.toString().contains(
-                'duplicate column name: ${schema.preferencesTable.connectPort.name}')) {
+              'duplicate column name: ${schema.preferencesTable.connectPort.name}',
+            )) {
               rethrow;
             }
           }
@@ -145,59 +145,59 @@ class AppDatabase extends _$AppDatabase {
         from7To8: (m, schema) async {
           await m
               .addColumn(
-            schema.metadataPluginsTable,
-            schema.metadataPluginsTable.entryPoint,
-          )
+                schema.metadataPluginsTable,
+                schema.metadataPluginsTable.entryPoint,
+              )
               .catchError((error, stackTrace) {
-            // If the column already exists, ignore the error
-            if (!error.toString().contains('duplicate column name')) {
-              throw error;
-            }
-          });
+                // If the column already exists, ignore the error
+                if (!error.toString().contains('duplicate column name')) {
+                  throw error;
+                }
+              });
           await m
               .addColumn(
-            schema.metadataPluginsTable,
-            schema.metadataPluginsTable.apis,
-          )
+                schema.metadataPluginsTable,
+                schema.metadataPluginsTable.apis,
+              )
               .catchError((error, stackTrace) {
-            // If the column already exists, ignore the error
-            if (!error.toString().contains('duplicate column name')) {
-              throw error;
-            }
-          });
+                // If the column already exists, ignore the error
+                if (!error.toString().contains('duplicate column name')) {
+                  throw error;
+                }
+              });
           await m
               .addColumn(
-            schema.metadataPluginsTable,
-            schema.metadataPluginsTable.abilities,
-          )
+                schema.metadataPluginsTable,
+                schema.metadataPluginsTable.abilities,
+              )
               .catchError((error, stackTrace) {
-            // If the column already exists, ignore the error
-            if (!error.toString().contains('duplicate column name')) {
-              throw error;
-            }
-          });
+                // If the column already exists, ignore the error
+                if (!error.toString().contains('duplicate column name')) {
+                  throw error;
+                }
+              });
           await m
               .addColumn(
-            schema.metadataPluginsTable,
-            schema.metadataPluginsTable.repository,
-          )
+                schema.metadataPluginsTable,
+                schema.metadataPluginsTable.repository,
+              )
               .catchError((error, stackTrace) {
-            // If the column already exists, ignore the error
-            if (!error.toString().contains('duplicate column name')) {
-              throw error;
-            }
-          });
+                // If the column already exists, ignore the error
+                if (!error.toString().contains('duplicate column name')) {
+                  throw error;
+                }
+              });
           await m
               .addColumn(
-            schema.metadataPluginsTable,
-            schema.metadataPluginsTable.pluginApiVersion,
-          )
+                schema.metadataPluginsTable,
+                schema.metadataPluginsTable.pluginApiVersion,
+              )
               .catchError((error, stackTrace) {
-            // If the column already exists, ignore the error
-            if (!error.toString().contains('duplicate column name')) {
-              throw error;
-            }
-          });
+                // If the column already exists, ignore the error
+                if (!error.toString().contains('duplicate column name')) {
+                  throw error;
+                }
+              });
         },
         from8To9: (m, schema) async {
           await m
@@ -225,13 +225,11 @@ class AppDatabase extends _$AppDatabase {
               .dropColumn(schema.preferencesTable, "invidious_instance")
               .catchError((e, stack) => AppLogger.reportError(e, stack));
           await m
-              .addColumn(
-                schema.sourceMatchTable,
-                sourceMatchTable.sourceInfo,
-              )
+              .addColumn(schema.sourceMatchTable, sourceMatchTable.sourceInfo)
               .catchError((e, stack) => AppLogger.reportError(e, stack));
-          await customStatement("DROP INDEX IF EXISTS uniq_track_match;")
-              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await customStatement(
+            "DROP INDEX IF EXISTS uniq_track_match;",
+          ).catchError((e, stack) => AppLogger.reportError(e, stack));
           await m
               .dropColumn(schema.sourceMatchTable, "source_id")
               .catchError((e, stack) => AppLogger.reportError(e, stack));
@@ -239,19 +237,19 @@ class AppDatabase extends _$AppDatabase {
         from10To11: (m, schema) async {
           await m
               .addColumn(
-            schema.preferencesTable,
-            schema.preferencesTable.disableGlassEffect,
-          )
+                schema.preferencesTable,
+                schema.preferencesTable.disableGlassEffect,
+              )
               .catchError((e, stack) {
-            if (e.toString().contains(
+                if (e.toString().contains(
                   'duplicate column name: ${schema.preferencesTable.disableGlassEffect.name}',
                 )) {
-              return;
-            }
+                  return;
+                }
 
-            AppLogger.reportError(e, stack);
-            throw e;
-          });
+                AppLogger.reportError(e, stack);
+                throw e;
+              });
         },
       ),
     );
@@ -265,11 +263,6 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationSupportDirectory();
     final file = File(join(dbFolder.path, 'db.sqlite'));
-
-    // Also work around limitations on old Android versions
-    if (Platform.isAndroid) {
-      await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
-    }
 
     // Make sqlite3 pick a more suitable location for temporary files - the
     // one from the system may be inaccessible due to sandboxing.

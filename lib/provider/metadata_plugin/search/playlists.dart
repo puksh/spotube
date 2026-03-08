@@ -5,9 +5,15 @@ import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:spotube/provider/metadata_plugin/utils/family_paginated.dart';
 
 class MetadataPluginSearchPlaylistsNotifier
-    extends AutoDisposeFamilyPaginatedAsyncNotifier<SpotubeSimplePlaylistObject,
-        String> {
-  MetadataPluginSearchPlaylistsNotifier() : super();
+    extends
+        AutoDisposeFamilyPaginatedAsyncNotifier<
+          SpotubeSimplePlaylistObject,
+          String
+        > {
+  MetadataPluginSearchPlaylistsNotifier(this._arg);
+  final String _arg;
+  @override
+  String get arg => _arg;
 
   @override
   fetch(offset, limit) async {
@@ -22,16 +28,16 @@ class MetadataPluginSearchPlaylistsNotifier
     }
 
     final res = await (await metadataPlugin).search.playlists(
-          arg,
-          offset: offset,
-          limit: limit,
-        );
+      arg,
+      offset: offset,
+      limit: limit,
+    );
 
     return res;
   }
 
   @override
-  build(arg) async {
+  build() async {
     ref.cacheFor();
 
     ref.watch(metadataPluginProvider);
@@ -39,10 +45,9 @@ class MetadataPluginSearchPlaylistsNotifier
   }
 }
 
-final metadataPluginSearchPlaylistsProvider =
-    AutoDisposeAsyncNotifierProviderFamily<
-        MetadataPluginSearchPlaylistsNotifier,
-        SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>,
-        String>(
-  () => MetadataPluginSearchPlaylistsNotifier(),
-);
+final metadataPluginSearchPlaylistsProvider = AsyncNotifierProvider.autoDispose
+    .family<
+      MetadataPluginSearchPlaylistsNotifier,
+      SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>,
+      String
+    >((arg) => MetadataPluginSearchPlaylistsNotifier(arg));

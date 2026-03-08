@@ -11,7 +11,7 @@ enum PluginAbilities {
 }
 
 @freezed
-class PluginConfiguration with _$PluginConfiguration {
+abstract class PluginConfiguration with _$PluginConfiguration {
   const PluginConfiguration._();
 
   factory PluginConfiguration({
@@ -33,7 +33,7 @@ class PluginConfiguration with _$PluginConfiguration {
 }
 
 @freezed
-class PluginUpdateAvailable with _$PluginUpdateAvailable {
+abstract class PluginUpdateAvailable with _$PluginUpdateAvailable {
   factory PluginUpdateAvailable({
     required String downloadUrl,
     required String version,

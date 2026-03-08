@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
@@ -15,9 +16,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 final navigationPanelHeight = StateProvider<double>((ref) => 50);
 
 class SpotubeNavigationBar extends HookConsumerWidget {
-  const SpotubeNavigationBar({
-    super.key,
-  });
+  const SpotubeNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -25,17 +24,19 @@ class SpotubeNavigationBar extends HookConsumerWidget {
 
     final downloadCount = ref
         .watch(downloadManagerProvider)
-        .where((e) =>
-            e.status == DownloadStatus.downloading ||
-            e.status == DownloadStatus.queued)
+        .where(
+          (e) =>
+              e.status == DownloadStatus.downloading ||
+              e.status == DownloadStatus.queued,
+        )
         .length;
-    final layoutMode =
-        ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
-
-    final navbarTileList = useMemoized(
-      () => getNavbarTileList(context.l10n),
-      [context.l10n],
+    final layoutMode = ref.watch(
+      userPreferencesProvider.select((s) => s.layoutMode),
     );
+
+    final navbarTileList = useMemoized(() => getNavbarTileList(context.l10n), [
+      context.l10n,
+    ]);
 
     final panelHeight = ref.watch(navigationPanelHeight);
 
@@ -43,8 +44,9 @@ class SpotubeNavigationBar extends HookConsumerWidget {
     final selectedIndex = navbarTileList.indexWhere(
       (e) => router.currentPath.startsWith(e.pathPrefix),
     );
-    final selectedKey =
-        selectedIndex >= 0 ? ValueKey(navbarTileList[selectedIndex].id) : null;
+    final selectedKey = selectedIndex >= 0
+        ? ValueKey(navbarTileList[selectedIndex].id)
+        : null;
 
     if (layoutMode == LayoutMode.extended ||
         (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||
@@ -68,10 +70,12 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                 for (final tile in navbarTileList)
                   NavigationItem(
                     key: ValueKey(tile.id),
-                    selected: selectedIndex >= 0 &&
+                    selected:
+                        selectedIndex >= 0 &&
                         navbarTileList[selectedIndex] == tile,
-                    selectedStyle:
-                        const ButtonStyle.fixed(density: ButtonDensity.icon),
+                    selectedStyle: const ButtonStyle.fixed(
+                      density: ButtonDensity.icon,
+                    ),
                     style: const ButtonStyle.muted(density: ButtonDensity.icon),
                     child: Badge(
                       isLabelVisible: tile.id == "library" && downloadCount > 0,
@@ -84,7 +88,7 @@ class SpotubeNavigationBar extends HookConsumerWidget {
                         await context.navigateTo(tile.route);
                       }
                     },
-                  )
+                  ),
               ],
             ),
           ],

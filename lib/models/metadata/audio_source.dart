@@ -2,13 +2,10 @@ part of 'metadata.dart';
 
 final oneOptionalDecimalFormatter = NumberFormat('0.#', 'en_US');
 
-enum SpotubeMediaCompressionType {
-  lossy,
-  lossless,
-}
+enum SpotubeMediaCompressionType { lossy, lossless }
 
 @Freezed(unionKey: 'type')
-class SpotubeAudioSourceContainerPreset
+abstract class SpotubeAudioSourceContainerPreset
     with _$SpotubeAudioSourceContainerPreset {
   const SpotubeAudioSourceContainerPreset._();
 
@@ -27,8 +24,8 @@ class SpotubeAudioSourceContainerPreset
   }) = SpotubeAudioSourceContainerPresetLossless;
 
   factory SpotubeAudioSourceContainerPreset.fromJson(
-          Map<String, dynamic> json) =>
-      _$SpotubeAudioSourceContainerPresetFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$SpotubeAudioSourceContainerPresetFromJson(json);
 
   String getFileExtension() {
     return switch (name) {
@@ -40,7 +37,7 @@ class SpotubeAudioSourceContainerPreset
 }
 
 @freezed
-class SpotubeAudioLossyContainerQuality
+abstract class SpotubeAudioLossyContainerQuality
     with _$SpotubeAudioLossyContainerQuality {
   const SpotubeAudioLossyContainerQuality._();
 
@@ -49,8 +46,8 @@ class SpotubeAudioLossyContainerQuality
   }) = _SpotubeAudioLossyContainerQuality;
 
   factory SpotubeAudioLossyContainerQuality.fromJson(
-          Map<String, dynamic> json) =>
-      _$SpotubeAudioLossyContainerQualityFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$SpotubeAudioLossyContainerQualityFromJson(json);
 
   @override
   toString() {
@@ -59,7 +56,7 @@ class SpotubeAudioLossyContainerQuality
 }
 
 @freezed
-class SpotubeAudioLosslessContainerQuality
+abstract class SpotubeAudioLosslessContainerQuality
     with _$SpotubeAudioLosslessContainerQuality {
   const SpotubeAudioLosslessContainerQuality._();
 
@@ -69,8 +66,8 @@ class SpotubeAudioLosslessContainerQuality
   }) = _SpotubeAudioLosslessContainerQuality;
 
   factory SpotubeAudioLosslessContainerQuality.fromJson(
-          Map<String, dynamic> json) =>
-      _$SpotubeAudioLosslessContainerQualityFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$SpotubeAudioLosslessContainerQualityFromJson(json);
 
   @override
   toString() {
@@ -79,7 +76,8 @@ class SpotubeAudioLosslessContainerQuality
 }
 
 @freezed
-class SpotubeAudioSourceMatchObject with _$SpotubeAudioSourceMatchObject {
+abstract class SpotubeAudioSourceMatchObject
+    with _$SpotubeAudioSourceMatchObject {
   factory SpotubeAudioSourceMatchObject({
     required String id,
     required String title,
@@ -94,7 +92,8 @@ class SpotubeAudioSourceMatchObject with _$SpotubeAudioSourceMatchObject {
 }
 
 @freezed
-class SpotubeAudioSourceStreamObject with _$SpotubeAudioSourceStreamObject {
+abstract class SpotubeAudioSourceStreamObject
+    with _$SpotubeAudioSourceStreamObject {
   factory SpotubeAudioSourceStreamObject({
     required String url,
     required String container,

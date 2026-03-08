@@ -6,7 +6,6 @@ import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/modules/connect/local_devices.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -43,10 +42,7 @@ class ConnectPage extends HookConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 sliver: SliverToBoxAdapter(
-                  child: Text(
-                    context.l10n.remote,
-                    style: typography.bold,
-                  ),
+                  child: Text(context.l10n.remote, style: typography.bold),
                 ),
               ),
               const SliverGap(10),
@@ -57,7 +53,7 @@ class ConnectPage extends HookConsumerWidget {
                   final device = discoveredDevices![index];
                   final selected =
                       connectClients.asData?.value.resolvedService?.name ==
-                          device.name;
+                      device.name;
                   return ButtonTile(
                     selected: selected,
                     leading: const Icon(SpotubeIcons.monitor),

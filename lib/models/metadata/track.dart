@@ -1,7 +1,7 @@
 part of 'metadata.dart';
 
 @freezed
-class SpotubeTrackObject with _$SpotubeTrackObject {
+abstract class SpotubeTrackObject with _$SpotubeTrackObject {
   factory SpotubeTrackObject.local({
     required String id,
     required String name,
@@ -32,7 +32,8 @@ class SpotubeTrackObject with _$SpotubeTrackObject {
       id: file.absolute.path,
       name: metadata?.title ?? basenameWithoutExtension(file.path),
       externalUri: "file://${file.absolute.path}",
-      artists: metadata?.artist?.split(",").map((a) {
+      artists:
+          metadata?.artist?.split(",").map((a) {
             return SpotubeSimpleArtistObject(
               id: a.trim(),
               name: a.trim(),
@@ -58,15 +59,12 @@ class SpotubeTrackObject with _$SpotubeTrackObject {
             externalUri: "file://${file.absolute.path}",
           ),
         ],
-        releaseDate:
-            metadata?.year != null ? "${metadata!.year}-01-01" : "1970-01-01",
+        releaseDate: metadata?.year != null
+            ? "${metadata!.year}-01-01"
+            : "1970-01-01",
         images: [
           if (art != null)
-            SpotubeImageObject(
-              url: art,
-              width: 300,
-              height: 300,
-            ),
+            SpotubeImageObject(url: art, width: 300, height: 300),
         ],
       ),
       durationMs: metadata?.durationMs?.toInt() ?? 0,
@@ -102,14 +100,15 @@ extension ToMetadataSpotubeFullTrackObject on SpotubeFullTrackObject {
       year: album.releaseDate == null
           ? 1970
           : DateTime.tryParse(album.releaseDate!)?.year ??
-              int.tryParse(album.releaseDate!) ??
-              1970,
+                int.tryParse(album.releaseDate!) ??
+                1970,
       durationMs: durationMs.toDouble(),
       fileSize: BigInt.from(fileLength),
       picture: imageBytes != null
           ? Picture(
               data: imageBytes,
-              mimeType: mimeType ??
+              mimeType:
+                  mimeType ??
                   lookupMimeType("", headerBytes: imageBytes) ??
                   "image/jpeg",
             )

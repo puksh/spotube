@@ -6,10 +6,10 @@ part 'state.freezed.dart';
 part 'state.g.dart';
 
 @freezed
-class AudioPlayerState with _$AudioPlayerState {
+abstract class AudioPlayerState with _$AudioPlayerState {
   const AudioPlayerState._();
 
-  factory AudioPlayerState._inner({
+  factory AudioPlayerState.create({
     required bool playing,
     required PlaylistMode loopMode,
     required bool shuffled,
@@ -27,12 +27,14 @@ class AudioPlayerState with _$AudioPlayerState {
     List<SpotubeTrackObject> tracks = const [],
   }) {
     assert(
-      tracks.every((track) =>
-          track is SpotubeFullTrackObject || track is SpotubeLocalTrackObject),
+      tracks.every(
+        (track) =>
+            track is SpotubeFullTrackObject || track is SpotubeLocalTrackObject,
+      ),
       'All tracks must be either SpotubeFullTrackObject or SpotubeLocalTrackObject',
     );
 
-    return AudioPlayerState._inner(
+    return AudioPlayerState.create(
       playing: playing,
       loopMode: loopMode,
       shuffled: shuffled,
@@ -55,8 +57,8 @@ class AudioPlayerState with _$AudioPlayerState {
         tracks.any(
           (t) =>
               t is SpotubeLocalTrackObject && track is SpotubeLocalTrackObject
-                  ? t.path == track.path
-                  : t.id == track.id,
+              ? t.path == track.path
+              : t.id == track.id,
         );
   }
 

@@ -1,7 +1,7 @@
 part of 'metadata.dart';
 
 @freezed
-class SpotubeFullPlaylistObject with _$SpotubeFullPlaylistObject {
+abstract class SpotubeFullPlaylistObject with _$SpotubeFullPlaylistObject {
   factory SpotubeFullPlaylistObject({
     required String id,
     required String name,
@@ -19,7 +19,7 @@ class SpotubeFullPlaylistObject with _$SpotubeFullPlaylistObject {
 }
 
 @freezed
-class SpotubeSimplePlaylistObject with _$SpotubeSimplePlaylistObject {
+abstract class SpotubeSimplePlaylistObject with _$SpotubeSimplePlaylistObject {
   factory SpotubeSimplePlaylistObject({
     required String id,
     required String name,

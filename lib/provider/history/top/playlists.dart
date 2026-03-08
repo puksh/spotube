@@ -9,25 +9,28 @@ import 'package:spotube/provider/metadata_plugin/utils/family_paginated.dart';
 
 typedef PlaybackHistoryPlaylist = ({
   int count,
-  SpotubeSimplePlaylistObject playlist
+  SpotubeSimplePlaylistObject playlist,
 });
 
-class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
-    PlaybackHistoryPlaylist, HistoryDuration> {
-  HistoryTopPlaylistsNotifier() : super();
+class HistoryTopPlaylistsNotifier
+    extends
+        FamilyPaginatedAsyncNotifier<PlaybackHistoryPlaylist, HistoryDuration> {
+  HistoryTopPlaylistsNotifier(this._arg);
+  final HistoryDuration _arg;
+  @override
+  HistoryDuration get arg => _arg;
 
   SimpleSelectStatement<$HistoryTableTable, HistoryTableData>
-      createPlaylistsQuery() {
+  createPlaylistsQuery() {
     final database = ref.read(databaseProvider);
 
-    return database.select(database.historyTable)
-      ..where(
-        (tbl) =>
-            tbl.type.equalsValue(HistoryEntryType.playlist) &
-            tbl.createdAt.isBiggerOrEqualValue(
-              DateTime.now().subtract(arg.duration),
-            ),
-      );
+    return database.select(database.historyTable)..where(
+      (tbl) =>
+          tbl.type.equalsValue(HistoryEntryType.playlist) &
+          tbl.createdAt.isBiggerOrEqualValue(
+            DateTime.now().subtract(arg.duration),
+          ),
+    );
   }
 
   @override
@@ -46,13 +49,15 @@ class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
   }
 
   @override
-  build(arg) async {
+  build() async {
     final subscription = createPlaylistsQuery().watch().listen((event) {
       if (state.asData == null) return;
-      state = AsyncData(state.asData!.value.copyWith(
-        items: getPlaylistsWithCount(event),
-        hasMore: false,
-      ));
+      state = AsyncData(
+        state.asData!.value.copyWith(
+          items: getPlaylistsWithCount(event),
+          hasMore: false,
+        ),
+      );
     });
 
     ref.onDispose(() {
@@ -65,8 +70,7 @@ class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
   List<PlaybackHistoryPlaylist> getPlaylistsWithCount(
     List<HistoryTableData> playlists,
   ) {
-    return groupBy(playlists, (playlist) => playlist.playlist!.id)
-        .entries
+    return groupBy(playlists, (playlist) => playlist.playlist!.id).entries
         .map((entry) {
           return (
             count: entry.value.length,
@@ -78,9 +82,9 @@ class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
   }
 }
 
-final historyTopPlaylistsProvider = AsyncNotifierProviderFamily<
-    HistoryTopPlaylistsNotifier,
-    SpotubePaginationResponseObject<PlaybackHistoryPlaylist>,
-    HistoryDuration>(
-  () => HistoryTopPlaylistsNotifier(),
-);
+final historyTopPlaylistsProvider =
+    AsyncNotifierProvider.family<
+      HistoryTopPlaylistsNotifier,
+      SpotubePaginationResponseObject<PlaybackHistoryPlaylist>,
+      HistoryDuration
+    >((arg) => HistoryTopPlaylistsNotifier(arg));

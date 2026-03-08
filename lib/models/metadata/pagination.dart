@@ -1,7 +1,7 @@
 part of 'metadata.dart';
 
 @Freezed(genericArgumentFactories: true)
-class SpotubePaginationResponseObject<T>
+abstract class SpotubePaginationResponseObject<T>
     with _$SpotubePaginationResponseObject<T> {
   factory SpotubePaginationResponseObject({
     required int limit,
@@ -14,9 +14,8 @@ class SpotubePaginationResponseObject<T>
   factory SpotubePaginationResponseObject.fromJson(
     Map<String, Object?> json,
     T Function(Map<String, dynamic> json) fromJsonT,
-  ) =>
-      _$SpotubePaginationResponseObjectFromJson<T>(
-        json,
-        (json) => fromJsonT(json as Map<String, dynamic>),
-      );
+  ) => _$SpotubePaginationResponseObjectFromJson<T>(
+    json,
+    (json) => fromJsonT(json as Map<String, dynamic>),
+  );
 }

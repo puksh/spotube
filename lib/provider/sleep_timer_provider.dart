@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:spotube/services/app_exit/app_exit.dart';
 import 'package:spotube/utils/platform.dart';
 

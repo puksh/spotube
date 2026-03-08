@@ -5,9 +5,15 @@ import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:spotube/provider/metadata_plugin/utils/family_paginated.dart';
 
 class MetadataPluginSearchArtistsNotifier
-    extends AutoDisposeFamilyPaginatedAsyncNotifier<SpotubeFullArtistObject,
-        String> {
-  MetadataPluginSearchArtistsNotifier() : super();
+    extends
+        AutoDisposeFamilyPaginatedAsyncNotifier<
+          SpotubeFullArtistObject,
+          String
+        > {
+  MetadataPluginSearchArtistsNotifier(this._arg);
+  final String _arg;
+  @override
+  String get arg => _arg;
 
   @override
   fetch(offset, limit) async {
@@ -22,16 +28,16 @@ class MetadataPluginSearchArtistsNotifier
     }
 
     final res = await (await metadataPlugin).search.artists(
-          arg,
-          offset: offset,
-          limit: limit,
-        );
+      arg,
+      offset: offset,
+      limit: limit,
+    );
 
     return res;
   }
 
   @override
-  build(arg) async {
+  build() async {
     ref.cacheFor();
 
     ref.watch(metadataPluginProvider);
@@ -39,8 +45,9 @@ class MetadataPluginSearchArtistsNotifier
   }
 }
 
-final metadataPluginSearchArtistsProvider =
-    AutoDisposeAsyncNotifierProviderFamily<MetadataPluginSearchArtistsNotifier,
-        SpotubePaginationResponseObject<SpotubeFullArtistObject>, String>(
-  () => MetadataPluginSearchArtistsNotifier(),
-);
+final metadataPluginSearchArtistsProvider = AsyncNotifierProvider.autoDispose
+    .family<
+      MetadataPluginSearchArtistsNotifier,
+      SpotubePaginationResponseObject<SpotubeFullArtistObject>,
+      String
+    >((arg) => MetadataPluginSearchArtistsNotifier(arg));

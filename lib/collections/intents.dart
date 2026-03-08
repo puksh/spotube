@@ -39,7 +39,7 @@ class NavigationIntent extends Intent {
 class NavigationAction extends Action<NavigationIntent> {
   @override
   invoke(intent) {
-    intent.router.navigateNamed(intent.path);
+    intent.router.navigatePath(intent.path);
     return null;
   }
 }
@@ -116,9 +116,7 @@ class SeekAction extends Action<SeekIntent> {
     }
     final position = audioPlayer.position.inSeconds;
     await audioPlayer.seek(
-      Duration(
-        seconds: intent.forward ? position + 5 : position - 5,
-      ),
+      Duration(seconds: intent.forward ? position + 5 : position - 5),
     );
     return null;
   }

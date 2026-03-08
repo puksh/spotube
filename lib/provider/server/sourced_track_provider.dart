@@ -6,14 +6,17 @@ import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.da
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
-class SourcedTrackNotifier
-    extends FamilyAsyncNotifier<SourcedTrack, SpotubeFullTrackObject> {
+class SourcedTrackNotifier extends AsyncNotifier<SourcedTrack> {
+  SourcedTrackNotifier(this._arg);
+  final SpotubeFullTrackObject _arg;
+  SpotubeFullTrackObject get arg => _arg;
+
   @override
-  FutureOr<SourcedTrack> build(query) {
+  FutureOr<SourcedTrack> build() {
     ref.watch(audioSourcePluginProvider);
     ref.watch(audioSourcePresetsProvider);
 
-    return SourcedTrack.fetchFromTrack(query: query, ref: ref);
+    return SourcedTrack.fetchFromTrack(query: arg, ref: ref);
   }
 
   Future<SourcedTrack> refreshStreamingUrl() async {
@@ -43,7 +46,9 @@ class SourcedTrackNotifier
   }
 }
 
-final sourcedTrackProvider = AsyncNotifierProviderFamily<SourcedTrackNotifier,
-    SourcedTrack, SpotubeFullTrackObject>(
-  () => SourcedTrackNotifier(),
-);
+final sourcedTrackProvider =
+    AsyncNotifierProvider.family<
+      SourcedTrackNotifier,
+      SourcedTrack,
+      SpotubeFullTrackObject
+    >((arg) => SourcedTrackNotifier(arg));

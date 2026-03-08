@@ -12,30 +12,50 @@ class $AuthenticationTableTable extends AuthenticationTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<DecryptedText, String> cookie =
-      GeneratedColumn<String>('cookie', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<DecryptedText>(
-              $AuthenticationTableTable.$convertercookie);
+      GeneratedColumn<String>(
+        'cookie',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<DecryptedText>(
+        $AuthenticationTableTable.$convertercookie,
+      );
   @override
   late final GeneratedColumnWithTypeConverter<DecryptedText, String>
-      accessToken = GeneratedColumn<String>('access_token', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<DecryptedText>(
-              $AuthenticationTableTable.$converteraccessToken);
-  static const VerificationMeta _expirationMeta =
-      const VerificationMeta('expiration');
+  accessToken =
+      GeneratedColumn<String>(
+        'access_token',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<DecryptedText>(
+        $AuthenticationTableTable.$converteraccessToken,
+      );
+  static const VerificationMeta _expirationMeta = const VerificationMeta(
+    'expiration',
+  );
   @override
   late final GeneratedColumn<DateTime> expiration = GeneratedColumn<DateTime>(
-      'expiration', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+    'expiration',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, cookie, accessToken, expiration];
   @override
@@ -45,8 +65,9 @@ class $AuthenticationTableTable extends AuthenticationTable
   static const String $name = 'authentication_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<AuthenticationTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<AuthenticationTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -54,9 +75,9 @@ class $AuthenticationTableTable extends AuthenticationTable
     }
     if (data.containsKey('expiration')) {
       context.handle(
-          _expirationMeta,
-          expiration.isAcceptableOrUnknown(
-              data['expiration']!, _expirationMeta));
+        _expirationMeta,
+        expiration.isAcceptableOrUnknown(data['expiration']!, _expirationMeta),
+      );
     } else if (isInserting) {
       context.missing(_expirationMeta);
     }
@@ -66,20 +87,32 @@ class $AuthenticationTableTable extends AuthenticationTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  AuthenticationTableData map(Map<String, dynamic> data,
-      {String? tablePrefix}) {
+  AuthenticationTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return AuthenticationTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
       cookie: $AuthenticationTableTable.$convertercookie.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}cookie'])!),
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}cookie'],
+        )!,
+      ),
       accessToken: $AuthenticationTableTable.$converteraccessToken.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}access_token'])!),
-      expiration: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}expiration'])!,
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}access_token'],
+        )!,
+      ),
+      expiration: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}expiration'],
+      )!,
     );
   }
 
@@ -100,22 +133,25 @@ class AuthenticationTableData extends DataClass
   final DecryptedText cookie;
   final DecryptedText accessToken;
   final DateTime expiration;
-  const AuthenticationTableData(
-      {required this.id,
-      required this.cookie,
-      required this.accessToken,
-      required this.expiration});
+  const AuthenticationTableData({
+    required this.id,
+    required this.cookie,
+    required this.accessToken,
+    required this.expiration,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     {
       map['cookie'] = Variable<String>(
-          $AuthenticationTableTable.$convertercookie.toSql(cookie));
+        $AuthenticationTableTable.$convertercookie.toSql(cookie),
+      );
     }
     {
       map['access_token'] = Variable<String>(
-          $AuthenticationTableTable.$converteraccessToken.toSql(accessToken));
+        $AuthenticationTableTable.$converteraccessToken.toSql(accessToken),
+      );
     }
     map['expiration'] = Variable<DateTime>(expiration);
     return map;
@@ -130,8 +166,10 @@ class AuthenticationTableData extends DataClass
     );
   }
 
-  factory AuthenticationTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory AuthenticationTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AuthenticationTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -151,25 +189,27 @@ class AuthenticationTableData extends DataClass
     };
   }
 
-  AuthenticationTableData copyWith(
-          {int? id,
-          DecryptedText? cookie,
-          DecryptedText? accessToken,
-          DateTime? expiration}) =>
-      AuthenticationTableData(
-        id: id ?? this.id,
-        cookie: cookie ?? this.cookie,
-        accessToken: accessToken ?? this.accessToken,
-        expiration: expiration ?? this.expiration,
-      );
+  AuthenticationTableData copyWith({
+    int? id,
+    DecryptedText? cookie,
+    DecryptedText? accessToken,
+    DateTime? expiration,
+  }) => AuthenticationTableData(
+    id: id ?? this.id,
+    cookie: cookie ?? this.cookie,
+    accessToken: accessToken ?? this.accessToken,
+    expiration: expiration ?? this.expiration,
+  );
   AuthenticationTableData copyWithCompanion(AuthenticationTableCompanion data) {
     return AuthenticationTableData(
       id: data.id.present ? data.id.value : this.id,
       cookie: data.cookie.present ? data.cookie.value : this.cookie,
-      accessToken:
-          data.accessToken.present ? data.accessToken.value : this.accessToken,
-      expiration:
-          data.expiration.present ? data.expiration.value : this.expiration,
+      accessToken: data.accessToken.present
+          ? data.accessToken.value
+          : this.accessToken,
+      expiration: data.expiration.present
+          ? data.expiration.value
+          : this.expiration,
     );
   }
 
@@ -213,9 +253,9 @@ class AuthenticationTableCompanion
     required DecryptedText cookie,
     required DecryptedText accessToken,
     required DateTime expiration,
-  })  : cookie = Value(cookie),
-        accessToken = Value(accessToken),
-        expiration = Value(expiration);
+  }) : cookie = Value(cookie),
+       accessToken = Value(accessToken),
+       expiration = Value(expiration);
   static Insertable<AuthenticationTableData> custom({
     Expression<int>? id,
     Expression<String>? cookie,
@@ -230,11 +270,12 @@ class AuthenticationTableCompanion
     });
   }
 
-  AuthenticationTableCompanion copyWith(
-      {Value<int>? id,
-      Value<DecryptedText>? cookie,
-      Value<DecryptedText>? accessToken,
-      Value<DateTime>? expiration}) {
+  AuthenticationTableCompanion copyWith({
+    Value<int>? id,
+    Value<DecryptedText>? cookie,
+    Value<DecryptedText>? accessToken,
+    Value<DateTime>? expiration,
+  }) {
     return AuthenticationTableCompanion(
       id: id ?? this.id,
       cookie: cookie ?? this.cookie,
@@ -251,12 +292,15 @@ class AuthenticationTableCompanion
     }
     if (cookie.present) {
       map['cookie'] = Variable<String>(
-          $AuthenticationTableTable.$convertercookie.toSql(cookie.value));
+        $AuthenticationTableTable.$convertercookie.toSql(cookie.value),
+      );
     }
     if (accessToken.present) {
-      map['access_token'] = Variable<String>($AuthenticationTableTable
-          .$converteraccessToken
-          .toSql(accessToken.value));
+      map['access_token'] = Variable<String>(
+        $AuthenticationTableTable.$converteraccessToken.toSql(
+          accessToken.value,
+        ),
+      );
     }
     if (expiration.present) {
       map['expiration'] = Variable<DateTime>(expiration.value);
@@ -285,29 +329,45 @@ class $BlacklistTableTable extends BlacklistTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<BlacklistedType, String>
-      elementType = GeneratedColumn<String>('element_type', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<BlacklistedType>(
-              $BlacklistTableTable.$converterelementType);
-  static const VerificationMeta _elementIdMeta =
-      const VerificationMeta('elementId');
+  elementType = GeneratedColumn<String>(
+    'element_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<BlacklistedType>($BlacklistTableTable.$converterelementType);
+  static const VerificationMeta _elementIdMeta = const VerificationMeta(
+    'elementId',
+  );
   @override
   late final GeneratedColumn<String> elementId = GeneratedColumn<String>(
-      'element_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'element_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, name, elementType, elementId];
   @override
@@ -316,8 +376,10 @@ class $BlacklistTableTable extends BlacklistTable
   String get actualTableName => $name;
   static const String $name = 'blacklist_table';
   @override
-  VerificationContext validateIntegrity(Insertable<BlacklistTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<BlacklistTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -325,13 +387,17 @@ class $BlacklistTableTable extends BlacklistTable
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('element_id')) {
-      context.handle(_elementIdMeta,
-          elementId.isAcceptableOrUnknown(data['element_id']!, _elementIdMeta));
+      context.handle(
+        _elementIdMeta,
+        elementId.isAcceptableOrUnknown(data['element_id']!, _elementIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_elementIdMeta);
     }
@@ -344,15 +410,24 @@ class $BlacklistTableTable extends BlacklistTable
   BlacklistTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return BlacklistTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
       elementType: $BlacklistTableTable.$converterelementType.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}element_type'])!),
-      elementId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}element_id'])!,
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}element_type'],
+        )!,
+      ),
+      elementId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}element_id'],
+      )!,
     );
   }
 
@@ -362,8 +437,9 @@ class $BlacklistTableTable extends BlacklistTable
   }
 
   static JsonTypeConverter2<BlacklistedType, String, String>
-      $converterelementType =
-      const EnumNameConverter<BlacklistedType>(BlacklistedType.values);
+  $converterelementType = const EnumNameConverter<BlacklistedType>(
+    BlacklistedType.values,
+  );
 }
 
 class BlacklistTableData extends DataClass
@@ -372,11 +448,12 @@ class BlacklistTableData extends DataClass
   final String name;
   final BlacklistedType elementType;
   final String elementId;
-  const BlacklistTableData(
-      {required this.id,
-      required this.name,
-      required this.elementType,
-      required this.elementId});
+  const BlacklistTableData({
+    required this.id,
+    required this.name,
+    required this.elementType,
+    required this.elementId,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -384,7 +461,8 @@ class BlacklistTableData extends DataClass
     map['name'] = Variable<String>(name);
     {
       map['element_type'] = Variable<String>(
-          $BlacklistTableTable.$converterelementType.toSql(elementType));
+        $BlacklistTableTable.$converterelementType.toSql(elementType),
+      );
     }
     map['element_id'] = Variable<String>(elementId);
     return map;
@@ -399,14 +477,17 @@ class BlacklistTableData extends DataClass
     );
   }
 
-  factory BlacklistTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory BlacklistTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BlacklistTableData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      elementType: $BlacklistTableTable.$converterelementType
-          .fromJson(serializer.fromJson<String>(json['elementType'])),
+      elementType: $BlacklistTableTable.$converterelementType.fromJson(
+        serializer.fromJson<String>(json['elementType']),
+      ),
       elementId: serializer.fromJson<String>(json['elementId']),
     );
   }
@@ -417,28 +498,30 @@ class BlacklistTableData extends DataClass
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'elementType': serializer.toJson<String>(
-          $BlacklistTableTable.$converterelementType.toJson(elementType)),
+        $BlacklistTableTable.$converterelementType.toJson(elementType),
+      ),
       'elementId': serializer.toJson<String>(elementId),
     };
   }
 
-  BlacklistTableData copyWith(
-          {int? id,
-          String? name,
-          BlacklistedType? elementType,
-          String? elementId}) =>
-      BlacklistTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        elementType: elementType ?? this.elementType,
-        elementId: elementId ?? this.elementId,
-      );
+  BlacklistTableData copyWith({
+    int? id,
+    String? name,
+    BlacklistedType? elementType,
+    String? elementId,
+  }) => BlacklistTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    elementType: elementType ?? this.elementType,
+    elementId: elementId ?? this.elementId,
+  );
   BlacklistTableData copyWithCompanion(BlacklistTableCompanion data) {
     return BlacklistTableData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      elementType:
-          data.elementType.present ? data.elementType.value : this.elementType,
+      elementType: data.elementType.present
+          ? data.elementType.value
+          : this.elementType,
       elementId: data.elementId.present ? data.elementId.value : this.elementId,
     );
   }
@@ -482,9 +565,9 @@ class BlacklistTableCompanion extends UpdateCompanion<BlacklistTableData> {
     required String name,
     required BlacklistedType elementType,
     required String elementId,
-  })  : name = Value(name),
-        elementType = Value(elementType),
-        elementId = Value(elementId);
+  }) : name = Value(name),
+       elementType = Value(elementType),
+       elementId = Value(elementId);
   static Insertable<BlacklistTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -499,11 +582,12 @@ class BlacklistTableCompanion extends UpdateCompanion<BlacklistTableData> {
     });
   }
 
-  BlacklistTableCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
-      Value<BlacklistedType>? elementType,
-      Value<String>? elementId}) {
+  BlacklistTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<BlacklistedType>? elementType,
+    Value<String>? elementId,
+  }) {
     return BlacklistTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -523,7 +607,8 @@ class BlacklistTableCompanion extends UpdateCompanion<BlacklistTableData> {
     }
     if (elementType.present) {
       map['element_type'] = Variable<String>(
-          $BlacklistTableTable.$converterelementType.toSql(elementType.value));
+        $BlacklistTableTable.$converterelementType.toSql(elementType.value),
+      );
     }
     if (elementId.present) {
       map['element_id'] = Variable<String>(elementId.value);
@@ -552,256 +637,361 @@ class $PreferencesTableTable extends PreferencesTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _albumColorSyncMeta =
-      const VerificationMeta('albumColorSync');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _albumColorSyncMeta = const VerificationMeta(
+    'albumColorSync',
+  );
   @override
   late final GeneratedColumn<bool> albumColorSync = GeneratedColumn<bool>(
-      'album_color_sync', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("album_color_sync" IN (0, 1))'),
-      defaultValue: const Constant(true));
-  static const VerificationMeta _amoledDarkThemeMeta =
-      const VerificationMeta('amoledDarkTheme');
+    'album_color_sync',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("album_color_sync" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _amoledDarkThemeMeta = const VerificationMeta(
+    'amoledDarkTheme',
+  );
   @override
   late final GeneratedColumn<bool> amoledDarkTheme = GeneratedColumn<bool>(
-      'amoled_dark_theme', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("amoled_dark_theme" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _checkUpdateMeta =
-      const VerificationMeta('checkUpdate');
+    'amoled_dark_theme',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("amoled_dark_theme" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _checkUpdateMeta = const VerificationMeta(
+    'checkUpdate',
+  );
   @override
   late final GeneratedColumn<bool> checkUpdate = GeneratedColumn<bool>(
-      'check_update', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("check_update" IN (0, 1))'),
-      defaultValue: const Constant(true));
-  static const VerificationMeta _normalizeAudioMeta =
-      const VerificationMeta('normalizeAudio');
+    'check_update',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("check_update" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _normalizeAudioMeta = const VerificationMeta(
+    'normalizeAudio',
+  );
   @override
   late final GeneratedColumn<bool> normalizeAudio = GeneratedColumn<bool>(
-      'normalize_audio', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("normalize_audio" IN (0, 1))'),
-      defaultValue: const Constant(false));
+    'normalize_audio',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("normalize_audio" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _showSystemTrayIconMeta =
       const VerificationMeta('showSystemTrayIcon');
   @override
   late final GeneratedColumn<bool> showSystemTrayIcon = GeneratedColumn<bool>(
-      'show_system_tray_icon', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("show_system_tray_icon" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _systemTitleBarMeta =
-      const VerificationMeta('systemTitleBar');
+    'show_system_tray_icon',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("show_system_tray_icon" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _systemTitleBarMeta = const VerificationMeta(
+    'systemTitleBar',
+  );
   @override
   late final GeneratedColumn<bool> systemTitleBar = GeneratedColumn<bool>(
-      'system_title_bar', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("system_title_bar" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _skipNonMusicMeta =
-      const VerificationMeta('skipNonMusic');
+    'system_title_bar',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("system_title_bar" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _skipNonMusicMeta = const VerificationMeta(
+    'skipNonMusic',
+  );
   @override
   late final GeneratedColumn<bool> skipNonMusic = GeneratedColumn<bool>(
-      'skip_non_music', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("skip_non_music" IN (0, 1))'),
-      defaultValue: const Constant(false));
+    'skip_non_music',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("skip_non_music" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<CloseBehavior, String>
-      closeBehavior = GeneratedColumn<String>(
-              'close_behavior', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant(CloseBehavior.close.name))
-          .withConverter<CloseBehavior>(
-              $PreferencesTableTable.$convertercloseBehavior);
+  closeBehavior =
+      GeneratedColumn<String>(
+        'close_behavior',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(CloseBehavior.close.name),
+      ).withConverter<CloseBehavior>(
+        $PreferencesTableTable.$convertercloseBehavior,
+      );
   @override
   late final GeneratedColumnWithTypeConverter<SpotubeColor, String>
-      accentColorScheme = GeneratedColumn<String>(
-              'accent_color_scheme', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: const Constant("Slate:0xff64748b"))
-          .withConverter<SpotubeColor>(
-              $PreferencesTableTable.$converteraccentColorScheme);
+  accentColorScheme =
+      GeneratedColumn<String>(
+        'accent_color_scheme',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant("Slate:0xff64748b"),
+      ).withConverter<SpotubeColor>(
+        $PreferencesTableTable.$converteraccentColorScheme,
+      );
   @override
   late final GeneratedColumnWithTypeConverter<LayoutMode, String> layoutMode =
-      GeneratedColumn<String>('layout_mode', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant(LayoutMode.adaptive.name))
-          .withConverter<LayoutMode>(
-              $PreferencesTableTable.$converterlayoutMode);
+      GeneratedColumn<String>(
+        'layout_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(LayoutMode.adaptive.name),
+      ).withConverter<LayoutMode>($PreferencesTableTable.$converterlayoutMode);
   @override
   late final GeneratedColumnWithTypeConverter<Locale, String> locale =
-      GeneratedColumn<String>('locale', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: const Constant(
-                  '{"languageCode":"system","countryCode":"system"}'))
-          .withConverter<Locale>($PreferencesTableTable.$converterlocale);
+      GeneratedColumn<String>(
+        'locale',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(
+          '{"languageCode":"system","countryCode":"system"}',
+        ),
+      ).withConverter<Locale>($PreferencesTableTable.$converterlocale);
   @override
   late final GeneratedColumnWithTypeConverter<Market, String> market =
-      GeneratedColumn<String>('market', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant(Market.US.name))
-          .withConverter<Market>($PreferencesTableTable.$convertermarket);
+      GeneratedColumn<String>(
+        'market',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(Market.US.name),
+      ).withConverter<Market>($PreferencesTableTable.$convertermarket);
   @override
   late final GeneratedColumnWithTypeConverter<SearchMode, String> searchMode =
-      GeneratedColumn<String>('search_mode', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant(SearchMode.youtube.name))
-          .withConverter<SearchMode>(
-              $PreferencesTableTable.$convertersearchMode);
-  static const VerificationMeta _downloadLocationMeta =
-      const VerificationMeta('downloadLocation');
+      GeneratedColumn<String>(
+        'search_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(SearchMode.youtube.name),
+      ).withConverter<SearchMode>($PreferencesTableTable.$convertersearchMode);
+  static const VerificationMeta _downloadLocationMeta = const VerificationMeta(
+    'downloadLocation',
+  );
   @override
   late final GeneratedColumn<String> downloadLocation = GeneratedColumn<String>(
-      'download_location', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(""));
+    'download_location',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(""),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
-      localLibraryLocation = GeneratedColumn<String>(
-              'local_library_location', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: const Constant(""))
-          .withConverter<List<String>>(
-              $PreferencesTableTable.$converterlocalLibraryLocation);
+  localLibraryLocation =
+      GeneratedColumn<String>(
+        'local_library_location',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(""),
+      ).withConverter<List<String>>(
+        $PreferencesTableTable.$converterlocalLibraryLocation,
+      );
   @override
   late final GeneratedColumnWithTypeConverter<ThemeMode, String> themeMode =
-      GeneratedColumn<String>('theme_mode', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant(ThemeMode.system.name))
-          .withConverter<ThemeMode>($PreferencesTableTable.$converterthemeMode);
-  static const VerificationMeta _audioSourceIdMeta =
-      const VerificationMeta('audioSourceId');
+      GeneratedColumn<String>(
+        'theme_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(ThemeMode.system.name),
+      ).withConverter<ThemeMode>($PreferencesTableTable.$converterthemeMode);
+  static const VerificationMeta _audioSourceIdMeta = const VerificationMeta(
+    'audioSourceId',
+  );
   @override
   late final GeneratedColumn<String> audioSourceId = GeneratedColumn<String>(
-      'audio_source_id', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'audio_source_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<YoutubeClientEngine, String>
-      youtubeClientEngine = GeneratedColumn<String>(
-              'youtube_client_engine', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant(YoutubeClientEngine.youtubeExplode.name))
-          .withConverter<YoutubeClientEngine>(
-              $PreferencesTableTable.$converteryoutubeClientEngine);
-  static const VerificationMeta _discordPresenceMeta =
-      const VerificationMeta('discordPresence');
+  youtubeClientEngine =
+      GeneratedColumn<String>(
+        'youtube_client_engine',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(YoutubeClientEngine.youtubeExplode.name),
+      ).withConverter<YoutubeClientEngine>(
+        $PreferencesTableTable.$converteryoutubeClientEngine,
+      );
+  static const VerificationMeta _discordPresenceMeta = const VerificationMeta(
+    'discordPresence',
+  );
   @override
   late final GeneratedColumn<bool> discordPresence = GeneratedColumn<bool>(
-      'discord_presence', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("discord_presence" IN (0, 1))'),
-      defaultValue: const Constant(true));
-  static const VerificationMeta _endlessPlaybackMeta =
-      const VerificationMeta('endlessPlayback');
+    'discord_presence',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("discord_presence" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _endlessPlaybackMeta = const VerificationMeta(
+    'endlessPlayback',
+  );
   @override
   late final GeneratedColumn<bool> endlessPlayback = GeneratedColumn<bool>(
-      'endless_playback', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("endless_playback" IN (0, 1))'),
-      defaultValue: const Constant(true));
-  static const VerificationMeta _enableConnectMeta =
-      const VerificationMeta('enableConnect');
+    'endless_playback',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("endless_playback" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _enableConnectMeta = const VerificationMeta(
+    'enableConnect',
+  );
   @override
   late final GeneratedColumn<bool> enableConnect = GeneratedColumn<bool>(
-      'enable_connect', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("enable_connect" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _connectPortMeta =
-      const VerificationMeta('connectPort');
+    'enable_connect',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enable_connect" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _connectPortMeta = const VerificationMeta(
+    'connectPort',
+  );
   @override
   late final GeneratedColumn<int> connectPort = GeneratedColumn<int>(
-      'connect_port', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(-1));
-  static const VerificationMeta _cacheMusicMeta =
-      const VerificationMeta('cacheMusic');
+    'connect_port',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(-1),
+  );
+  static const VerificationMeta _cacheMusicMeta = const VerificationMeta(
+    'cacheMusic',
+  );
   @override
   late final GeneratedColumn<bool> cacheMusic = GeneratedColumn<bool>(
-      'cache_music', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("cache_music" IN (0, 1))'),
-      defaultValue: const Constant(true));
+    'cache_music',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("cache_music" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   static const VerificationMeta _disableGlassEffectMeta =
       const VerificationMeta('disableGlassEffect');
   @override
   late final GeneratedColumn<bool> disableGlassEffect = GeneratedColumn<bool>(
-      'disable_glass_effect', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("disable_glass_effect" IN (0, 1))'),
-      defaultValue: const Constant(false));
+    'disable_glass_effect',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("disable_glass_effect" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        albumColorSync,
-        amoledDarkTheme,
-        checkUpdate,
-        normalizeAudio,
-        showSystemTrayIcon,
-        systemTitleBar,
-        skipNonMusic,
-        closeBehavior,
-        accentColorScheme,
-        layoutMode,
-        locale,
-        market,
-        searchMode,
-        downloadLocation,
-        localLibraryLocation,
-        themeMode,
-        audioSourceId,
-        youtubeClientEngine,
-        discordPresence,
-        endlessPlayback,
-        enableConnect,
-        connectPort,
-        cacheMusic,
-        disableGlassEffect
-      ];
+    id,
+    albumColorSync,
+    amoledDarkTheme,
+    checkUpdate,
+    normalizeAudio,
+    showSystemTrayIcon,
+    systemTitleBar,
+    skipNonMusic,
+    closeBehavior,
+    accentColorScheme,
+    layoutMode,
+    locale,
+    market,
+    searchMode,
+    downloadLocation,
+    localLibraryLocation,
+    themeMode,
+    audioSourceId,
+    youtubeClientEngine,
+    discordPresence,
+    endlessPlayback,
+    enableConnect,
+    connectPort,
+    cacheMusic,
+    disableGlassEffect,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -809,8 +999,9 @@ class $PreferencesTableTable extends PreferencesTable
   static const String $name = 'preferences_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<PreferencesTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<PreferencesTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -818,93 +1009,135 @@ class $PreferencesTableTable extends PreferencesTable
     }
     if (data.containsKey('album_color_sync')) {
       context.handle(
+        _albumColorSyncMeta,
+        albumColorSync.isAcceptableOrUnknown(
+          data['album_color_sync']!,
           _albumColorSyncMeta,
-          albumColorSync.isAcceptableOrUnknown(
-              data['album_color_sync']!, _albumColorSyncMeta));
+        ),
+      );
     }
     if (data.containsKey('amoled_dark_theme')) {
       context.handle(
+        _amoledDarkThemeMeta,
+        amoledDarkTheme.isAcceptableOrUnknown(
+          data['amoled_dark_theme']!,
           _amoledDarkThemeMeta,
-          amoledDarkTheme.isAcceptableOrUnknown(
-              data['amoled_dark_theme']!, _amoledDarkThemeMeta));
+        ),
+      );
     }
     if (data.containsKey('check_update')) {
       context.handle(
+        _checkUpdateMeta,
+        checkUpdate.isAcceptableOrUnknown(
+          data['check_update']!,
           _checkUpdateMeta,
-          checkUpdate.isAcceptableOrUnknown(
-              data['check_update']!, _checkUpdateMeta));
+        ),
+      );
     }
     if (data.containsKey('normalize_audio')) {
       context.handle(
+        _normalizeAudioMeta,
+        normalizeAudio.isAcceptableOrUnknown(
+          data['normalize_audio']!,
           _normalizeAudioMeta,
-          normalizeAudio.isAcceptableOrUnknown(
-              data['normalize_audio']!, _normalizeAudioMeta));
+        ),
+      );
     }
     if (data.containsKey('show_system_tray_icon')) {
       context.handle(
+        _showSystemTrayIconMeta,
+        showSystemTrayIcon.isAcceptableOrUnknown(
+          data['show_system_tray_icon']!,
           _showSystemTrayIconMeta,
-          showSystemTrayIcon.isAcceptableOrUnknown(
-              data['show_system_tray_icon']!, _showSystemTrayIconMeta));
+        ),
+      );
     }
     if (data.containsKey('system_title_bar')) {
       context.handle(
+        _systemTitleBarMeta,
+        systemTitleBar.isAcceptableOrUnknown(
+          data['system_title_bar']!,
           _systemTitleBarMeta,
-          systemTitleBar.isAcceptableOrUnknown(
-              data['system_title_bar']!, _systemTitleBarMeta));
+        ),
+      );
     }
     if (data.containsKey('skip_non_music')) {
       context.handle(
+        _skipNonMusicMeta,
+        skipNonMusic.isAcceptableOrUnknown(
+          data['skip_non_music']!,
           _skipNonMusicMeta,
-          skipNonMusic.isAcceptableOrUnknown(
-              data['skip_non_music']!, _skipNonMusicMeta));
+        ),
+      );
     }
     if (data.containsKey('download_location')) {
       context.handle(
+        _downloadLocationMeta,
+        downloadLocation.isAcceptableOrUnknown(
+          data['download_location']!,
           _downloadLocationMeta,
-          downloadLocation.isAcceptableOrUnknown(
-              data['download_location']!, _downloadLocationMeta));
+        ),
+      );
     }
     if (data.containsKey('audio_source_id')) {
       context.handle(
+        _audioSourceIdMeta,
+        audioSourceId.isAcceptableOrUnknown(
+          data['audio_source_id']!,
           _audioSourceIdMeta,
-          audioSourceId.isAcceptableOrUnknown(
-              data['audio_source_id']!, _audioSourceIdMeta));
+        ),
+      );
     }
     if (data.containsKey('discord_presence')) {
       context.handle(
+        _discordPresenceMeta,
+        discordPresence.isAcceptableOrUnknown(
+          data['discord_presence']!,
           _discordPresenceMeta,
-          discordPresence.isAcceptableOrUnknown(
-              data['discord_presence']!, _discordPresenceMeta));
+        ),
+      );
     }
     if (data.containsKey('endless_playback')) {
       context.handle(
+        _endlessPlaybackMeta,
+        endlessPlayback.isAcceptableOrUnknown(
+          data['endless_playback']!,
           _endlessPlaybackMeta,
-          endlessPlayback.isAcceptableOrUnknown(
-              data['endless_playback']!, _endlessPlaybackMeta));
+        ),
+      );
     }
     if (data.containsKey('enable_connect')) {
       context.handle(
+        _enableConnectMeta,
+        enableConnect.isAcceptableOrUnknown(
+          data['enable_connect']!,
           _enableConnectMeta,
-          enableConnect.isAcceptableOrUnknown(
-              data['enable_connect']!, _enableConnectMeta));
+        ),
+      );
     }
     if (data.containsKey('connect_port')) {
       context.handle(
+        _connectPortMeta,
+        connectPort.isAcceptableOrUnknown(
+          data['connect_port']!,
           _connectPortMeta,
-          connectPort.isAcceptableOrUnknown(
-              data['connect_port']!, _connectPortMeta));
+        ),
+      );
     }
     if (data.containsKey('cache_music')) {
       context.handle(
-          _cacheMusicMeta,
-          cacheMusic.isAcceptableOrUnknown(
-              data['cache_music']!, _cacheMusicMeta));
+        _cacheMusicMeta,
+        cacheMusic.isAcceptableOrUnknown(data['cache_music']!, _cacheMusicMeta),
+      );
     }
     if (data.containsKey('disable_glass_effect')) {
       context.handle(
+        _disableGlassEffectMeta,
+        disableGlassEffect.isAcceptableOrUnknown(
+          data['disable_glass_effect']!,
           _disableGlassEffectMeta,
-          disableGlassEffect.isAcceptableOrUnknown(
-              data['disable_glass_effect']!, _disableGlassEffectMeta));
+        ),
+      );
     }
     return context;
   }
@@ -915,66 +1148,128 @@ class $PreferencesTableTable extends PreferencesTable
   PreferencesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return PreferencesTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      albumColorSync: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}album_color_sync'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      albumColorSync: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}album_color_sync'],
+      )!,
       amoledDarkTheme: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}amoled_dark_theme'])!,
-      checkUpdate: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}check_update'])!,
-      normalizeAudio: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}normalize_audio'])!,
+        DriftSqlType.bool,
+        data['${effectivePrefix}amoled_dark_theme'],
+      )!,
+      checkUpdate: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}check_update'],
+      )!,
+      normalizeAudio: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}normalize_audio'],
+      )!,
       showSystemTrayIcon: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}show_system_tray_icon'])!,
-      systemTitleBar: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}system_title_bar'])!,
-      skipNonMusic: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}skip_non_music'])!,
+        DriftSqlType.bool,
+        data['${effectivePrefix}show_system_tray_icon'],
+      )!,
+      systemTitleBar: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}system_title_bar'],
+      )!,
+      skipNonMusic: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}skip_non_music'],
+      )!,
       closeBehavior: $PreferencesTableTable.$convertercloseBehavior.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}close_behavior'])!),
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}close_behavior'],
+        )!,
+      ),
       accentColorScheme: $PreferencesTableTable.$converteraccentColorScheme
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}accent_color_scheme'])!),
+          .fromSql(
+            attachedDatabase.typeMapping.read(
+              DriftSqlType.string,
+              data['${effectivePrefix}accent_color_scheme'],
+            )!,
+          ),
       layoutMode: $PreferencesTableTable.$converterlayoutMode.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}layout_mode'])!),
-      locale: $PreferencesTableTable.$converterlocale.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}locale'])!),
-      market: $PreferencesTableTable.$convertermarket.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}market'])!),
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}layout_mode'],
+        )!,
+      ),
+      locale: $PreferencesTableTable.$converterlocale.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}locale'],
+        )!,
+      ),
+      market: $PreferencesTableTable.$convertermarket.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}market'],
+        )!,
+      ),
       searchMode: $PreferencesTableTable.$convertersearchMode.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}search_mode'])!),
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}search_mode'],
+        )!,
+      ),
       downloadLocation: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}download_location'])!,
+        DriftSqlType.string,
+        data['${effectivePrefix}download_location'],
+      )!,
       localLibraryLocation: $PreferencesTableTable
           .$converterlocalLibraryLocation
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}local_library_location'])!),
+          .fromSql(
+            attachedDatabase.typeMapping.read(
+              DriftSqlType.string,
+              data['${effectivePrefix}local_library_location'],
+            )!,
+          ),
       themeMode: $PreferencesTableTable.$converterthemeMode.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}theme_mode'])!),
-      audioSourceId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}audio_source_id']),
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}theme_mode'],
+        )!,
+      ),
+      audioSourceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_source_id'],
+      ),
       youtubeClientEngine: $PreferencesTableTable.$converteryoutubeClientEngine
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}youtube_client_engine'])!),
-      discordPresence: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}discord_presence'])!,
-      endlessPlayback: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}endless_playback'])!,
-      enableConnect: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}enable_connect'])!,
-      connectPort: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}connect_port'])!,
-      cacheMusic: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}cache_music'])!,
+          .fromSql(
+            attachedDatabase.typeMapping.read(
+              DriftSqlType.string,
+              data['${effectivePrefix}youtube_client_engine'],
+            )!,
+          ),
+      discordPresence: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}discord_presence'],
+      )!,
+      endlessPlayback: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}endless_playback'],
+      )!,
+      enableConnect: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enable_connect'],
+      )!,
+      connectPort: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}connect_port'],
+      )!,
+      cacheMusic: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}cache_music'],
+      )!,
       disableGlassEffect: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}disable_glass_effect'])!,
+        DriftSqlType.bool,
+        data['${effectivePrefix}disable_glass_effect'],
+      )!,
     );
   }
 
@@ -984,8 +1279,9 @@ class $PreferencesTableTable extends PreferencesTable
   }
 
   static JsonTypeConverter2<CloseBehavior, String, String>
-      $convertercloseBehavior =
-      const EnumNameConverter<CloseBehavior>(CloseBehavior.values);
+  $convertercloseBehavior = const EnumNameConverter<CloseBehavior>(
+    CloseBehavior.values,
+  );
   static TypeConverter<SpotubeColor, String> $converteraccentColorScheme =
       const SpotubeColorConverter();
   static JsonTypeConverter2<LayoutMode, String, String> $converterlayoutMode =
@@ -1001,8 +1297,9 @@ class $PreferencesTableTable extends PreferencesTable
   static JsonTypeConverter2<ThemeMode, String, String> $converterthemeMode =
       const EnumNameConverter<ThemeMode>(ThemeMode.values);
   static JsonTypeConverter2<YoutubeClientEngine, String, String>
-      $converteryoutubeClientEngine =
-      const EnumNameConverter<YoutubeClientEngine>(YoutubeClientEngine.values);
+  $converteryoutubeClientEngine = const EnumNameConverter<YoutubeClientEngine>(
+    YoutubeClientEngine.values,
+  );
 }
 
 class PreferencesTableData extends DataClass
@@ -1032,32 +1329,33 @@ class PreferencesTableData extends DataClass
   final int connectPort;
   final bool cacheMusic;
   final bool disableGlassEffect;
-  const PreferencesTableData(
-      {required this.id,
-      required this.albumColorSync,
-      required this.amoledDarkTheme,
-      required this.checkUpdate,
-      required this.normalizeAudio,
-      required this.showSystemTrayIcon,
-      required this.systemTitleBar,
-      required this.skipNonMusic,
-      required this.closeBehavior,
-      required this.accentColorScheme,
-      required this.layoutMode,
-      required this.locale,
-      required this.market,
-      required this.searchMode,
-      required this.downloadLocation,
-      required this.localLibraryLocation,
-      required this.themeMode,
-      this.audioSourceId,
-      required this.youtubeClientEngine,
-      required this.discordPresence,
-      required this.endlessPlayback,
-      required this.enableConnect,
-      required this.connectPort,
-      required this.cacheMusic,
-      required this.disableGlassEffect});
+  const PreferencesTableData({
+    required this.id,
+    required this.albumColorSync,
+    required this.amoledDarkTheme,
+    required this.checkUpdate,
+    required this.normalizeAudio,
+    required this.showSystemTrayIcon,
+    required this.systemTitleBar,
+    required this.skipNonMusic,
+    required this.closeBehavior,
+    required this.accentColorScheme,
+    required this.layoutMode,
+    required this.locale,
+    required this.market,
+    required this.searchMode,
+    required this.downloadLocation,
+    required this.localLibraryLocation,
+    required this.themeMode,
+    this.audioSourceId,
+    required this.youtubeClientEngine,
+    required this.discordPresence,
+    required this.endlessPlayback,
+    required this.enableConnect,
+    required this.connectPort,
+    required this.cacheMusic,
+    required this.disableGlassEffect,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1071,46 +1369,58 @@ class PreferencesTableData extends DataClass
     map['skip_non_music'] = Variable<bool>(skipNonMusic);
     {
       map['close_behavior'] = Variable<String>(
-          $PreferencesTableTable.$convertercloseBehavior.toSql(closeBehavior));
+        $PreferencesTableTable.$convertercloseBehavior.toSql(closeBehavior),
+      );
     }
     {
-      map['accent_color_scheme'] = Variable<String>($PreferencesTableTable
-          .$converteraccentColorScheme
-          .toSql(accentColorScheme));
+      map['accent_color_scheme'] = Variable<String>(
+        $PreferencesTableTable.$converteraccentColorScheme.toSql(
+          accentColorScheme,
+        ),
+      );
     }
     {
       map['layout_mode'] = Variable<String>(
-          $PreferencesTableTable.$converterlayoutMode.toSql(layoutMode));
+        $PreferencesTableTable.$converterlayoutMode.toSql(layoutMode),
+      );
     }
     {
       map['locale'] = Variable<String>(
-          $PreferencesTableTable.$converterlocale.toSql(locale));
+        $PreferencesTableTable.$converterlocale.toSql(locale),
+      );
     }
     {
       map['market'] = Variable<String>(
-          $PreferencesTableTable.$convertermarket.toSql(market));
+        $PreferencesTableTable.$convertermarket.toSql(market),
+      );
     }
     {
       map['search_mode'] = Variable<String>(
-          $PreferencesTableTable.$convertersearchMode.toSql(searchMode));
+        $PreferencesTableTable.$convertersearchMode.toSql(searchMode),
+      );
     }
     map['download_location'] = Variable<String>(downloadLocation);
     {
-      map['local_library_location'] = Variable<String>($PreferencesTableTable
-          .$converterlocalLibraryLocation
-          .toSql(localLibraryLocation));
+      map['local_library_location'] = Variable<String>(
+        $PreferencesTableTable.$converterlocalLibraryLocation.toSql(
+          localLibraryLocation,
+        ),
+      );
     }
     {
       map['theme_mode'] = Variable<String>(
-          $PreferencesTableTable.$converterthemeMode.toSql(themeMode));
+        $PreferencesTableTable.$converterthemeMode.toSql(themeMode),
+      );
     }
     if (!nullToAbsent || audioSourceId != null) {
       map['audio_source_id'] = Variable<String>(audioSourceId);
     }
     {
-      map['youtube_client_engine'] = Variable<String>($PreferencesTableTable
-          .$converteryoutubeClientEngine
-          .toSql(youtubeClientEngine));
+      map['youtube_client_engine'] = Variable<String>(
+        $PreferencesTableTable.$converteryoutubeClientEngine.toSql(
+          youtubeClientEngine,
+        ),
+      );
     }
     map['discord_presence'] = Variable<bool>(discordPresence);
     map['endless_playback'] = Variable<bool>(endlessPlayback);
@@ -1153,8 +1463,10 @@ class PreferencesTableData extends DataClass
     );
   }
 
-  factory PreferencesTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory PreferencesTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return PreferencesTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -1165,22 +1477,29 @@ class PreferencesTableData extends DataClass
       showSystemTrayIcon: serializer.fromJson<bool>(json['showSystemTrayIcon']),
       systemTitleBar: serializer.fromJson<bool>(json['systemTitleBar']),
       skipNonMusic: serializer.fromJson<bool>(json['skipNonMusic']),
-      closeBehavior: $PreferencesTableTable.$convertercloseBehavior
-          .fromJson(serializer.fromJson<String>(json['closeBehavior'])),
-      accentColorScheme:
-          serializer.fromJson<SpotubeColor>(json['accentColorScheme']),
-      layoutMode: $PreferencesTableTable.$converterlayoutMode
-          .fromJson(serializer.fromJson<String>(json['layoutMode'])),
+      closeBehavior: $PreferencesTableTable.$convertercloseBehavior.fromJson(
+        serializer.fromJson<String>(json['closeBehavior']),
+      ),
+      accentColorScheme: serializer.fromJson<SpotubeColor>(
+        json['accentColorScheme'],
+      ),
+      layoutMode: $PreferencesTableTable.$converterlayoutMode.fromJson(
+        serializer.fromJson<String>(json['layoutMode']),
+      ),
       locale: serializer.fromJson<Locale>(json['locale']),
-      market: $PreferencesTableTable.$convertermarket
-          .fromJson(serializer.fromJson<String>(json['market'])),
-      searchMode: $PreferencesTableTable.$convertersearchMode
-          .fromJson(serializer.fromJson<String>(json['searchMode'])),
+      market: $PreferencesTableTable.$convertermarket.fromJson(
+        serializer.fromJson<String>(json['market']),
+      ),
+      searchMode: $PreferencesTableTable.$convertersearchMode.fromJson(
+        serializer.fromJson<String>(json['searchMode']),
+      ),
       downloadLocation: serializer.fromJson<String>(json['downloadLocation']),
-      localLibraryLocation:
-          serializer.fromJson<List<String>>(json['localLibraryLocation']),
-      themeMode: $PreferencesTableTable.$converterthemeMode
-          .fromJson(serializer.fromJson<String>(json['themeMode'])),
+      localLibraryLocation: serializer.fromJson<List<String>>(
+        json['localLibraryLocation'],
+      ),
+      themeMode: $PreferencesTableTable.$converterthemeMode.fromJson(
+        serializer.fromJson<String>(json['themeMode']),
+      ),
       audioSourceId: serializer.fromJson<String?>(json['audioSourceId']),
       youtubeClientEngine: $PreferencesTableTable.$converteryoutubeClientEngine
           .fromJson(serializer.fromJson<String>(json['youtubeClientEngine'])),
@@ -1205,24 +1524,32 @@ class PreferencesTableData extends DataClass
       'systemTitleBar': serializer.toJson<bool>(systemTitleBar),
       'skipNonMusic': serializer.toJson<bool>(skipNonMusic),
       'closeBehavior': serializer.toJson<String>(
-          $PreferencesTableTable.$convertercloseBehavior.toJson(closeBehavior)),
+        $PreferencesTableTable.$convertercloseBehavior.toJson(closeBehavior),
+      ),
       'accentColorScheme': serializer.toJson<SpotubeColor>(accentColorScheme),
       'layoutMode': serializer.toJson<String>(
-          $PreferencesTableTable.$converterlayoutMode.toJson(layoutMode)),
+        $PreferencesTableTable.$converterlayoutMode.toJson(layoutMode),
+      ),
       'locale': serializer.toJson<Locale>(locale),
       'market': serializer.toJson<String>(
-          $PreferencesTableTable.$convertermarket.toJson(market)),
+        $PreferencesTableTable.$convertermarket.toJson(market),
+      ),
       'searchMode': serializer.toJson<String>(
-          $PreferencesTableTable.$convertersearchMode.toJson(searchMode)),
+        $PreferencesTableTable.$convertersearchMode.toJson(searchMode),
+      ),
       'downloadLocation': serializer.toJson<String>(downloadLocation),
-      'localLibraryLocation':
-          serializer.toJson<List<String>>(localLibraryLocation),
+      'localLibraryLocation': serializer.toJson<List<String>>(
+        localLibraryLocation,
+      ),
       'themeMode': serializer.toJson<String>(
-          $PreferencesTableTable.$converterthemeMode.toJson(themeMode)),
+        $PreferencesTableTable.$converterthemeMode.toJson(themeMode),
+      ),
       'audioSourceId': serializer.toJson<String?>(audioSourceId),
-      'youtubeClientEngine': serializer.toJson<String>($PreferencesTableTable
-          .$converteryoutubeClientEngine
-          .toJson(youtubeClientEngine)),
+      'youtubeClientEngine': serializer.toJson<String>(
+        $PreferencesTableTable.$converteryoutubeClientEngine.toJson(
+          youtubeClientEngine,
+        ),
+      ),
       'discordPresence': serializer.toJson<bool>(discordPresence),
       'endlessPlayback': serializer.toJson<bool>(endlessPlayback),
       'enableConnect': serializer.toJson<bool>(enableConnect),
@@ -1232,60 +1559,61 @@ class PreferencesTableData extends DataClass
     };
   }
 
-  PreferencesTableData copyWith(
-          {int? id,
-          bool? albumColorSync,
-          bool? amoledDarkTheme,
-          bool? checkUpdate,
-          bool? normalizeAudio,
-          bool? showSystemTrayIcon,
-          bool? systemTitleBar,
-          bool? skipNonMusic,
-          CloseBehavior? closeBehavior,
-          SpotubeColor? accentColorScheme,
-          LayoutMode? layoutMode,
-          Locale? locale,
-          Market? market,
-          SearchMode? searchMode,
-          String? downloadLocation,
-          List<String>? localLibraryLocation,
-          ThemeMode? themeMode,
-          Value<String?> audioSourceId = const Value.absent(),
-          YoutubeClientEngine? youtubeClientEngine,
-          bool? discordPresence,
-          bool? endlessPlayback,
-          bool? enableConnect,
-          int? connectPort,
-          bool? cacheMusic,
-          bool? disableGlassEffect}) =>
-      PreferencesTableData(
-        id: id ?? this.id,
-        albumColorSync: albumColorSync ?? this.albumColorSync,
-        amoledDarkTheme: amoledDarkTheme ?? this.amoledDarkTheme,
-        checkUpdate: checkUpdate ?? this.checkUpdate,
-        normalizeAudio: normalizeAudio ?? this.normalizeAudio,
-        showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
-        systemTitleBar: systemTitleBar ?? this.systemTitleBar,
-        skipNonMusic: skipNonMusic ?? this.skipNonMusic,
-        closeBehavior: closeBehavior ?? this.closeBehavior,
-        accentColorScheme: accentColorScheme ?? this.accentColorScheme,
-        layoutMode: layoutMode ?? this.layoutMode,
-        locale: locale ?? this.locale,
-        market: market ?? this.market,
-        searchMode: searchMode ?? this.searchMode,
-        downloadLocation: downloadLocation ?? this.downloadLocation,
-        localLibraryLocation: localLibraryLocation ?? this.localLibraryLocation,
-        themeMode: themeMode ?? this.themeMode,
-        audioSourceId:
-            audioSourceId.present ? audioSourceId.value : this.audioSourceId,
-        youtubeClientEngine: youtubeClientEngine ?? this.youtubeClientEngine,
-        discordPresence: discordPresence ?? this.discordPresence,
-        endlessPlayback: endlessPlayback ?? this.endlessPlayback,
-        enableConnect: enableConnect ?? this.enableConnect,
-        connectPort: connectPort ?? this.connectPort,
-        cacheMusic: cacheMusic ?? this.cacheMusic,
-        disableGlassEffect: disableGlassEffect ?? this.disableGlassEffect,
-      );
+  PreferencesTableData copyWith({
+    int? id,
+    bool? albumColorSync,
+    bool? amoledDarkTheme,
+    bool? checkUpdate,
+    bool? normalizeAudio,
+    bool? showSystemTrayIcon,
+    bool? systemTitleBar,
+    bool? skipNonMusic,
+    CloseBehavior? closeBehavior,
+    SpotubeColor? accentColorScheme,
+    LayoutMode? layoutMode,
+    Locale? locale,
+    Market? market,
+    SearchMode? searchMode,
+    String? downloadLocation,
+    List<String>? localLibraryLocation,
+    ThemeMode? themeMode,
+    Value<String?> audioSourceId = const Value.absent(),
+    YoutubeClientEngine? youtubeClientEngine,
+    bool? discordPresence,
+    bool? endlessPlayback,
+    bool? enableConnect,
+    int? connectPort,
+    bool? cacheMusic,
+    bool? disableGlassEffect,
+  }) => PreferencesTableData(
+    id: id ?? this.id,
+    albumColorSync: albumColorSync ?? this.albumColorSync,
+    amoledDarkTheme: amoledDarkTheme ?? this.amoledDarkTheme,
+    checkUpdate: checkUpdate ?? this.checkUpdate,
+    normalizeAudio: normalizeAudio ?? this.normalizeAudio,
+    showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
+    systemTitleBar: systemTitleBar ?? this.systemTitleBar,
+    skipNonMusic: skipNonMusic ?? this.skipNonMusic,
+    closeBehavior: closeBehavior ?? this.closeBehavior,
+    accentColorScheme: accentColorScheme ?? this.accentColorScheme,
+    layoutMode: layoutMode ?? this.layoutMode,
+    locale: locale ?? this.locale,
+    market: market ?? this.market,
+    searchMode: searchMode ?? this.searchMode,
+    downloadLocation: downloadLocation ?? this.downloadLocation,
+    localLibraryLocation: localLibraryLocation ?? this.localLibraryLocation,
+    themeMode: themeMode ?? this.themeMode,
+    audioSourceId: audioSourceId.present
+        ? audioSourceId.value
+        : this.audioSourceId,
+    youtubeClientEngine: youtubeClientEngine ?? this.youtubeClientEngine,
+    discordPresence: discordPresence ?? this.discordPresence,
+    endlessPlayback: endlessPlayback ?? this.endlessPlayback,
+    enableConnect: enableConnect ?? this.enableConnect,
+    connectPort: connectPort ?? this.connectPort,
+    cacheMusic: cacheMusic ?? this.cacheMusic,
+    disableGlassEffect: disableGlassEffect ?? this.disableGlassEffect,
+  );
   PreferencesTableData copyWithCompanion(PreferencesTableCompanion data) {
     return PreferencesTableData(
       id: data.id.present ? data.id.value : this.id,
@@ -1295,8 +1623,9 @@ class PreferencesTableData extends DataClass
       amoledDarkTheme: data.amoledDarkTheme.present
           ? data.amoledDarkTheme.value
           : this.amoledDarkTheme,
-      checkUpdate:
-          data.checkUpdate.present ? data.checkUpdate.value : this.checkUpdate,
+      checkUpdate: data.checkUpdate.present
+          ? data.checkUpdate.value
+          : this.checkUpdate,
       normalizeAudio: data.normalizeAudio.present
           ? data.normalizeAudio.value
           : this.normalizeAudio,
@@ -1315,12 +1644,14 @@ class PreferencesTableData extends DataClass
       accentColorScheme: data.accentColorScheme.present
           ? data.accentColorScheme.value
           : this.accentColorScheme,
-      layoutMode:
-          data.layoutMode.present ? data.layoutMode.value : this.layoutMode,
+      layoutMode: data.layoutMode.present
+          ? data.layoutMode.value
+          : this.layoutMode,
       locale: data.locale.present ? data.locale.value : this.locale,
       market: data.market.present ? data.market.value : this.market,
-      searchMode:
-          data.searchMode.present ? data.searchMode.value : this.searchMode,
+      searchMode: data.searchMode.present
+          ? data.searchMode.value
+          : this.searchMode,
       downloadLocation: data.downloadLocation.present
           ? data.downloadLocation.value
           : this.downloadLocation,
@@ -1343,10 +1674,12 @@ class PreferencesTableData extends DataClass
       enableConnect: data.enableConnect.present
           ? data.enableConnect.value
           : this.enableConnect,
-      connectPort:
-          data.connectPort.present ? data.connectPort.value : this.connectPort,
-      cacheMusic:
-          data.cacheMusic.present ? data.cacheMusic.value : this.cacheMusic,
+      connectPort: data.connectPort.present
+          ? data.connectPort.value
+          : this.connectPort,
+      cacheMusic: data.cacheMusic.present
+          ? data.cacheMusic.value
+          : this.cacheMusic,
       disableGlassEffect: data.disableGlassEffect.present
           ? data.disableGlassEffect.value
           : this.disableGlassEffect,
@@ -1387,32 +1720,32 @@ class PreferencesTableData extends DataClass
 
   @override
   int get hashCode => Object.hashAll([
-        id,
-        albumColorSync,
-        amoledDarkTheme,
-        checkUpdate,
-        normalizeAudio,
-        showSystemTrayIcon,
-        systemTitleBar,
-        skipNonMusic,
-        closeBehavior,
-        accentColorScheme,
-        layoutMode,
-        locale,
-        market,
-        searchMode,
-        downloadLocation,
-        localLibraryLocation,
-        themeMode,
-        audioSourceId,
-        youtubeClientEngine,
-        discordPresence,
-        endlessPlayback,
-        enableConnect,
-        connectPort,
-        cacheMusic,
-        disableGlassEffect
-      ]);
+    id,
+    albumColorSync,
+    amoledDarkTheme,
+    checkUpdate,
+    normalizeAudio,
+    showSystemTrayIcon,
+    systemTitleBar,
+    skipNonMusic,
+    closeBehavior,
+    accentColorScheme,
+    layoutMode,
+    locale,
+    market,
+    searchMode,
+    downloadLocation,
+    localLibraryLocation,
+    themeMode,
+    audioSourceId,
+    youtubeClientEngine,
+    discordPresence,
+    endlessPlayback,
+    enableConnect,
+    connectPort,
+    cacheMusic,
+    disableGlassEffect,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1584,32 +1917,33 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     });
   }
 
-  PreferencesTableCompanion copyWith(
-      {Value<int>? id,
-      Value<bool>? albumColorSync,
-      Value<bool>? amoledDarkTheme,
-      Value<bool>? checkUpdate,
-      Value<bool>? normalizeAudio,
-      Value<bool>? showSystemTrayIcon,
-      Value<bool>? systemTitleBar,
-      Value<bool>? skipNonMusic,
-      Value<CloseBehavior>? closeBehavior,
-      Value<SpotubeColor>? accentColorScheme,
-      Value<LayoutMode>? layoutMode,
-      Value<Locale>? locale,
-      Value<Market>? market,
-      Value<SearchMode>? searchMode,
-      Value<String>? downloadLocation,
-      Value<List<String>>? localLibraryLocation,
-      Value<ThemeMode>? themeMode,
-      Value<String?>? audioSourceId,
-      Value<YoutubeClientEngine>? youtubeClientEngine,
-      Value<bool>? discordPresence,
-      Value<bool>? endlessPlayback,
-      Value<bool>? enableConnect,
-      Value<int>? connectPort,
-      Value<bool>? cacheMusic,
-      Value<bool>? disableGlassEffect}) {
+  PreferencesTableCompanion copyWith({
+    Value<int>? id,
+    Value<bool>? albumColorSync,
+    Value<bool>? amoledDarkTheme,
+    Value<bool>? checkUpdate,
+    Value<bool>? normalizeAudio,
+    Value<bool>? showSystemTrayIcon,
+    Value<bool>? systemTitleBar,
+    Value<bool>? skipNonMusic,
+    Value<CloseBehavior>? closeBehavior,
+    Value<SpotubeColor>? accentColorScheme,
+    Value<LayoutMode>? layoutMode,
+    Value<Locale>? locale,
+    Value<Market>? market,
+    Value<SearchMode>? searchMode,
+    Value<String>? downloadLocation,
+    Value<List<String>>? localLibraryLocation,
+    Value<ThemeMode>? themeMode,
+    Value<String?>? audioSourceId,
+    Value<YoutubeClientEngine>? youtubeClientEngine,
+    Value<bool>? discordPresence,
+    Value<bool>? endlessPlayback,
+    Value<bool>? enableConnect,
+    Value<int>? connectPort,
+    Value<bool>? cacheMusic,
+    Value<bool>? disableGlassEffect,
+  }) {
     return PreferencesTableCompanion(
       id: id ?? this.id,
       albumColorSync: albumColorSync ?? this.albumColorSync,
@@ -1667,50 +2001,63 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       map['skip_non_music'] = Variable<bool>(skipNonMusic.value);
     }
     if (closeBehavior.present) {
-      map['close_behavior'] = Variable<String>($PreferencesTableTable
-          .$convertercloseBehavior
-          .toSql(closeBehavior.value));
+      map['close_behavior'] = Variable<String>(
+        $PreferencesTableTable.$convertercloseBehavior.toSql(
+          closeBehavior.value,
+        ),
+      );
     }
     if (accentColorScheme.present) {
-      map['accent_color_scheme'] = Variable<String>($PreferencesTableTable
-          .$converteraccentColorScheme
-          .toSql(accentColorScheme.value));
+      map['accent_color_scheme'] = Variable<String>(
+        $PreferencesTableTable.$converteraccentColorScheme.toSql(
+          accentColorScheme.value,
+        ),
+      );
     }
     if (layoutMode.present) {
       map['layout_mode'] = Variable<String>(
-          $PreferencesTableTable.$converterlayoutMode.toSql(layoutMode.value));
+        $PreferencesTableTable.$converterlayoutMode.toSql(layoutMode.value),
+      );
     }
     if (locale.present) {
       map['locale'] = Variable<String>(
-          $PreferencesTableTable.$converterlocale.toSql(locale.value));
+        $PreferencesTableTable.$converterlocale.toSql(locale.value),
+      );
     }
     if (market.present) {
       map['market'] = Variable<String>(
-          $PreferencesTableTable.$convertermarket.toSql(market.value));
+        $PreferencesTableTable.$convertermarket.toSql(market.value),
+      );
     }
     if (searchMode.present) {
       map['search_mode'] = Variable<String>(
-          $PreferencesTableTable.$convertersearchMode.toSql(searchMode.value));
+        $PreferencesTableTable.$convertersearchMode.toSql(searchMode.value),
+      );
     }
     if (downloadLocation.present) {
       map['download_location'] = Variable<String>(downloadLocation.value);
     }
     if (localLibraryLocation.present) {
-      map['local_library_location'] = Variable<String>($PreferencesTableTable
-          .$converterlocalLibraryLocation
-          .toSql(localLibraryLocation.value));
+      map['local_library_location'] = Variable<String>(
+        $PreferencesTableTable.$converterlocalLibraryLocation.toSql(
+          localLibraryLocation.value,
+        ),
+      );
     }
     if (themeMode.present) {
       map['theme_mode'] = Variable<String>(
-          $PreferencesTableTable.$converterthemeMode.toSql(themeMode.value));
+        $PreferencesTableTable.$converterthemeMode.toSql(themeMode.value),
+      );
     }
     if (audioSourceId.present) {
       map['audio_source_id'] = Variable<String>(audioSourceId.value);
     }
     if (youtubeClientEngine.present) {
-      map['youtube_client_engine'] = Variable<String>($PreferencesTableTable
-          .$converteryoutubeClientEngine
-          .toSql(youtubeClientEngine.value));
+      map['youtube_client_engine'] = Variable<String>(
+        $PreferencesTableTable.$converteryoutubeClientEngine.toSql(
+          youtubeClientEngine.value,
+        ),
+      );
     }
     if (discordPresence.present) {
       map['discord_presence'] = Variable<bool>(discordPresence.value);
@@ -1775,33 +2122,48 @@ class $ScrobblerTableTable extends ScrobblerTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
-  static const VerificationMeta _usernameMeta =
-      const VerificationMeta('username');
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _usernameMeta = const VerificationMeta(
+    'username',
+  );
   @override
   late final GeneratedColumn<String> username = GeneratedColumn<String>(
-      'username', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'username',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<DecryptedText, String>
-      passwordHash = GeneratedColumn<String>(
-              'password_hash', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<DecryptedText>(
-              $ScrobblerTableTable.$converterpasswordHash);
+  passwordHash = GeneratedColumn<String>(
+    'password_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<DecryptedText>($ScrobblerTableTable.$converterpasswordHash);
   @override
   List<GeneratedColumn> get $columns => [id, createdAt, username, passwordHash];
   @override
@@ -1810,20 +2172,26 @@ class $ScrobblerTableTable extends ScrobblerTable
   String get actualTableName => $name;
   static const String $name = 'scrobbler_table';
   @override
-  VerificationContext validateIntegrity(Insertable<ScrobblerTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<ScrobblerTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     }
     if (data.containsKey('username')) {
-      context.handle(_usernameMeta,
-          username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
+      context.handle(
+        _usernameMeta,
+        username.isAcceptableOrUnknown(data['username']!, _usernameMeta),
+      );
     } else if (isInserting) {
       context.missing(_usernameMeta);
     }
@@ -1836,15 +2204,24 @@ class $ScrobblerTableTable extends ScrobblerTable
   ScrobblerTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ScrobblerTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      username: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      username: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}username'],
+      )!,
       passwordHash: $ScrobblerTableTable.$converterpasswordHash.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}password_hash'])!),
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}password_hash'],
+        )!,
+      ),
     );
   }
 
@@ -1863,11 +2240,12 @@ class ScrobblerTableData extends DataClass
   final DateTime createdAt;
   final String username;
   final DecryptedText passwordHash;
-  const ScrobblerTableData(
-      {required this.id,
-      required this.createdAt,
-      required this.username,
-      required this.passwordHash});
+  const ScrobblerTableData({
+    required this.id,
+    required this.createdAt,
+    required this.username,
+    required this.passwordHash,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1876,7 +2254,8 @@ class ScrobblerTableData extends DataClass
     map['username'] = Variable<String>(username);
     {
       map['password_hash'] = Variable<String>(
-          $ScrobblerTableTable.$converterpasswordHash.toSql(passwordHash));
+        $ScrobblerTableTable.$converterpasswordHash.toSql(passwordHash),
+      );
     }
     return map;
   }
@@ -1890,8 +2269,10 @@ class ScrobblerTableData extends DataClass
     );
   }
 
-  factory ScrobblerTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory ScrobblerTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ScrobblerTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -1911,17 +2292,17 @@ class ScrobblerTableData extends DataClass
     };
   }
 
-  ScrobblerTableData copyWith(
-          {int? id,
-          DateTime? createdAt,
-          String? username,
-          DecryptedText? passwordHash}) =>
-      ScrobblerTableData(
-        id: id ?? this.id,
-        createdAt: createdAt ?? this.createdAt,
-        username: username ?? this.username,
-        passwordHash: passwordHash ?? this.passwordHash,
-      );
+  ScrobblerTableData copyWith({
+    int? id,
+    DateTime? createdAt,
+    String? username,
+    DecryptedText? passwordHash,
+  }) => ScrobblerTableData(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    username: username ?? this.username,
+    passwordHash: passwordHash ?? this.passwordHash,
+  );
   ScrobblerTableData copyWithCompanion(ScrobblerTableCompanion data) {
     return ScrobblerTableData(
       id: data.id.present ? data.id.value : this.id,
@@ -1972,8 +2353,8 @@ class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
     this.createdAt = const Value.absent(),
     required String username,
     required DecryptedText passwordHash,
-  })  : username = Value(username),
-        passwordHash = Value(passwordHash);
+  }) : username = Value(username),
+       passwordHash = Value(passwordHash);
   static Insertable<ScrobblerTableData> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
@@ -1988,11 +2369,12 @@ class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
     });
   }
 
-  ScrobblerTableCompanion copyWith(
-      {Value<int>? id,
-      Value<DateTime>? createdAt,
-      Value<String>? username,
-      Value<DecryptedText>? passwordHash}) {
+  ScrobblerTableCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? createdAt,
+    Value<String>? username,
+    Value<DecryptedText>? passwordHash,
+  }) {
     return ScrobblerTableCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
@@ -2014,9 +2396,9 @@ class ScrobblerTableCompanion extends UpdateCompanion<ScrobblerTableData> {
       map['username'] = Variable<String>(username.value);
     }
     if (passwordHash.present) {
-      map['password_hash'] = Variable<String>($ScrobblerTableTable
-          .$converterpasswordHash
-          .toSql(passwordHash.value));
+      map['password_hash'] = Variable<String>(
+        $ScrobblerTableTable.$converterpasswordHash.toSql(passwordHash.value),
+      );
     }
     return map;
   }
@@ -2042,36 +2424,57 @@ class $SkipSegmentTableTable extends SkipSegmentTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _startMeta = const VerificationMeta('start');
   @override
   late final GeneratedColumn<int> start = GeneratedColumn<int>(
-      'start', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'start',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _endMeta = const VerificationMeta('end');
   @override
   late final GeneratedColumn<int> end = GeneratedColumn<int>(
-      'end', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _trackIdMeta =
-      const VerificationMeta('trackId');
+    'end',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
   @override
   late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
-      'track_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, start, end, trackId, createdAt];
   @override
@@ -2081,8 +2484,9 @@ class $SkipSegmentTableTable extends SkipSegmentTable
   static const String $name = 'skip_segment_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<SkipSegmentTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<SkipSegmentTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -2090,25 +2494,33 @@ class $SkipSegmentTableTable extends SkipSegmentTable
     }
     if (data.containsKey('start')) {
       context.handle(
-          _startMeta, start.isAcceptableOrUnknown(data['start']!, _startMeta));
+        _startMeta,
+        start.isAcceptableOrUnknown(data['start']!, _startMeta),
+      );
     } else if (isInserting) {
       context.missing(_startMeta);
     }
     if (data.containsKey('end')) {
       context.handle(
-          _endMeta, end.isAcceptableOrUnknown(data['end']!, _endMeta));
+        _endMeta,
+        end.isAcceptableOrUnknown(data['end']!, _endMeta),
+      );
     } else if (isInserting) {
       context.missing(_endMeta);
     }
     if (data.containsKey('track_id')) {
-      context.handle(_trackIdMeta,
-          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trackIdMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     }
     return context;
   }
@@ -2119,16 +2531,26 @@ class $SkipSegmentTableTable extends SkipSegmentTable
   SkipSegmentTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return SkipSegmentTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      start: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}start'])!,
-      end: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}end'])!,
-      trackId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}track_id'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      start: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}start'],
+      )!,
+      end: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}end'],
+      )!,
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
     );
   }
 
@@ -2145,12 +2567,13 @@ class SkipSegmentTableData extends DataClass
   final int end;
   final String trackId;
   final DateTime createdAt;
-  const SkipSegmentTableData(
-      {required this.id,
-      required this.start,
-      required this.end,
-      required this.trackId,
-      required this.createdAt});
+  const SkipSegmentTableData({
+    required this.id,
+    required this.start,
+    required this.end,
+    required this.trackId,
+    required this.createdAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2172,8 +2595,10 @@ class SkipSegmentTableData extends DataClass
     );
   }
 
-  factory SkipSegmentTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory SkipSegmentTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SkipSegmentTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -2195,19 +2620,19 @@ class SkipSegmentTableData extends DataClass
     };
   }
 
-  SkipSegmentTableData copyWith(
-          {int? id,
-          int? start,
-          int? end,
-          String? trackId,
-          DateTime? createdAt}) =>
-      SkipSegmentTableData(
-        id: id ?? this.id,
-        start: start ?? this.start,
-        end: end ?? this.end,
-        trackId: trackId ?? this.trackId,
-        createdAt: createdAt ?? this.createdAt,
-      );
+  SkipSegmentTableData copyWith({
+    int? id,
+    int? start,
+    int? end,
+    String? trackId,
+    DateTime? createdAt,
+  }) => SkipSegmentTableData(
+    id: id ?? this.id,
+    start: start ?? this.start,
+    end: end ?? this.end,
+    trackId: trackId ?? this.trackId,
+    createdAt: createdAt ?? this.createdAt,
+  );
   SkipSegmentTableData copyWithCompanion(SkipSegmentTableCompanion data) {
     return SkipSegmentTableData(
       id: data.id.present ? data.id.value : this.id,
@@ -2262,9 +2687,9 @@ class SkipSegmentTableCompanion extends UpdateCompanion<SkipSegmentTableData> {
     required int end,
     required String trackId,
     this.createdAt = const Value.absent(),
-  })  : start = Value(start),
-        end = Value(end),
-        trackId = Value(trackId);
+  }) : start = Value(start),
+       end = Value(end),
+       trackId = Value(trackId);
   static Insertable<SkipSegmentTableData> custom({
     Expression<int>? id,
     Expression<int>? start,
@@ -2281,12 +2706,13 @@ class SkipSegmentTableCompanion extends UpdateCompanion<SkipSegmentTableData> {
     });
   }
 
-  SkipSegmentTableCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? start,
-      Value<int>? end,
-      Value<String>? trackId,
-      Value<DateTime>? createdAt}) {
+  SkipSegmentTableCompanion copyWith({
+    Value<int>? id,
+    Value<int>? start,
+    Value<int>? end,
+    Value<String>? trackId,
+    Value<DateTime>? createdAt,
+  }) {
     return SkipSegmentTableCompanion(
       id: id ?? this.id,
       start: start ?? this.start,
@@ -2339,43 +2765,70 @@ class $SourceMatchTableTable extends SourceMatchTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trackIdMeta =
-      const VerificationMeta('trackId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
   @override
   late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
-      'track_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _sourceInfoMeta =
-      const VerificationMeta('sourceInfo');
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceInfoMeta = const VerificationMeta(
+    'sourceInfo',
+  );
   @override
   late final GeneratedColumn<String> sourceInfo = GeneratedColumn<String>(
-      'source_info', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant("{}"));
-  static const VerificationMeta _sourceTypeMeta =
-      const VerificationMeta('sourceType');
+    'source_info',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant("{}"),
+  );
+  static const VerificationMeta _sourceTypeMeta = const VerificationMeta(
+    'sourceType',
+  );
   @override
   late final GeneratedColumn<String> sourceType = GeneratedColumn<String>(
-      'source_type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'source_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, trackId, sourceInfo, sourceType, createdAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    trackId,
+    sourceInfo,
+    sourceType,
+    createdAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2383,36 +2836,41 @@ class $SourceMatchTableTable extends SourceMatchTable
   static const String $name = 'source_match_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<SourceMatchTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<SourceMatchTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('track_id')) {
-      context.handle(_trackIdMeta,
-          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trackIdMeta);
     }
     if (data.containsKey('source_info')) {
       context.handle(
-          _sourceInfoMeta,
-          sourceInfo.isAcceptableOrUnknown(
-              data['source_info']!, _sourceInfoMeta));
+        _sourceInfoMeta,
+        sourceInfo.isAcceptableOrUnknown(data['source_info']!, _sourceInfoMeta),
+      );
     }
     if (data.containsKey('source_type')) {
       context.handle(
-          _sourceTypeMeta,
-          sourceType.isAcceptableOrUnknown(
-              data['source_type']!, _sourceTypeMeta));
+        _sourceTypeMeta,
+        sourceType.isAcceptableOrUnknown(data['source_type']!, _sourceTypeMeta),
+      );
     } else if (isInserting) {
       context.missing(_sourceTypeMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     }
     return context;
   }
@@ -2423,16 +2881,26 @@ class $SourceMatchTableTable extends SourceMatchTable
   SourceMatchTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return SourceMatchTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trackId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}track_id'])!,
-      sourceInfo: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}source_info'])!,
-      sourceType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}source_type'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_id'],
+      )!,
+      sourceInfo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_info'],
+      )!,
+      sourceType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_type'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
     );
   }
 
@@ -2449,12 +2917,13 @@ class SourceMatchTableData extends DataClass
   final String sourceInfo;
   final String sourceType;
   final DateTime createdAt;
-  const SourceMatchTableData(
-      {required this.id,
-      required this.trackId,
-      required this.sourceInfo,
-      required this.sourceType,
-      required this.createdAt});
+  const SourceMatchTableData({
+    required this.id,
+    required this.trackId,
+    required this.sourceInfo,
+    required this.sourceType,
+    required this.createdAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2476,8 +2945,10 @@ class SourceMatchTableData extends DataClass
     );
   }
 
-  factory SourceMatchTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory SourceMatchTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SourceMatchTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -2499,27 +2970,29 @@ class SourceMatchTableData extends DataClass
     };
   }
 
-  SourceMatchTableData copyWith(
-          {int? id,
-          String? trackId,
-          String? sourceInfo,
-          String? sourceType,
-          DateTime? createdAt}) =>
-      SourceMatchTableData(
-        id: id ?? this.id,
-        trackId: trackId ?? this.trackId,
-        sourceInfo: sourceInfo ?? this.sourceInfo,
-        sourceType: sourceType ?? this.sourceType,
-        createdAt: createdAt ?? this.createdAt,
-      );
+  SourceMatchTableData copyWith({
+    int? id,
+    String? trackId,
+    String? sourceInfo,
+    String? sourceType,
+    DateTime? createdAt,
+  }) => SourceMatchTableData(
+    id: id ?? this.id,
+    trackId: trackId ?? this.trackId,
+    sourceInfo: sourceInfo ?? this.sourceInfo,
+    sourceType: sourceType ?? this.sourceType,
+    createdAt: createdAt ?? this.createdAt,
+  );
   SourceMatchTableData copyWithCompanion(SourceMatchTableCompanion data) {
     return SourceMatchTableData(
       id: data.id.present ? data.id.value : this.id,
       trackId: data.trackId.present ? data.trackId.value : this.trackId,
-      sourceInfo:
-          data.sourceInfo.present ? data.sourceInfo.value : this.sourceInfo,
-      sourceType:
-          data.sourceType.present ? data.sourceType.value : this.sourceType,
+      sourceInfo: data.sourceInfo.present
+          ? data.sourceInfo.value
+          : this.sourceInfo,
+      sourceType: data.sourceType.present
+          ? data.sourceType.value
+          : this.sourceType,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -2569,8 +3042,8 @@ class SourceMatchTableCompanion extends UpdateCompanion<SourceMatchTableData> {
     this.sourceInfo = const Value.absent(),
     required String sourceType,
     this.createdAt = const Value.absent(),
-  })  : trackId = Value(trackId),
-        sourceType = Value(sourceType);
+  }) : trackId = Value(trackId),
+       sourceType = Value(sourceType);
   static Insertable<SourceMatchTableData> custom({
     Expression<int>? id,
     Expression<String>? trackId,
@@ -2587,12 +3060,13 @@ class SourceMatchTableCompanion extends UpdateCompanion<SourceMatchTableData> {
     });
   }
 
-  SourceMatchTableCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trackId,
-      Value<String>? sourceInfo,
-      Value<String>? sourceType,
-      Value<DateTime>? createdAt}) {
+  SourceMatchTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trackId,
+    Value<String>? sourceInfo,
+    Value<String>? sourceType,
+    Value<DateTime>? createdAt,
+  }) {
     return SourceMatchTableCompanion(
       id: id ?? this.id,
       trackId: trackId ?? this.trackId,
@@ -2645,61 +3119,102 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _playingMeta =
-      const VerificationMeta('playing');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _playingMeta = const VerificationMeta(
+    'playing',
+  );
   @override
   late final GeneratedColumn<bool> playing = GeneratedColumn<bool>(
-      'playing', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("playing" IN (0, 1))'));
+    'playing',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("playing" IN (0, 1))',
+    ),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<PlaylistMode, String> loopMode =
-      GeneratedColumn<String>('loop_mode', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<PlaylistMode>(
-              $AudioPlayerStateTableTable.$converterloopMode);
-  static const VerificationMeta _shuffledMeta =
-      const VerificationMeta('shuffled');
+      GeneratedColumn<String>(
+        'loop_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<PlaylistMode>(
+        $AudioPlayerStateTableTable.$converterloopMode,
+      );
+  static const VerificationMeta _shuffledMeta = const VerificationMeta(
+    'shuffled',
+  );
   @override
   late final GeneratedColumn<bool> shuffled = GeneratedColumn<bool>(
-      'shuffled', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("shuffled" IN (0, 1))'));
+    'shuffled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("shuffled" IN (0, 1))',
+    ),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
-      collections = GeneratedColumn<String>('collections', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>(
-              $AudioPlayerStateTableTable.$convertercollections);
+  collections =
+      GeneratedColumn<String>(
+        'collections',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<List<String>>(
+        $AudioPlayerStateTableTable.$convertercollections,
+      );
   @override
   late final GeneratedColumnWithTypeConverter<List<SpotubeTrackObject>, String>
-      tracks = GeneratedColumn<String>('tracks', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: const Constant("[]"))
-          .withConverter<List<SpotubeTrackObject>>(
-              $AudioPlayerStateTableTable.$convertertracks);
-  static const VerificationMeta _currentIndexMeta =
-      const VerificationMeta('currentIndex');
+  tracks =
+      GeneratedColumn<String>(
+        'tracks',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant("[]"),
+      ).withConverter<List<SpotubeTrackObject>>(
+        $AudioPlayerStateTableTable.$convertertracks,
+      );
+  static const VerificationMeta _currentIndexMeta = const VerificationMeta(
+    'currentIndex',
+  );
   @override
   late final GeneratedColumn<int> currentIndex = GeneratedColumn<int>(
-      'current_index', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+    'current_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, playing, loopMode, shuffled, collections, tracks, currentIndex];
+  List<GeneratedColumn> get $columns => [
+    id,
+    playing,
+    loopMode,
+    shuffled,
+    collections,
+    tracks,
+    currentIndex,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2707,30 +3222,38 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
   static const String $name = 'audio_player_state_table';
   @override
   VerificationContext validateIntegrity(
-      Insertable<AudioPlayerStateTableData> instance,
-      {bool isInserting = false}) {
+    Insertable<AudioPlayerStateTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('playing')) {
-      context.handle(_playingMeta,
-          playing.isAcceptableOrUnknown(data['playing']!, _playingMeta));
+      context.handle(
+        _playingMeta,
+        playing.isAcceptableOrUnknown(data['playing']!, _playingMeta),
+      );
     } else if (isInserting) {
       context.missing(_playingMeta);
     }
     if (data.containsKey('shuffled')) {
-      context.handle(_shuffledMeta,
-          shuffled.isAcceptableOrUnknown(data['shuffled']!, _shuffledMeta));
+      context.handle(
+        _shuffledMeta,
+        shuffled.isAcceptableOrUnknown(data['shuffled']!, _shuffledMeta),
+      );
     } else if (isInserting) {
       context.missing(_shuffledMeta);
     }
     if (data.containsKey('current_index')) {
       context.handle(
+        _currentIndexMeta,
+        currentIndex.isAcceptableOrUnknown(
+          data['current_index']!,
           _currentIndexMeta,
-          currentIndex.isAcceptableOrUnknown(
-              data['current_index']!, _currentIndexMeta));
+        ),
+      );
     }
     return context;
   }
@@ -2738,27 +3261,46 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  AudioPlayerStateTableData map(Map<String, dynamic> data,
-      {String? tablePrefix}) {
+  AudioPlayerStateTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return AudioPlayerStateTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      playing: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}playing'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      playing: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}playing'],
+      )!,
       loopMode: $AudioPlayerStateTableTable.$converterloopMode.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}loop_mode'])!),
-      shuffled: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}shuffled'])!,
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}loop_mode'],
+        )!,
+      ),
+      shuffled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}shuffled'],
+      )!,
       collections: $AudioPlayerStateTableTable.$convertercollections.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}collections'])!),
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}collections'],
+        )!,
+      ),
       tracks: $AudioPlayerStateTableTable.$convertertracks.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}tracks'])!),
-      currentIndex: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}current_index'])!,
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}tracks'],
+        )!,
+      ),
+      currentIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}current_index'],
+      )!,
     );
   }
 
@@ -2784,14 +3326,15 @@ class AudioPlayerStateTableData extends DataClass
   final List<String> collections;
   final List<SpotubeTrackObject> tracks;
   final int currentIndex;
-  const AudioPlayerStateTableData(
-      {required this.id,
-      required this.playing,
-      required this.loopMode,
-      required this.shuffled,
-      required this.collections,
-      required this.tracks,
-      required this.currentIndex});
+  const AudioPlayerStateTableData({
+    required this.id,
+    required this.playing,
+    required this.loopMode,
+    required this.shuffled,
+    required this.collections,
+    required this.tracks,
+    required this.currentIndex,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2799,16 +3342,19 @@ class AudioPlayerStateTableData extends DataClass
     map['playing'] = Variable<bool>(playing);
     {
       map['loop_mode'] = Variable<String>(
-          $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode));
+        $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode),
+      );
     }
     map['shuffled'] = Variable<bool>(shuffled);
     {
       map['collections'] = Variable<String>(
-          $AudioPlayerStateTableTable.$convertercollections.toSql(collections));
+        $AudioPlayerStateTableTable.$convertercollections.toSql(collections),
+      );
     }
     {
       map['tracks'] = Variable<String>(
-          $AudioPlayerStateTableTable.$convertertracks.toSql(tracks));
+        $AudioPlayerStateTableTable.$convertertracks.toSql(tracks),
+      );
     }
     map['current_index'] = Variable<int>(currentIndex);
     return map;
@@ -2826,14 +3372,17 @@ class AudioPlayerStateTableData extends DataClass
     );
   }
 
-  factory AudioPlayerStateTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory AudioPlayerStateTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AudioPlayerStateTableData(
       id: serializer.fromJson<int>(json['id']),
       playing: serializer.fromJson<bool>(json['playing']),
-      loopMode: $AudioPlayerStateTableTable.$converterloopMode
-          .fromJson(serializer.fromJson<String>(json['loopMode'])),
+      loopMode: $AudioPlayerStateTableTable.$converterloopMode.fromJson(
+        serializer.fromJson<String>(json['loopMode']),
+      ),
       shuffled: serializer.fromJson<bool>(json['shuffled']),
       collections: serializer.fromJson<List<String>>(json['collections']),
       tracks: serializer.fromJson<List<SpotubeTrackObject>>(json['tracks']),
@@ -2847,7 +3396,8 @@ class AudioPlayerStateTableData extends DataClass
       'id': serializer.toJson<int>(id),
       'playing': serializer.toJson<bool>(playing),
       'loopMode': serializer.toJson<String>(
-          $AudioPlayerStateTableTable.$converterloopMode.toJson(loopMode)),
+        $AudioPlayerStateTableTable.$converterloopMode.toJson(loopMode),
+      ),
       'shuffled': serializer.toJson<bool>(shuffled),
       'collections': serializer.toJson<List<String>>(collections),
       'tracks': serializer.toJson<List<SpotubeTrackObject>>(tracks),
@@ -2855,32 +3405,34 @@ class AudioPlayerStateTableData extends DataClass
     };
   }
 
-  AudioPlayerStateTableData copyWith(
-          {int? id,
-          bool? playing,
-          PlaylistMode? loopMode,
-          bool? shuffled,
-          List<String>? collections,
-          List<SpotubeTrackObject>? tracks,
-          int? currentIndex}) =>
-      AudioPlayerStateTableData(
-        id: id ?? this.id,
-        playing: playing ?? this.playing,
-        loopMode: loopMode ?? this.loopMode,
-        shuffled: shuffled ?? this.shuffled,
-        collections: collections ?? this.collections,
-        tracks: tracks ?? this.tracks,
-        currentIndex: currentIndex ?? this.currentIndex,
-      );
+  AudioPlayerStateTableData copyWith({
+    int? id,
+    bool? playing,
+    PlaylistMode? loopMode,
+    bool? shuffled,
+    List<String>? collections,
+    List<SpotubeTrackObject>? tracks,
+    int? currentIndex,
+  }) => AudioPlayerStateTableData(
+    id: id ?? this.id,
+    playing: playing ?? this.playing,
+    loopMode: loopMode ?? this.loopMode,
+    shuffled: shuffled ?? this.shuffled,
+    collections: collections ?? this.collections,
+    tracks: tracks ?? this.tracks,
+    currentIndex: currentIndex ?? this.currentIndex,
+  );
   AudioPlayerStateTableData copyWithCompanion(
-      AudioPlayerStateTableCompanion data) {
+    AudioPlayerStateTableCompanion data,
+  ) {
     return AudioPlayerStateTableData(
       id: data.id.present ? data.id.value : this.id,
       playing: data.playing.present ? data.playing.value : this.playing,
       loopMode: data.loopMode.present ? data.loopMode.value : this.loopMode,
       shuffled: data.shuffled.present ? data.shuffled.value : this.shuffled,
-      collections:
-          data.collections.present ? data.collections.value : this.collections,
+      collections: data.collections.present
+          ? data.collections.value
+          : this.collections,
       tracks: data.tracks.present ? data.tracks.value : this.tracks,
       currentIndex: data.currentIndex.present
           ? data.currentIndex.value
@@ -2904,7 +3456,14 @@ class AudioPlayerStateTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id, playing, loopMode, shuffled, collections, tracks, currentIndex);
+    id,
+    playing,
+    loopMode,
+    shuffled,
+    collections,
+    tracks,
+    currentIndex,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2944,10 +3503,10 @@ class AudioPlayerStateTableCompanion
     required List<String> collections,
     this.tracks = const Value.absent(),
     this.currentIndex = const Value.absent(),
-  })  : playing = Value(playing),
-        loopMode = Value(loopMode),
-        shuffled = Value(shuffled),
-        collections = Value(collections);
+  }) : playing = Value(playing),
+       loopMode = Value(loopMode),
+       shuffled = Value(shuffled),
+       collections = Value(collections);
   static Insertable<AudioPlayerStateTableData> custom({
     Expression<int>? id,
     Expression<bool>? playing,
@@ -2968,14 +3527,15 @@ class AudioPlayerStateTableCompanion
     });
   }
 
-  AudioPlayerStateTableCompanion copyWith(
-      {Value<int>? id,
-      Value<bool>? playing,
-      Value<PlaylistMode>? loopMode,
-      Value<bool>? shuffled,
-      Value<List<String>>? collections,
-      Value<List<SpotubeTrackObject>>? tracks,
-      Value<int>? currentIndex}) {
+  AudioPlayerStateTableCompanion copyWith({
+    Value<int>? id,
+    Value<bool>? playing,
+    Value<PlaylistMode>? loopMode,
+    Value<bool>? shuffled,
+    Value<List<String>>? collections,
+    Value<List<SpotubeTrackObject>>? tracks,
+    Value<int>? currentIndex,
+  }) {
     return AudioPlayerStateTableCompanion(
       id: id ?? this.id,
       playing: playing ?? this.playing,
@@ -2998,19 +3558,23 @@ class AudioPlayerStateTableCompanion
     }
     if (loopMode.present) {
       map['loop_mode'] = Variable<String>(
-          $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode.value));
+        $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode.value),
+      );
     }
     if (shuffled.present) {
       map['shuffled'] = Variable<bool>(shuffled.value);
     }
     if (collections.present) {
-      map['collections'] = Variable<String>($AudioPlayerStateTableTable
-          .$convertercollections
-          .toSql(collections.value));
+      map['collections'] = Variable<String>(
+        $AudioPlayerStateTableTable.$convertercollections.toSql(
+          collections.value,
+        ),
+      );
     }
     if (tracks.present) {
       map['tracks'] = Variable<String>(
-          $AudioPlayerStateTableTable.$convertertracks.toSql(tracks.value));
+        $AudioPlayerStateTableTable.$convertertracks.toSql(tracks.value),
+      );
     }
     if (currentIndex.present) {
       map['current_index'] = Variable<int>(currentIndex.value);
@@ -3042,36 +3606,55 @@ class $HistoryTableTable extends HistoryTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<HistoryEntryType, String> type =
-      GeneratedColumn<String>('type', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<HistoryEntryType>($HistoryTableTable.$convertertype);
+      GeneratedColumn<String>(
+        'type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<HistoryEntryType>($HistoryTableTable.$convertertype);
   static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
   @override
   late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
-      'item_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>, String>
-      data = GeneratedColumn<String>('data', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<Map<String, dynamic>>(
-              $HistoryTableTable.$converterdata);
+  data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<Map<String, dynamic>>($HistoryTableTable.$converterdata);
   @override
   List<GeneratedColumn> get $columns => [id, createdAt, type, itemId, data];
   @override
@@ -3080,20 +3663,26 @@ class $HistoryTableTable extends HistoryTable
   String get actualTableName => $name;
   static const String $name = 'history_table';
   @override
-  VerificationContext validateIntegrity(Insertable<HistoryTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<HistoryTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     }
     if (data.containsKey('item_id')) {
-      context.handle(_itemIdMeta,
-          itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
+      context.handle(
+        _itemIdMeta,
+        itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_itemIdMeta);
     }
@@ -3106,18 +3695,30 @@ class $HistoryTableTable extends HistoryTable
   HistoryTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return HistoryTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      type: $HistoryTableTable.$convertertype.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
-      itemId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}item_id'])!,
-      data: $HistoryTableTable.$converterdata.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}data'])!),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      type: $HistoryTableTable.$convertertype.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}type'],
+        )!,
+      ),
+      itemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_id'],
+      )!,
+      data: $HistoryTableTable.$converterdata.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}data'],
+        )!,
+      ),
     );
   }
 
@@ -3139,25 +3740,28 @@ class HistoryTableData extends DataClass
   final HistoryEntryType type;
   final String itemId;
   final Map<String, dynamic> data;
-  const HistoryTableData(
-      {required this.id,
-      required this.createdAt,
-      required this.type,
-      required this.itemId,
-      required this.data});
+  const HistoryTableData({
+    required this.id,
+    required this.createdAt,
+    required this.type,
+    required this.itemId,
+    required this.data,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['created_at'] = Variable<DateTime>(createdAt);
     {
-      map['type'] =
-          Variable<String>($HistoryTableTable.$convertertype.toSql(type));
+      map['type'] = Variable<String>(
+        $HistoryTableTable.$convertertype.toSql(type),
+      );
     }
     map['item_id'] = Variable<String>(itemId);
     {
-      map['data'] =
-          Variable<String>($HistoryTableTable.$converterdata.toSql(data));
+      map['data'] = Variable<String>(
+        $HistoryTableTable.$converterdata.toSql(data),
+      );
     }
     return map;
   }
@@ -3172,14 +3776,17 @@ class HistoryTableData extends DataClass
     );
   }
 
-  factory HistoryTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory HistoryTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return HistoryTableData(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      type: $HistoryTableTable.$convertertype
-          .fromJson(serializer.fromJson<String>(json['type'])),
+      type: $HistoryTableTable.$convertertype.fromJson(
+        serializer.fromJson<String>(json['type']),
+      ),
       itemId: serializer.fromJson<String>(json['itemId']),
       data: serializer.fromJson<Map<String, dynamic>>(json['data']),
     );
@@ -3190,26 +3797,27 @@ class HistoryTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'type': serializer
-          .toJson<String>($HistoryTableTable.$convertertype.toJson(type)),
+      'type': serializer.toJson<String>(
+        $HistoryTableTable.$convertertype.toJson(type),
+      ),
       'itemId': serializer.toJson<String>(itemId),
       'data': serializer.toJson<Map<String, dynamic>>(data),
     };
   }
 
-  HistoryTableData copyWith(
-          {int? id,
-          DateTime? createdAt,
-          HistoryEntryType? type,
-          String? itemId,
-          Map<String, dynamic>? data}) =>
-      HistoryTableData(
-        id: id ?? this.id,
-        createdAt: createdAt ?? this.createdAt,
-        type: type ?? this.type,
-        itemId: itemId ?? this.itemId,
-        data: data ?? this.data,
-      );
+  HistoryTableData copyWith({
+    int? id,
+    DateTime? createdAt,
+    HistoryEntryType? type,
+    String? itemId,
+    Map<String, dynamic>? data,
+  }) => HistoryTableData(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    type: type ?? this.type,
+    itemId: itemId ?? this.itemId,
+    data: data ?? this.data,
+  );
   HistoryTableData copyWithCompanion(HistoryTableCompanion data) {
     return HistoryTableData(
       id: data.id.present ? data.id.value : this.id,
@@ -3264,9 +3872,9 @@ class HistoryTableCompanion extends UpdateCompanion<HistoryTableData> {
     required HistoryEntryType type,
     required String itemId,
     required Map<String, dynamic> data,
-  })  : type = Value(type),
-        itemId = Value(itemId),
-        data = Value(data);
+  }) : type = Value(type),
+       itemId = Value(itemId),
+       data = Value(data);
   static Insertable<HistoryTableData> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
@@ -3283,12 +3891,13 @@ class HistoryTableCompanion extends UpdateCompanion<HistoryTableData> {
     });
   }
 
-  HistoryTableCompanion copyWith(
-      {Value<int>? id,
-      Value<DateTime>? createdAt,
-      Value<HistoryEntryType>? type,
-      Value<String>? itemId,
-      Value<Map<String, dynamic>>? data}) {
+  HistoryTableCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? createdAt,
+    Value<HistoryEntryType>? type,
+    Value<String>? itemId,
+    Value<Map<String, dynamic>>? data,
+  }) {
     return HistoryTableCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
@@ -3308,15 +3917,17 @@ class HistoryTableCompanion extends UpdateCompanion<HistoryTableData> {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (type.present) {
-      map['type'] =
-          Variable<String>($HistoryTableTable.$convertertype.toSql(type.value));
+      map['type'] = Variable<String>(
+        $HistoryTableTable.$convertertype.toSql(type.value),
+      );
     }
     if (itemId.present) {
       map['item_id'] = Variable<String>(itemId.value);
     }
     if (data.present) {
-      map['data'] =
-          Variable<String>($HistoryTableTable.$converterdata.toSql(data.value));
+      map['data'] = Variable<String>(
+        $HistoryTableTable.$converterdata.toSql(data.value),
+      );
     }
     return map;
   }
@@ -3343,23 +3954,36 @@ class $LyricsTableTable extends LyricsTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trackIdMeta =
-      const VerificationMeta('trackId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
   @override
   late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
-      'track_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<SubtitleSimple, String> data =
-      GeneratedColumn<String>('data', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<SubtitleSimple>($LyricsTableTable.$converterdata);
+      GeneratedColumn<String>(
+        'data',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<SubtitleSimple>($LyricsTableTable.$converterdata);
   @override
   List<GeneratedColumn> get $columns => [id, trackId, data];
   @override
@@ -3368,16 +3992,20 @@ class $LyricsTableTable extends LyricsTable
   String get actualTableName => $name;
   static const String $name = 'lyrics_table';
   @override
-  VerificationContext validateIntegrity(Insertable<LyricsTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<LyricsTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('track_id')) {
-      context.handle(_trackIdMeta,
-          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trackIdMeta);
     }
@@ -3390,13 +4018,20 @@ class $LyricsTableTable extends LyricsTable
   LyricsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return LyricsTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trackId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}track_id'])!,
-      data: $LyricsTableTable.$converterdata.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}data'])!),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_id'],
+      )!,
+      data: $LyricsTableTable.$converterdata.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}data'],
+        )!,
+      ),
     );
   }
 
@@ -3413,16 +4048,20 @@ class LyricsTableData extends DataClass implements Insertable<LyricsTableData> {
   final int id;
   final String trackId;
   final SubtitleSimple data;
-  const LyricsTableData(
-      {required this.id, required this.trackId, required this.data});
+  const LyricsTableData({
+    required this.id,
+    required this.trackId,
+    required this.data,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['track_id'] = Variable<String>(trackId);
     {
-      map['data'] =
-          Variable<String>($LyricsTableTable.$converterdata.toSql(data));
+      map['data'] = Variable<String>(
+        $LyricsTableTable.$converterdata.toSql(data),
+      );
     }
     return map;
   }
@@ -3435,8 +4074,10 @@ class LyricsTableData extends DataClass implements Insertable<LyricsTableData> {
     );
   }
 
-  factory LyricsTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory LyricsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return LyricsTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -3502,8 +4143,8 @@ class LyricsTableCompanion extends UpdateCompanion<LyricsTableData> {
     this.id = const Value.absent(),
     required String trackId,
     required SubtitleSimple data,
-  })  : trackId = Value(trackId),
-        data = Value(data);
+  }) : trackId = Value(trackId),
+       data = Value(data);
   static Insertable<LyricsTableData> custom({
     Expression<int>? id,
     Expression<String>? trackId,
@@ -3516,8 +4157,11 @@ class LyricsTableCompanion extends UpdateCompanion<LyricsTableData> {
     });
   }
 
-  LyricsTableCompanion copyWith(
-      {Value<int>? id, Value<String>? trackId, Value<SubtitleSimple>? data}) {
+  LyricsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trackId,
+    Value<SubtitleSimple>? data,
+  }) {
     return LyricsTableCompanion(
       id: id ?? this.id,
       trackId: trackId ?? this.trackId,
@@ -3535,8 +4179,9 @@ class LyricsTableCompanion extends UpdateCompanion<LyricsTableData> {
       map['track_id'] = Variable<String>(trackId.value);
     }
     if (data.present) {
-      map['data'] =
-          Variable<String>($LyricsTableTable.$converterdata.toSql(data.value));
+      map['data'] = Variable<String>(
+        $LyricsTableTable.$converterdata.toSql(data.value),
+      );
     }
     return map;
   }
@@ -3561,110 +4206,166 @@ class $PluginsTableTable extends PluginsTable
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 50,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _versionMeta =
-      const VerificationMeta('version');
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
   @override
   late final GeneratedColumn<String> version = GeneratedColumn<String>(
-      'version', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _authorMeta = const VerificationMeta('author');
   @override
   late final GeneratedColumn<String> author = GeneratedColumn<String>(
-      'author', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _entryPointMeta =
-      const VerificationMeta('entryPoint');
+    'author',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entryPointMeta = const VerificationMeta(
+    'entryPoint',
+  );
   @override
   late final GeneratedColumn<String> entryPoint = GeneratedColumn<String>(
-      'entry_point', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'entry_point',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> apis =
-      GeneratedColumn<String>('apis', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>($PluginsTableTable.$converterapis);
+      GeneratedColumn<String>(
+        'apis',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<List<String>>($PluginsTableTable.$converterapis);
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> abilities =
-      GeneratedColumn<String>('abilities', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>($PluginsTableTable.$converterabilities);
+      GeneratedColumn<String>(
+        'abilities',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<List<String>>($PluginsTableTable.$converterabilities);
   static const VerificationMeta _selectedForMetadataMeta =
       const VerificationMeta('selectedForMetadata');
   @override
   late final GeneratedColumn<bool> selectedForMetadata = GeneratedColumn<bool>(
-      'selected_for_metadata', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("selected_for_metadata" IN (0, 1))'),
-      defaultValue: const Constant(false));
+    'selected_for_metadata',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("selected_for_metadata" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _selectedForAudioSourceMeta =
       const VerificationMeta('selectedForAudioSource');
   @override
   late final GeneratedColumn<bool> selectedForAudioSource =
-      GeneratedColumn<bool>('selected_for_audio_source', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintIsAlways(
-              'CHECK ("selected_for_audio_source" IN (0, 1))'),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _repositoryMeta =
-      const VerificationMeta('repository');
+      GeneratedColumn<bool>(
+        'selected_for_audio_source',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("selected_for_audio_source" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _repositoryMeta = const VerificationMeta(
+    'repository',
+  );
   @override
   late final GeneratedColumn<String> repository = GeneratedColumn<String>(
-      'repository', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _pluginApiVersionMeta =
-      const VerificationMeta('pluginApiVersion');
+    'repository',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _pluginApiVersionMeta = const VerificationMeta(
+    'pluginApiVersion',
+  );
   @override
   late final GeneratedColumn<String> pluginApiVersion = GeneratedColumn<String>(
-      'plugin_api_version', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('2.0.0'));
+    'plugin_api_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('2.0.0'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        name,
-        description,
-        version,
-        author,
-        entryPoint,
-        apis,
-        abilities,
-        selectedForMetadata,
-        selectedForAudioSource,
-        repository,
-        pluginApiVersion
-      ];
+    id,
+    name,
+    description,
+    version,
+    author,
+    entryPoint,
+    apis,
+    abilities,
+    selectedForMetadata,
+    selectedForAudioSource,
+    repository,
+    pluginApiVersion,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'plugins_table';
   @override
-  VerificationContext validateIntegrity(Insertable<PluginsTableData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<PluginsTableData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -3672,61 +4373,79 @@ class $PluginsTableTable extends PluginsTable
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
           _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
     if (data.containsKey('version')) {
-      context.handle(_versionMeta,
-          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
     } else if (isInserting) {
       context.missing(_versionMeta);
     }
     if (data.containsKey('author')) {
-      context.handle(_authorMeta,
-          author.isAcceptableOrUnknown(data['author']!, _authorMeta));
+      context.handle(
+        _authorMeta,
+        author.isAcceptableOrUnknown(data['author']!, _authorMeta),
+      );
     } else if (isInserting) {
       context.missing(_authorMeta);
     }
     if (data.containsKey('entry_point')) {
       context.handle(
-          _entryPointMeta,
-          entryPoint.isAcceptableOrUnknown(
-              data['entry_point']!, _entryPointMeta));
+        _entryPointMeta,
+        entryPoint.isAcceptableOrUnknown(data['entry_point']!, _entryPointMeta),
+      );
     } else if (isInserting) {
       context.missing(_entryPointMeta);
     }
     if (data.containsKey('selected_for_metadata')) {
       context.handle(
+        _selectedForMetadataMeta,
+        selectedForMetadata.isAcceptableOrUnknown(
+          data['selected_for_metadata']!,
           _selectedForMetadataMeta,
-          selectedForMetadata.isAcceptableOrUnknown(
-              data['selected_for_metadata']!, _selectedForMetadataMeta));
+        ),
+      );
     }
     if (data.containsKey('selected_for_audio_source')) {
       context.handle(
+        _selectedForAudioSourceMeta,
+        selectedForAudioSource.isAcceptableOrUnknown(
+          data['selected_for_audio_source']!,
           _selectedForAudioSourceMeta,
-          selectedForAudioSource.isAcceptableOrUnknown(
-              data['selected_for_audio_source']!, _selectedForAudioSourceMeta));
+        ),
+      );
     }
     if (data.containsKey('repository')) {
       context.handle(
-          _repositoryMeta,
-          repository.isAcceptableOrUnknown(
-              data['repository']!, _repositoryMeta));
+        _repositoryMeta,
+        repository.isAcceptableOrUnknown(data['repository']!, _repositoryMeta),
+      );
     }
     if (data.containsKey('plugin_api_version')) {
       context.handle(
+        _pluginApiVersionMeta,
+        pluginApiVersion.isAcceptableOrUnknown(
+          data['plugin_api_version']!,
           _pluginApiVersionMeta,
-          pluginApiVersion.isAcceptableOrUnknown(
-              data['plugin_api_version']!, _pluginApiVersionMeta));
+        ),
+      );
     }
     return context;
   }
@@ -3737,33 +4456,58 @@ class $PluginsTableTable extends PluginsTable
   PluginsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return PluginsTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
-      version: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}version'])!,
-      author: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}author'])!,
-      entryPoint: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}entry_point'])!,
-      apis: $PluginsTableTable.$converterapis.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}apis'])!),
-      abilities: $PluginsTableTable.$converterabilities.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}abilities'])!),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}version'],
+      )!,
+      author: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author'],
+      )!,
+      entryPoint: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_point'],
+      )!,
+      apis: $PluginsTableTable.$converterapis.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}apis'],
+        )!,
+      ),
+      abilities: $PluginsTableTable.$converterabilities.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}abilities'],
+        )!,
+      ),
       selectedForMetadata: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}selected_for_metadata'])!,
+        DriftSqlType.bool,
+        data['${effectivePrefix}selected_for_metadata'],
+      )!,
       selectedForAudioSource: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool,
-          data['${effectivePrefix}selected_for_audio_source'])!,
-      repository: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}repository']),
+        DriftSqlType.bool,
+        data['${effectivePrefix}selected_for_audio_source'],
+      )!,
+      repository: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}repository'],
+      ),
       pluginApiVersion: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}plugin_api_version'])!,
+        DriftSqlType.string,
+        data['${effectivePrefix}plugin_api_version'],
+      )!,
     );
   }
 
@@ -3792,19 +4536,20 @@ class PluginsTableData extends DataClass
   final bool selectedForAudioSource;
   final String? repository;
   final String pluginApiVersion;
-  const PluginsTableData(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.version,
-      required this.author,
-      required this.entryPoint,
-      required this.apis,
-      required this.abilities,
-      required this.selectedForMetadata,
-      required this.selectedForAudioSource,
-      this.repository,
-      required this.pluginApiVersion});
+  const PluginsTableData({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.version,
+    required this.author,
+    required this.entryPoint,
+    required this.apis,
+    required this.abilities,
+    required this.selectedForMetadata,
+    required this.selectedForAudioSource,
+    this.repository,
+    required this.pluginApiVersion,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3815,12 +4560,14 @@ class PluginsTableData extends DataClass
     map['author'] = Variable<String>(author);
     map['entry_point'] = Variable<String>(entryPoint);
     {
-      map['apis'] =
-          Variable<String>($PluginsTableTable.$converterapis.toSql(apis));
+      map['apis'] = Variable<String>(
+        $PluginsTableTable.$converterapis.toSql(apis),
+      );
     }
     {
       map['abilities'] = Variable<String>(
-          $PluginsTableTable.$converterabilities.toSql(abilities));
+        $PluginsTableTable.$converterabilities.toSql(abilities),
+      );
     }
     map['selected_for_metadata'] = Variable<bool>(selectedForMetadata);
     map['selected_for_audio_source'] = Variable<bool>(selectedForAudioSource);
@@ -3850,8 +4597,10 @@ class PluginsTableData extends DataClass
     );
   }
 
-  factory PluginsTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory PluginsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return PluginsTableData(
       id: serializer.fromJson<int>(json['id']),
@@ -3862,10 +4611,12 @@ class PluginsTableData extends DataClass
       entryPoint: serializer.fromJson<String>(json['entryPoint']),
       apis: serializer.fromJson<List<String>>(json['apis']),
       abilities: serializer.fromJson<List<String>>(json['abilities']),
-      selectedForMetadata:
-          serializer.fromJson<bool>(json['selectedForMetadata']),
-      selectedForAudioSource:
-          serializer.fromJson<bool>(json['selectedForAudioSource']),
+      selectedForMetadata: serializer.fromJson<bool>(
+        json['selectedForMetadata'],
+      ),
+      selectedForAudioSource: serializer.fromJson<bool>(
+        json['selectedForAudioSource'],
+      ),
       repository: serializer.fromJson<String?>(json['repository']),
       pluginApiVersion: serializer.fromJson<String>(json['pluginApiVersion']),
     );
@@ -3889,44 +4640,46 @@ class PluginsTableData extends DataClass
     };
   }
 
-  PluginsTableData copyWith(
-          {int? id,
-          String? name,
-          String? description,
-          String? version,
-          String? author,
-          String? entryPoint,
-          List<String>? apis,
-          List<String>? abilities,
-          bool? selectedForMetadata,
-          bool? selectedForAudioSource,
-          Value<String?> repository = const Value.absent(),
-          String? pluginApiVersion}) =>
-      PluginsTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        description: description ?? this.description,
-        version: version ?? this.version,
-        author: author ?? this.author,
-        entryPoint: entryPoint ?? this.entryPoint,
-        apis: apis ?? this.apis,
-        abilities: abilities ?? this.abilities,
-        selectedForMetadata: selectedForMetadata ?? this.selectedForMetadata,
-        selectedForAudioSource:
-            selectedForAudioSource ?? this.selectedForAudioSource,
-        repository: repository.present ? repository.value : this.repository,
-        pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
-      );
+  PluginsTableData copyWith({
+    int? id,
+    String? name,
+    String? description,
+    String? version,
+    String? author,
+    String? entryPoint,
+    List<String>? apis,
+    List<String>? abilities,
+    bool? selectedForMetadata,
+    bool? selectedForAudioSource,
+    Value<String?> repository = const Value.absent(),
+    String? pluginApiVersion,
+  }) => PluginsTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    version: version ?? this.version,
+    author: author ?? this.author,
+    entryPoint: entryPoint ?? this.entryPoint,
+    apis: apis ?? this.apis,
+    abilities: abilities ?? this.abilities,
+    selectedForMetadata: selectedForMetadata ?? this.selectedForMetadata,
+    selectedForAudioSource:
+        selectedForAudioSource ?? this.selectedForAudioSource,
+    repository: repository.present ? repository.value : this.repository,
+    pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
+  );
   PluginsTableData copyWithCompanion(PluginsTableCompanion data) {
     return PluginsTableData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      description:
-          data.description.present ? data.description.value : this.description,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
       version: data.version.present ? data.version.value : this.version,
       author: data.author.present ? data.author.value : this.author,
-      entryPoint:
-          data.entryPoint.present ? data.entryPoint.value : this.entryPoint,
+      entryPoint: data.entryPoint.present
+          ? data.entryPoint.value
+          : this.entryPoint,
       apis: data.apis.present ? data.apis.value : this.apis,
       abilities: data.abilities.present ? data.abilities.value : this.abilities,
       selectedForMetadata: data.selectedForMetadata.present
@@ -3935,8 +4688,9 @@ class PluginsTableData extends DataClass
       selectedForAudioSource: data.selectedForAudioSource.present
           ? data.selectedForAudioSource.value
           : this.selectedForAudioSource,
-      repository:
-          data.repository.present ? data.repository.value : this.repository,
+      repository: data.repository.present
+          ? data.repository.value
+          : this.repository,
       pluginApiVersion: data.pluginApiVersion.present
           ? data.pluginApiVersion.value
           : this.pluginApiVersion,
@@ -3964,18 +4718,19 @@ class PluginsTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id,
-      name,
-      description,
-      version,
-      author,
-      entryPoint,
-      apis,
-      abilities,
-      selectedForMetadata,
-      selectedForAudioSource,
-      repository,
-      pluginApiVersion);
+    id,
+    name,
+    description,
+    version,
+    author,
+    entryPoint,
+    apis,
+    abilities,
+    selectedForMetadata,
+    selectedForAudioSource,
+    repository,
+    pluginApiVersion,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4034,13 +4789,13 @@ class PluginsTableCompanion extends UpdateCompanion<PluginsTableData> {
     this.selectedForAudioSource = const Value.absent(),
     this.repository = const Value.absent(),
     this.pluginApiVersion = const Value.absent(),
-  })  : name = Value(name),
-        description = Value(description),
-        version = Value(version),
-        author = Value(author),
-        entryPoint = Value(entryPoint),
-        apis = Value(apis),
-        abilities = Value(abilities);
+  }) : name = Value(name),
+       description = Value(description),
+       version = Value(version),
+       author = Value(author),
+       entryPoint = Value(entryPoint),
+       apis = Value(apis),
+       abilities = Value(abilities);
   static Insertable<PluginsTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -4073,19 +4828,20 @@ class PluginsTableCompanion extends UpdateCompanion<PluginsTableData> {
     });
   }
 
-  PluginsTableCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
-      Value<String>? description,
-      Value<String>? version,
-      Value<String>? author,
-      Value<String>? entryPoint,
-      Value<List<String>>? apis,
-      Value<List<String>>? abilities,
-      Value<bool>? selectedForMetadata,
-      Value<bool>? selectedForAudioSource,
-      Value<String?>? repository,
-      Value<String>? pluginApiVersion}) {
+  PluginsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String>? version,
+    Value<String>? author,
+    Value<String>? entryPoint,
+    Value<List<String>>? apis,
+    Value<List<String>>? abilities,
+    Value<bool>? selectedForMetadata,
+    Value<bool>? selectedForAudioSource,
+    Value<String?>? repository,
+    Value<String>? pluginApiVersion,
+  }) {
     return PluginsTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -4125,19 +4881,22 @@ class PluginsTableCompanion extends UpdateCompanion<PluginsTableData> {
       map['entry_point'] = Variable<String>(entryPoint.value);
     }
     if (apis.present) {
-      map['apis'] =
-          Variable<String>($PluginsTableTable.$converterapis.toSql(apis.value));
+      map['apis'] = Variable<String>(
+        $PluginsTableTable.$converterapis.toSql(apis.value),
+      );
     }
     if (abilities.present) {
       map['abilities'] = Variable<String>(
-          $PluginsTableTable.$converterabilities.toSql(abilities.value));
+        $PluginsTableTable.$converterabilities.toSql(abilities.value),
+      );
     }
     if (selectedForMetadata.present) {
       map['selected_for_metadata'] = Variable<bool>(selectedForMetadata.value);
     }
     if (selectedForAudioSource.present) {
-      map['selected_for_audio_source'] =
-          Variable<bool>(selectedForAudioSource.value);
+      map['selected_for_audio_source'] = Variable<bool>(
+        selectedForAudioSource.value,
+      );
     }
     if (repository.present) {
       map['repository'] = Variable<String>(repository.value);
@@ -4174,53 +4933,58 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AuthenticationTableTable authenticationTable =
       $AuthenticationTableTable(this);
   late final $BlacklistTableTable blacklistTable = $BlacklistTableTable(this);
-  late final $PreferencesTableTable preferencesTable =
-      $PreferencesTableTable(this);
+  late final $PreferencesTableTable preferencesTable = $PreferencesTableTable(
+    this,
+  );
   late final $ScrobblerTableTable scrobblerTable = $ScrobblerTableTable(this);
-  late final $SkipSegmentTableTable skipSegmentTable =
-      $SkipSegmentTableTable(this);
-  late final $SourceMatchTableTable sourceMatchTable =
-      $SourceMatchTableTable(this);
+  late final $SkipSegmentTableTable skipSegmentTable = $SkipSegmentTableTable(
+    this,
+  );
+  late final $SourceMatchTableTable sourceMatchTable = $SourceMatchTableTable(
+    this,
+  );
   late final $AudioPlayerStateTableTable audioPlayerStateTable =
       $AudioPlayerStateTableTable(this);
   late final $HistoryTableTable historyTable = $HistoryTableTable(this);
   late final $LyricsTableTable lyricsTable = $LyricsTableTable(this);
   late final $PluginsTableTable pluginsTable = $PluginsTableTable(this);
-  late final Index uniqueBlacklist = Index('unique_blacklist',
-      'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)');
+  late final Index uniqueBlacklist = Index(
+    'unique_blacklist',
+    'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-        authenticationTable,
-        blacklistTable,
-        preferencesTable,
-        scrobblerTable,
-        skipSegmentTable,
-        sourceMatchTable,
-        audioPlayerStateTable,
-        historyTable,
-        lyricsTable,
-        pluginsTable,
-        uniqueBlacklist
-      ];
+    authenticationTable,
+    blacklistTable,
+    preferencesTable,
+    scrobblerTable,
+    skipSegmentTable,
+    sourceMatchTable,
+    audioPlayerStateTable,
+    historyTable,
+    lyricsTable,
+    pluginsTable,
+    uniqueBlacklist,
+  ];
 }
 
-typedef $$AuthenticationTableTableCreateCompanionBuilder
-    = AuthenticationTableCompanion Function({
-  Value<int> id,
-  required DecryptedText cookie,
-  required DecryptedText accessToken,
-  required DateTime expiration,
-});
-typedef $$AuthenticationTableTableUpdateCompanionBuilder
-    = AuthenticationTableCompanion Function({
-  Value<int> id,
-  Value<DecryptedText> cookie,
-  Value<DecryptedText> accessToken,
-  Value<DateTime> expiration,
-});
+typedef $$AuthenticationTableTableCreateCompanionBuilder =
+    AuthenticationTableCompanion Function({
+      Value<int> id,
+      required DecryptedText cookie,
+      required DecryptedText accessToken,
+      required DateTime expiration,
+    });
+typedef $$AuthenticationTableTableUpdateCompanionBuilder =
+    AuthenticationTableCompanion Function({
+      Value<int> id,
+      Value<DecryptedText> cookie,
+      Value<DecryptedText> accessToken,
+      Value<DateTime> expiration,
+    });
 
 class $$AuthenticationTableTableFilterComposer
     extends Composer<_$AppDatabase, $AuthenticationTableTable> {
@@ -4232,20 +4996,26 @@ class $$AuthenticationTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<DecryptedText, DecryptedText, String>
-      get cookie => $composableBuilder(
-          column: $table.cookie,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get cookie => $composableBuilder(
+    column: $table.cookie,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<DecryptedText, DecryptedText, String>
-      get accessToken => $composableBuilder(
-          column: $table.accessToken,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get accessToken => $composableBuilder(
+    column: $table.accessToken,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<DateTime> get expiration => $composableBuilder(
-      column: $table.expiration, builder: (column) => ColumnFilters(column));
+    column: $table.expiration,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$AuthenticationTableTableOrderingComposer
@@ -4258,16 +5028,24 @@ class $$AuthenticationTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get cookie => $composableBuilder(
-      column: $table.cookie, builder: (column) => ColumnOrderings(column));
+    column: $table.cookie,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get accessToken => $composableBuilder(
-      column: $table.accessToken, builder: (column) => ColumnOrderings(column));
+    column: $table.accessToken,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get expiration => $composableBuilder(
-      column: $table.expiration, builder: (column) => ColumnOrderings(column));
+    column: $table.expiration,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AuthenticationTableTableAnnotationComposer
@@ -4287,102 +5065,124 @@ class $$AuthenticationTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<DecryptedText, String> get accessToken =>
       $composableBuilder(
-          column: $table.accessToken, builder: (column) => column);
+        column: $table.accessToken,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<DateTime> get expiration => $composableBuilder(
-      column: $table.expiration, builder: (column) => column);
+    column: $table.expiration,
+    builder: (column) => column,
+  );
 }
 
-class $$AuthenticationTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $AuthenticationTableTable,
-    AuthenticationTableData,
-    $$AuthenticationTableTableFilterComposer,
-    $$AuthenticationTableTableOrderingComposer,
-    $$AuthenticationTableTableAnnotationComposer,
-    $$AuthenticationTableTableCreateCompanionBuilder,
-    $$AuthenticationTableTableUpdateCompanionBuilder,
-    (
-      AuthenticationTableData,
-      BaseReferences<_$AppDatabase, $AuthenticationTableTable,
-          AuthenticationTableData>
-    ),
-    AuthenticationTableData,
-    PrefetchHooks Function()> {
+class $$AuthenticationTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AuthenticationTableTable,
+          AuthenticationTableData,
+          $$AuthenticationTableTableFilterComposer,
+          $$AuthenticationTableTableOrderingComposer,
+          $$AuthenticationTableTableAnnotationComposer,
+          $$AuthenticationTableTableCreateCompanionBuilder,
+          $$AuthenticationTableTableUpdateCompanionBuilder,
+          (
+            AuthenticationTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $AuthenticationTableTable,
+              AuthenticationTableData
+            >,
+          ),
+          AuthenticationTableData,
+          PrefetchHooks Function()
+        > {
   $$AuthenticationTableTableTableManager(
-      _$AppDatabase db, $AuthenticationTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $AuthenticationTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
               $$AuthenticationTableTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
               $$AuthenticationTableTableOrderingComposer(
-                  $db: db, $table: table),
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer: () =>
               $$AuthenticationTableTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DecryptedText> cookie = const Value.absent(),
-            Value<DecryptedText> accessToken = const Value.absent(),
-            Value<DateTime> expiration = const Value.absent(),
-          }) =>
-              AuthenticationTableCompanion(
-            id: id,
-            cookie: cookie,
-            accessToken: accessToken,
-            expiration: expiration,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required DecryptedText cookie,
-            required DecryptedText accessToken,
-            required DateTime expiration,
-          }) =>
-              AuthenticationTableCompanion.insert(
-            id: id,
-            cookie: cookie,
-            accessToken: accessToken,
-            expiration: expiration,
-          ),
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DecryptedText> cookie = const Value.absent(),
+                Value<DecryptedText> accessToken = const Value.absent(),
+                Value<DateTime> expiration = const Value.absent(),
+              }) => AuthenticationTableCompanion(
+                id: id,
+                cookie: cookie,
+                accessToken: accessToken,
+                expiration: expiration,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DecryptedText cookie,
+                required DecryptedText accessToken,
+                required DateTime expiration,
+              }) => AuthenticationTableCompanion.insert(
+                id: id,
+                cookie: cookie,
+                accessToken: accessToken,
+                expiration: expiration,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$AuthenticationTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $AuthenticationTableTable,
-    AuthenticationTableData,
-    $$AuthenticationTableTableFilterComposer,
-    $$AuthenticationTableTableOrderingComposer,
-    $$AuthenticationTableTableAnnotationComposer,
-    $$AuthenticationTableTableCreateCompanionBuilder,
-    $$AuthenticationTableTableUpdateCompanionBuilder,
-    (
+typedef $$AuthenticationTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AuthenticationTableTable,
       AuthenticationTableData,
-      BaseReferences<_$AppDatabase, $AuthenticationTableTable,
-          AuthenticationTableData>
-    ),
-    AuthenticationTableData,
-    PrefetchHooks Function()>;
-typedef $$BlacklistTableTableCreateCompanionBuilder = BlacklistTableCompanion
-    Function({
-  Value<int> id,
-  required String name,
-  required BlacklistedType elementType,
-  required String elementId,
-});
-typedef $$BlacklistTableTableUpdateCompanionBuilder = BlacklistTableCompanion
-    Function({
-  Value<int> id,
-  Value<String> name,
-  Value<BlacklistedType> elementType,
-  Value<String> elementId,
-});
+      $$AuthenticationTableTableFilterComposer,
+      $$AuthenticationTableTableOrderingComposer,
+      $$AuthenticationTableTableAnnotationComposer,
+      $$AuthenticationTableTableCreateCompanionBuilder,
+      $$AuthenticationTableTableUpdateCompanionBuilder,
+      (
+        AuthenticationTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $AuthenticationTableTable,
+          AuthenticationTableData
+        >,
+      ),
+      AuthenticationTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$BlacklistTableTableCreateCompanionBuilder =
+    BlacklistTableCompanion Function({
+      Value<int> id,
+      required String name,
+      required BlacklistedType elementType,
+      required String elementId,
+    });
+typedef $$BlacklistTableTableUpdateCompanionBuilder =
+    BlacklistTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<BlacklistedType> elementType,
+      Value<String> elementId,
+    });
 
 class $$BlacklistTableTableFilterComposer
     extends Composer<_$AppDatabase, $BlacklistTableTable> {
@@ -4394,18 +5194,25 @@ class $$BlacklistTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<BlacklistedType, BlacklistedType, String>
-      get elementType => $composableBuilder(
-          column: $table.elementType,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get elementType => $composableBuilder(
+    column: $table.elementType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<String> get elementId => $composableBuilder(
-      column: $table.elementId, builder: (column) => ColumnFilters(column));
+    column: $table.elementId,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$BlacklistTableTableOrderingComposer
@@ -4418,16 +5225,24 @@ class $$BlacklistTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get elementType => $composableBuilder(
-      column: $table.elementType, builder: (column) => ColumnOrderings(column));
+    column: $table.elementType,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get elementId => $composableBuilder(
-      column: $table.elementId, builder: (column) => ColumnOrderings(column));
+    column: $table.elementId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$BlacklistTableTableAnnotationComposer
@@ -4447,30 +5262,41 @@ class $$BlacklistTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<BlacklistedType, String> get elementType =>
       $composableBuilder(
-          column: $table.elementType, builder: (column) => column);
+        column: $table.elementType,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<String> get elementId =>
       $composableBuilder(column: $table.elementId, builder: (column) => column);
 }
 
-class $$BlacklistTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $BlacklistTableTable,
-    BlacklistTableData,
-    $$BlacklistTableTableFilterComposer,
-    $$BlacklistTableTableOrderingComposer,
-    $$BlacklistTableTableAnnotationComposer,
-    $$BlacklistTableTableCreateCompanionBuilder,
-    $$BlacklistTableTableUpdateCompanionBuilder,
-    (
-      BlacklistTableData,
-      BaseReferences<_$AppDatabase, $BlacklistTableTable, BlacklistTableData>
-    ),
-    BlacklistTableData,
-    PrefetchHooks Function()> {
+class $$BlacklistTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BlacklistTableTable,
+          BlacklistTableData,
+          $$BlacklistTableTableFilterComposer,
+          $$BlacklistTableTableOrderingComposer,
+          $$BlacklistTableTableAnnotationComposer,
+          $$BlacklistTableTableCreateCompanionBuilder,
+          $$BlacklistTableTableUpdateCompanionBuilder,
+          (
+            BlacklistTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $BlacklistTableTable,
+              BlacklistTableData
+            >,
+          ),
+          BlacklistTableData,
+          PrefetchHooks Function()
+        > {
   $$BlacklistTableTableTableManager(
-      _$AppDatabase db, $BlacklistTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $BlacklistTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -4479,108 +5305,111 @@ class $$BlacklistTableTableTableManager extends RootTableManager<
               $$BlacklistTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$BlacklistTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<BlacklistedType> elementType = const Value.absent(),
-            Value<String> elementId = const Value.absent(),
-          }) =>
-              BlacklistTableCompanion(
-            id: id,
-            name: name,
-            elementType: elementType,
-            elementId: elementId,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required BlacklistedType elementType,
-            required String elementId,
-          }) =>
-              BlacklistTableCompanion.insert(
-            id: id,
-            name: name,
-            elementType: elementType,
-            elementId: elementId,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<BlacklistedType> elementType = const Value.absent(),
+                Value<String> elementId = const Value.absent(),
+              }) => BlacklistTableCompanion(
+                id: id,
+                name: name,
+                elementType: elementType,
+                elementId: elementId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required BlacklistedType elementType,
+                required String elementId,
+              }) => BlacklistTableCompanion.insert(
+                id: id,
+                name: name,
+                elementType: elementType,
+                elementId: elementId,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$BlacklistTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $BlacklistTableTable,
-    BlacklistTableData,
-    $$BlacklistTableTableFilterComposer,
-    $$BlacklistTableTableOrderingComposer,
-    $$BlacklistTableTableAnnotationComposer,
-    $$BlacklistTableTableCreateCompanionBuilder,
-    $$BlacklistTableTableUpdateCompanionBuilder,
-    (
+typedef $$BlacklistTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BlacklistTableTable,
       BlacklistTableData,
-      BaseReferences<_$AppDatabase, $BlacklistTableTable, BlacklistTableData>
-    ),
-    BlacklistTableData,
-    PrefetchHooks Function()>;
-typedef $$PreferencesTableTableCreateCompanionBuilder
-    = PreferencesTableCompanion Function({
-  Value<int> id,
-  Value<bool> albumColorSync,
-  Value<bool> amoledDarkTheme,
-  Value<bool> checkUpdate,
-  Value<bool> normalizeAudio,
-  Value<bool> showSystemTrayIcon,
-  Value<bool> systemTitleBar,
-  Value<bool> skipNonMusic,
-  Value<CloseBehavior> closeBehavior,
-  Value<SpotubeColor> accentColorScheme,
-  Value<LayoutMode> layoutMode,
-  Value<Locale> locale,
-  Value<Market> market,
-  Value<SearchMode> searchMode,
-  Value<String> downloadLocation,
-  Value<List<String>> localLibraryLocation,
-  Value<ThemeMode> themeMode,
-  Value<String?> audioSourceId,
-  Value<YoutubeClientEngine> youtubeClientEngine,
-  Value<bool> discordPresence,
-  Value<bool> endlessPlayback,
-  Value<bool> enableConnect,
-  Value<int> connectPort,
-  Value<bool> cacheMusic,
-  Value<bool> disableGlassEffect,
-});
-typedef $$PreferencesTableTableUpdateCompanionBuilder
-    = PreferencesTableCompanion Function({
-  Value<int> id,
-  Value<bool> albumColorSync,
-  Value<bool> amoledDarkTheme,
-  Value<bool> checkUpdate,
-  Value<bool> normalizeAudio,
-  Value<bool> showSystemTrayIcon,
-  Value<bool> systemTitleBar,
-  Value<bool> skipNonMusic,
-  Value<CloseBehavior> closeBehavior,
-  Value<SpotubeColor> accentColorScheme,
-  Value<LayoutMode> layoutMode,
-  Value<Locale> locale,
-  Value<Market> market,
-  Value<SearchMode> searchMode,
-  Value<String> downloadLocation,
-  Value<List<String>> localLibraryLocation,
-  Value<ThemeMode> themeMode,
-  Value<String?> audioSourceId,
-  Value<YoutubeClientEngine> youtubeClientEngine,
-  Value<bool> discordPresence,
-  Value<bool> endlessPlayback,
-  Value<bool> enableConnect,
-  Value<int> connectPort,
-  Value<bool> cacheMusic,
-  Value<bool> disableGlassEffect,
-});
+      $$BlacklistTableTableFilterComposer,
+      $$BlacklistTableTableOrderingComposer,
+      $$BlacklistTableTableAnnotationComposer,
+      $$BlacklistTableTableCreateCompanionBuilder,
+      $$BlacklistTableTableUpdateCompanionBuilder,
+      (
+        BlacklistTableData,
+        BaseReferences<_$AppDatabase, $BlacklistTableTable, BlacklistTableData>,
+      ),
+      BlacklistTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$PreferencesTableTableCreateCompanionBuilder =
+    PreferencesTableCompanion Function({
+      Value<int> id,
+      Value<bool> albumColorSync,
+      Value<bool> amoledDarkTheme,
+      Value<bool> checkUpdate,
+      Value<bool> normalizeAudio,
+      Value<bool> showSystemTrayIcon,
+      Value<bool> systemTitleBar,
+      Value<bool> skipNonMusic,
+      Value<CloseBehavior> closeBehavior,
+      Value<SpotubeColor> accentColorScheme,
+      Value<LayoutMode> layoutMode,
+      Value<Locale> locale,
+      Value<Market> market,
+      Value<SearchMode> searchMode,
+      Value<String> downloadLocation,
+      Value<List<String>> localLibraryLocation,
+      Value<ThemeMode> themeMode,
+      Value<String?> audioSourceId,
+      Value<YoutubeClientEngine> youtubeClientEngine,
+      Value<bool> discordPresence,
+      Value<bool> endlessPlayback,
+      Value<bool> enableConnect,
+      Value<int> connectPort,
+      Value<bool> cacheMusic,
+      Value<bool> disableGlassEffect,
+    });
+typedef $$PreferencesTableTableUpdateCompanionBuilder =
+    PreferencesTableCompanion Function({
+      Value<int> id,
+      Value<bool> albumColorSync,
+      Value<bool> amoledDarkTheme,
+      Value<bool> checkUpdate,
+      Value<bool> normalizeAudio,
+      Value<bool> showSystemTrayIcon,
+      Value<bool> systemTitleBar,
+      Value<bool> skipNonMusic,
+      Value<CloseBehavior> closeBehavior,
+      Value<SpotubeColor> accentColorScheme,
+      Value<LayoutMode> layoutMode,
+      Value<Locale> locale,
+      Value<Market> market,
+      Value<SearchMode> searchMode,
+      Value<String> downloadLocation,
+      Value<List<String>> localLibraryLocation,
+      Value<ThemeMode> themeMode,
+      Value<String?> audioSourceId,
+      Value<YoutubeClientEngine> youtubeClientEngine,
+      Value<bool> discordPresence,
+      Value<bool> endlessPlayback,
+      Value<bool> enableConnect,
+      Value<int> connectPort,
+      Value<bool> cacheMusic,
+      Value<bool> disableGlassEffect,
+    });
 
 class $$PreferencesTableTableFilterComposer
     extends Composer<_$AppDatabase, $PreferencesTableTable> {
@@ -4592,107 +5421,142 @@ class $$PreferencesTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get albumColorSync => $composableBuilder(
-      column: $table.albumColorSync,
-      builder: (column) => ColumnFilters(column));
+    column: $table.albumColorSync,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get amoledDarkTheme => $composableBuilder(
-      column: $table.amoledDarkTheme,
-      builder: (column) => ColumnFilters(column));
+    column: $table.amoledDarkTheme,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get checkUpdate => $composableBuilder(
-      column: $table.checkUpdate, builder: (column) => ColumnFilters(column));
+    column: $table.checkUpdate,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get normalizeAudio => $composableBuilder(
-      column: $table.normalizeAudio,
-      builder: (column) => ColumnFilters(column));
+    column: $table.normalizeAudio,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get showSystemTrayIcon => $composableBuilder(
-      column: $table.showSystemTrayIcon,
-      builder: (column) => ColumnFilters(column));
+    column: $table.showSystemTrayIcon,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get systemTitleBar => $composableBuilder(
-      column: $table.systemTitleBar,
-      builder: (column) => ColumnFilters(column));
+    column: $table.systemTitleBar,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get skipNonMusic => $composableBuilder(
-      column: $table.skipNonMusic, builder: (column) => ColumnFilters(column));
+    column: $table.skipNonMusic,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<CloseBehavior, CloseBehavior, String>
-      get closeBehavior => $composableBuilder(
-          column: $table.closeBehavior,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get closeBehavior => $composableBuilder(
+    column: $table.closeBehavior,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<SpotubeColor, SpotubeColor, String>
-      get accentColorScheme => $composableBuilder(
-          column: $table.accentColorScheme,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get accentColorScheme => $composableBuilder(
+    column: $table.accentColorScheme,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<LayoutMode, LayoutMode, String>
-      get layoutMode => $composableBuilder(
-          column: $table.layoutMode,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get layoutMode => $composableBuilder(
+    column: $table.layoutMode,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<Locale, Locale, String> get locale =>
       $composableBuilder(
-          column: $table.locale,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+        column: $table.locale,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnWithTypeConverterFilters<Market, Market, String> get market =>
       $composableBuilder(
-          column: $table.market,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+        column: $table.market,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnWithTypeConverterFilters<SearchMode, SearchMode, String>
-      get searchMode => $composableBuilder(
-          column: $table.searchMode,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get searchMode => $composableBuilder(
+    column: $table.searchMode,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<String> get downloadLocation => $composableBuilder(
-      column: $table.downloadLocation,
-      builder: (column) => ColumnFilters(column));
+    column: $table.downloadLocation,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get localLibraryLocation => $composableBuilder(
-          column: $table.localLibraryLocation,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get localLibraryLocation => $composableBuilder(
+    column: $table.localLibraryLocation,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<ThemeMode, ThemeMode, String> get themeMode =>
       $composableBuilder(
-          column: $table.themeMode,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+        column: $table.themeMode,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get audioSourceId => $composableBuilder(
-      column: $table.audioSourceId, builder: (column) => ColumnFilters(column));
+    column: $table.audioSourceId,
+    builder: (column) => ColumnFilters(column),
+  );
 
-  ColumnWithTypeConverterFilters<YoutubeClientEngine, YoutubeClientEngine,
-          String>
-      get youtubeClientEngine => $composableBuilder(
-          column: $table.youtubeClientEngine,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  ColumnWithTypeConverterFilters<
+    YoutubeClientEngine,
+    YoutubeClientEngine,
+    String
+  >
+  get youtubeClientEngine => $composableBuilder(
+    column: $table.youtubeClientEngine,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<bool> get discordPresence => $composableBuilder(
-      column: $table.discordPresence,
-      builder: (column) => ColumnFilters(column));
+    column: $table.discordPresence,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get endlessPlayback => $composableBuilder(
-      column: $table.endlessPlayback,
-      builder: (column) => ColumnFilters(column));
+    column: $table.endlessPlayback,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get enableConnect => $composableBuilder(
-      column: $table.enableConnect, builder: (column) => ColumnFilters(column));
+    column: $table.enableConnect,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get connectPort => $composableBuilder(
-      column: $table.connectPort, builder: (column) => ColumnFilters(column));
+    column: $table.connectPort,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get cacheMusic => $composableBuilder(
-      column: $table.cacheMusic, builder: (column) => ColumnFilters(column));
+    column: $table.cacheMusic,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get disableGlassEffect => $composableBuilder(
-      column: $table.disableGlassEffect,
-      builder: (column) => ColumnFilters(column));
+    column: $table.disableGlassEffect,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$PreferencesTableTableOrderingComposer
@@ -4705,95 +5569,129 @@ class $$PreferencesTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get albumColorSync => $composableBuilder(
-      column: $table.albumColorSync,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.albumColorSync,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get amoledDarkTheme => $composableBuilder(
-      column: $table.amoledDarkTheme,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.amoledDarkTheme,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get checkUpdate => $composableBuilder(
-      column: $table.checkUpdate, builder: (column) => ColumnOrderings(column));
+    column: $table.checkUpdate,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get normalizeAudio => $composableBuilder(
-      column: $table.normalizeAudio,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.normalizeAudio,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get showSystemTrayIcon => $composableBuilder(
-      column: $table.showSystemTrayIcon,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.showSystemTrayIcon,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get systemTitleBar => $composableBuilder(
-      column: $table.systemTitleBar,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.systemTitleBar,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get skipNonMusic => $composableBuilder(
-      column: $table.skipNonMusic,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.skipNonMusic,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get closeBehavior => $composableBuilder(
-      column: $table.closeBehavior,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.closeBehavior,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get accentColorScheme => $composableBuilder(
-      column: $table.accentColorScheme,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.accentColorScheme,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get layoutMode => $composableBuilder(
-      column: $table.layoutMode, builder: (column) => ColumnOrderings(column));
+    column: $table.layoutMode,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get locale => $composableBuilder(
-      column: $table.locale, builder: (column) => ColumnOrderings(column));
+    column: $table.locale,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get market => $composableBuilder(
-      column: $table.market, builder: (column) => ColumnOrderings(column));
+    column: $table.market,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get searchMode => $composableBuilder(
-      column: $table.searchMode, builder: (column) => ColumnOrderings(column));
+    column: $table.searchMode,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get downloadLocation => $composableBuilder(
-      column: $table.downloadLocation,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.downloadLocation,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get localLibraryLocation => $composableBuilder(
-      column: $table.localLibraryLocation,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.localLibraryLocation,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get themeMode => $composableBuilder(
-      column: $table.themeMode, builder: (column) => ColumnOrderings(column));
+    column: $table.themeMode,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get audioSourceId => $composableBuilder(
-      column: $table.audioSourceId,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.audioSourceId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get youtubeClientEngine => $composableBuilder(
-      column: $table.youtubeClientEngine,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.youtubeClientEngine,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get discordPresence => $composableBuilder(
-      column: $table.discordPresence,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.discordPresence,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get endlessPlayback => $composableBuilder(
-      column: $table.endlessPlayback,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.endlessPlayback,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get enableConnect => $composableBuilder(
-      column: $table.enableConnect,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.enableConnect,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get connectPort => $composableBuilder(
-      column: $table.connectPort, builder: (column) => ColumnOrderings(column));
+    column: $table.connectPort,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get cacheMusic => $composableBuilder(
-      column: $table.cacheMusic, builder: (column) => ColumnOrderings(column));
+    column: $table.cacheMusic,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get disableGlassEffect => $composableBuilder(
-      column: $table.disableGlassEffect,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.disableGlassEffect,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PreferencesTableTableAnnotationComposer
@@ -4809,37 +5707,57 @@ class $$PreferencesTableTableAnnotationComposer
       $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<bool> get albumColorSync => $composableBuilder(
-      column: $table.albumColorSync, builder: (column) => column);
+    column: $table.albumColorSync,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get amoledDarkTheme => $composableBuilder(
-      column: $table.amoledDarkTheme, builder: (column) => column);
+    column: $table.amoledDarkTheme,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get checkUpdate => $composableBuilder(
-      column: $table.checkUpdate, builder: (column) => column);
+    column: $table.checkUpdate,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get normalizeAudio => $composableBuilder(
-      column: $table.normalizeAudio, builder: (column) => column);
+    column: $table.normalizeAudio,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get showSystemTrayIcon => $composableBuilder(
-      column: $table.showSystemTrayIcon, builder: (column) => column);
+    column: $table.showSystemTrayIcon,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get systemTitleBar => $composableBuilder(
-      column: $table.systemTitleBar, builder: (column) => column);
+    column: $table.systemTitleBar,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get skipNonMusic => $composableBuilder(
-      column: $table.skipNonMusic, builder: (column) => column);
+    column: $table.skipNonMusic,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<CloseBehavior, String> get closeBehavior =>
       $composableBuilder(
-          column: $table.closeBehavior, builder: (column) => column);
+        column: $table.closeBehavior,
+        builder: (column) => column,
+      );
 
   GeneratedColumnWithTypeConverter<SpotubeColor, String>
-      get accentColorScheme => $composableBuilder(
-          column: $table.accentColorScheme, builder: (column) => column);
+  get accentColorScheme => $composableBuilder(
+    column: $table.accentColorScheme,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<LayoutMode, String> get layoutMode =>
       $composableBuilder(
-          column: $table.layoutMode, builder: (column) => column);
+        column: $table.layoutMode,
+        builder: (column) => column,
+      );
 
   GeneratedColumnWithTypeConverter<Locale, String> get locale =>
       $composableBuilder(column: $table.locale, builder: (column) => column);
@@ -4849,63 +5767,93 @@ class $$PreferencesTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<SearchMode, String> get searchMode =>
       $composableBuilder(
-          column: $table.searchMode, builder: (column) => column);
+        column: $table.searchMode,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<String> get downloadLocation => $composableBuilder(
-      column: $table.downloadLocation, builder: (column) => column);
+    column: $table.downloadLocation,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<List<String>, String>
-      get localLibraryLocation => $composableBuilder(
-          column: $table.localLibraryLocation, builder: (column) => column);
+  get localLibraryLocation => $composableBuilder(
+    column: $table.localLibraryLocation,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<ThemeMode, String> get themeMode =>
       $composableBuilder(column: $table.themeMode, builder: (column) => column);
 
   GeneratedColumn<String> get audioSourceId => $composableBuilder(
-      column: $table.audioSourceId, builder: (column) => column);
+    column: $table.audioSourceId,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<YoutubeClientEngine, String>
-      get youtubeClientEngine => $composableBuilder(
-          column: $table.youtubeClientEngine, builder: (column) => column);
+  get youtubeClientEngine => $composableBuilder(
+    column: $table.youtubeClientEngine,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get discordPresence => $composableBuilder(
-      column: $table.discordPresence, builder: (column) => column);
+    column: $table.discordPresence,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get endlessPlayback => $composableBuilder(
-      column: $table.endlessPlayback, builder: (column) => column);
+    column: $table.endlessPlayback,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get enableConnect => $composableBuilder(
-      column: $table.enableConnect, builder: (column) => column);
+    column: $table.enableConnect,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get connectPort => $composableBuilder(
-      column: $table.connectPort, builder: (column) => column);
+    column: $table.connectPort,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get cacheMusic => $composableBuilder(
-      column: $table.cacheMusic, builder: (column) => column);
+    column: $table.cacheMusic,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get disableGlassEffect => $composableBuilder(
-      column: $table.disableGlassEffect, builder: (column) => column);
+    column: $table.disableGlassEffect,
+    builder: (column) => column,
+  );
 }
 
-class $$PreferencesTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PreferencesTableTable,
-    PreferencesTableData,
-    $$PreferencesTableTableFilterComposer,
-    $$PreferencesTableTableOrderingComposer,
-    $$PreferencesTableTableAnnotationComposer,
-    $$PreferencesTableTableCreateCompanionBuilder,
-    $$PreferencesTableTableUpdateCompanionBuilder,
-    (
-      PreferencesTableData,
-      BaseReferences<_$AppDatabase, $PreferencesTableTable,
-          PreferencesTableData>
-    ),
-    PreferencesTableData,
-    PrefetchHooks Function()> {
+class $$PreferencesTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PreferencesTableTable,
+          PreferencesTableData,
+          $$PreferencesTableTableFilterComposer,
+          $$PreferencesTableTableOrderingComposer,
+          $$PreferencesTableTableAnnotationComposer,
+          $$PreferencesTableTableCreateCompanionBuilder,
+          $$PreferencesTableTableUpdateCompanionBuilder,
+          (
+            PreferencesTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $PreferencesTableTable,
+              PreferencesTableData
+            >,
+          ),
+          PreferencesTableData,
+          PrefetchHooks Function()
+        > {
   $$PreferencesTableTableTableManager(
-      _$AppDatabase db, $PreferencesTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $PreferencesTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -4914,153 +5862,159 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
               $$PreferencesTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$PreferencesTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<bool> albumColorSync = const Value.absent(),
-            Value<bool> amoledDarkTheme = const Value.absent(),
-            Value<bool> checkUpdate = const Value.absent(),
-            Value<bool> normalizeAudio = const Value.absent(),
-            Value<bool> showSystemTrayIcon = const Value.absent(),
-            Value<bool> systemTitleBar = const Value.absent(),
-            Value<bool> skipNonMusic = const Value.absent(),
-            Value<CloseBehavior> closeBehavior = const Value.absent(),
-            Value<SpotubeColor> accentColorScheme = const Value.absent(),
-            Value<LayoutMode> layoutMode = const Value.absent(),
-            Value<Locale> locale = const Value.absent(),
-            Value<Market> market = const Value.absent(),
-            Value<SearchMode> searchMode = const Value.absent(),
-            Value<String> downloadLocation = const Value.absent(),
-            Value<List<String>> localLibraryLocation = const Value.absent(),
-            Value<ThemeMode> themeMode = const Value.absent(),
-            Value<String?> audioSourceId = const Value.absent(),
-            Value<YoutubeClientEngine> youtubeClientEngine =
-                const Value.absent(),
-            Value<bool> discordPresence = const Value.absent(),
-            Value<bool> endlessPlayback = const Value.absent(),
-            Value<bool> enableConnect = const Value.absent(),
-            Value<int> connectPort = const Value.absent(),
-            Value<bool> cacheMusic = const Value.absent(),
-            Value<bool> disableGlassEffect = const Value.absent(),
-          }) =>
-              PreferencesTableCompanion(
-            id: id,
-            albumColorSync: albumColorSync,
-            amoledDarkTheme: amoledDarkTheme,
-            checkUpdate: checkUpdate,
-            normalizeAudio: normalizeAudio,
-            showSystemTrayIcon: showSystemTrayIcon,
-            systemTitleBar: systemTitleBar,
-            skipNonMusic: skipNonMusic,
-            closeBehavior: closeBehavior,
-            accentColorScheme: accentColorScheme,
-            layoutMode: layoutMode,
-            locale: locale,
-            market: market,
-            searchMode: searchMode,
-            downloadLocation: downloadLocation,
-            localLibraryLocation: localLibraryLocation,
-            themeMode: themeMode,
-            audioSourceId: audioSourceId,
-            youtubeClientEngine: youtubeClientEngine,
-            discordPresence: discordPresence,
-            endlessPlayback: endlessPlayback,
-            enableConnect: enableConnect,
-            connectPort: connectPort,
-            cacheMusic: cacheMusic,
-            disableGlassEffect: disableGlassEffect,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<bool> albumColorSync = const Value.absent(),
-            Value<bool> amoledDarkTheme = const Value.absent(),
-            Value<bool> checkUpdate = const Value.absent(),
-            Value<bool> normalizeAudio = const Value.absent(),
-            Value<bool> showSystemTrayIcon = const Value.absent(),
-            Value<bool> systemTitleBar = const Value.absent(),
-            Value<bool> skipNonMusic = const Value.absent(),
-            Value<CloseBehavior> closeBehavior = const Value.absent(),
-            Value<SpotubeColor> accentColorScheme = const Value.absent(),
-            Value<LayoutMode> layoutMode = const Value.absent(),
-            Value<Locale> locale = const Value.absent(),
-            Value<Market> market = const Value.absent(),
-            Value<SearchMode> searchMode = const Value.absent(),
-            Value<String> downloadLocation = const Value.absent(),
-            Value<List<String>> localLibraryLocation = const Value.absent(),
-            Value<ThemeMode> themeMode = const Value.absent(),
-            Value<String?> audioSourceId = const Value.absent(),
-            Value<YoutubeClientEngine> youtubeClientEngine =
-                const Value.absent(),
-            Value<bool> discordPresence = const Value.absent(),
-            Value<bool> endlessPlayback = const Value.absent(),
-            Value<bool> enableConnect = const Value.absent(),
-            Value<int> connectPort = const Value.absent(),
-            Value<bool> cacheMusic = const Value.absent(),
-            Value<bool> disableGlassEffect = const Value.absent(),
-          }) =>
-              PreferencesTableCompanion.insert(
-            id: id,
-            albumColorSync: albumColorSync,
-            amoledDarkTheme: amoledDarkTheme,
-            checkUpdate: checkUpdate,
-            normalizeAudio: normalizeAudio,
-            showSystemTrayIcon: showSystemTrayIcon,
-            systemTitleBar: systemTitleBar,
-            skipNonMusic: skipNonMusic,
-            closeBehavior: closeBehavior,
-            accentColorScheme: accentColorScheme,
-            layoutMode: layoutMode,
-            locale: locale,
-            market: market,
-            searchMode: searchMode,
-            downloadLocation: downloadLocation,
-            localLibraryLocation: localLibraryLocation,
-            themeMode: themeMode,
-            audioSourceId: audioSourceId,
-            youtubeClientEngine: youtubeClientEngine,
-            discordPresence: discordPresence,
-            endlessPlayback: endlessPlayback,
-            enableConnect: enableConnect,
-            connectPort: connectPort,
-            cacheMusic: cacheMusic,
-            disableGlassEffect: disableGlassEffect,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<bool> albumColorSync = const Value.absent(),
+                Value<bool> amoledDarkTheme = const Value.absent(),
+                Value<bool> checkUpdate = const Value.absent(),
+                Value<bool> normalizeAudio = const Value.absent(),
+                Value<bool> showSystemTrayIcon = const Value.absent(),
+                Value<bool> systemTitleBar = const Value.absent(),
+                Value<bool> skipNonMusic = const Value.absent(),
+                Value<CloseBehavior> closeBehavior = const Value.absent(),
+                Value<SpotubeColor> accentColorScheme = const Value.absent(),
+                Value<LayoutMode> layoutMode = const Value.absent(),
+                Value<Locale> locale = const Value.absent(),
+                Value<Market> market = const Value.absent(),
+                Value<SearchMode> searchMode = const Value.absent(),
+                Value<String> downloadLocation = const Value.absent(),
+                Value<List<String>> localLibraryLocation = const Value.absent(),
+                Value<ThemeMode> themeMode = const Value.absent(),
+                Value<String?> audioSourceId = const Value.absent(),
+                Value<YoutubeClientEngine> youtubeClientEngine =
+                    const Value.absent(),
+                Value<bool> discordPresence = const Value.absent(),
+                Value<bool> endlessPlayback = const Value.absent(),
+                Value<bool> enableConnect = const Value.absent(),
+                Value<int> connectPort = const Value.absent(),
+                Value<bool> cacheMusic = const Value.absent(),
+                Value<bool> disableGlassEffect = const Value.absent(),
+              }) => PreferencesTableCompanion(
+                id: id,
+                albumColorSync: albumColorSync,
+                amoledDarkTheme: amoledDarkTheme,
+                checkUpdate: checkUpdate,
+                normalizeAudio: normalizeAudio,
+                showSystemTrayIcon: showSystemTrayIcon,
+                systemTitleBar: systemTitleBar,
+                skipNonMusic: skipNonMusic,
+                closeBehavior: closeBehavior,
+                accentColorScheme: accentColorScheme,
+                layoutMode: layoutMode,
+                locale: locale,
+                market: market,
+                searchMode: searchMode,
+                downloadLocation: downloadLocation,
+                localLibraryLocation: localLibraryLocation,
+                themeMode: themeMode,
+                audioSourceId: audioSourceId,
+                youtubeClientEngine: youtubeClientEngine,
+                discordPresence: discordPresence,
+                endlessPlayback: endlessPlayback,
+                enableConnect: enableConnect,
+                connectPort: connectPort,
+                cacheMusic: cacheMusic,
+                disableGlassEffect: disableGlassEffect,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<bool> albumColorSync = const Value.absent(),
+                Value<bool> amoledDarkTheme = const Value.absent(),
+                Value<bool> checkUpdate = const Value.absent(),
+                Value<bool> normalizeAudio = const Value.absent(),
+                Value<bool> showSystemTrayIcon = const Value.absent(),
+                Value<bool> systemTitleBar = const Value.absent(),
+                Value<bool> skipNonMusic = const Value.absent(),
+                Value<CloseBehavior> closeBehavior = const Value.absent(),
+                Value<SpotubeColor> accentColorScheme = const Value.absent(),
+                Value<LayoutMode> layoutMode = const Value.absent(),
+                Value<Locale> locale = const Value.absent(),
+                Value<Market> market = const Value.absent(),
+                Value<SearchMode> searchMode = const Value.absent(),
+                Value<String> downloadLocation = const Value.absent(),
+                Value<List<String>> localLibraryLocation = const Value.absent(),
+                Value<ThemeMode> themeMode = const Value.absent(),
+                Value<String?> audioSourceId = const Value.absent(),
+                Value<YoutubeClientEngine> youtubeClientEngine =
+                    const Value.absent(),
+                Value<bool> discordPresence = const Value.absent(),
+                Value<bool> endlessPlayback = const Value.absent(),
+                Value<bool> enableConnect = const Value.absent(),
+                Value<int> connectPort = const Value.absent(),
+                Value<bool> cacheMusic = const Value.absent(),
+                Value<bool> disableGlassEffect = const Value.absent(),
+              }) => PreferencesTableCompanion.insert(
+                id: id,
+                albumColorSync: albumColorSync,
+                amoledDarkTheme: amoledDarkTheme,
+                checkUpdate: checkUpdate,
+                normalizeAudio: normalizeAudio,
+                showSystemTrayIcon: showSystemTrayIcon,
+                systemTitleBar: systemTitleBar,
+                skipNonMusic: skipNonMusic,
+                closeBehavior: closeBehavior,
+                accentColorScheme: accentColorScheme,
+                layoutMode: layoutMode,
+                locale: locale,
+                market: market,
+                searchMode: searchMode,
+                downloadLocation: downloadLocation,
+                localLibraryLocation: localLibraryLocation,
+                themeMode: themeMode,
+                audioSourceId: audioSourceId,
+                youtubeClientEngine: youtubeClientEngine,
+                discordPresence: discordPresence,
+                endlessPlayback: endlessPlayback,
+                enableConnect: enableConnect,
+                connectPort: connectPort,
+                cacheMusic: cacheMusic,
+                disableGlassEffect: disableGlassEffect,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$PreferencesTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PreferencesTableTable,
-    PreferencesTableData,
-    $$PreferencesTableTableFilterComposer,
-    $$PreferencesTableTableOrderingComposer,
-    $$PreferencesTableTableAnnotationComposer,
-    $$PreferencesTableTableCreateCompanionBuilder,
-    $$PreferencesTableTableUpdateCompanionBuilder,
-    (
+typedef $$PreferencesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PreferencesTableTable,
       PreferencesTableData,
-      BaseReferences<_$AppDatabase, $PreferencesTableTable,
-          PreferencesTableData>
-    ),
-    PreferencesTableData,
-    PrefetchHooks Function()>;
-typedef $$ScrobblerTableTableCreateCompanionBuilder = ScrobblerTableCompanion
-    Function({
-  Value<int> id,
-  Value<DateTime> createdAt,
-  required String username,
-  required DecryptedText passwordHash,
-});
-typedef $$ScrobblerTableTableUpdateCompanionBuilder = ScrobblerTableCompanion
-    Function({
-  Value<int> id,
-  Value<DateTime> createdAt,
-  Value<String> username,
-  Value<DecryptedText> passwordHash,
-});
+      $$PreferencesTableTableFilterComposer,
+      $$PreferencesTableTableOrderingComposer,
+      $$PreferencesTableTableAnnotationComposer,
+      $$PreferencesTableTableCreateCompanionBuilder,
+      $$PreferencesTableTableUpdateCompanionBuilder,
+      (
+        PreferencesTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $PreferencesTableTable,
+          PreferencesTableData
+        >,
+      ),
+      PreferencesTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$ScrobblerTableTableCreateCompanionBuilder =
+    ScrobblerTableCompanion Function({
+      Value<int> id,
+      Value<DateTime> createdAt,
+      required String username,
+      required DecryptedText passwordHash,
+    });
+typedef $$ScrobblerTableTableUpdateCompanionBuilder =
+    ScrobblerTableCompanion Function({
+      Value<int> id,
+      Value<DateTime> createdAt,
+      Value<String> username,
+      Value<DecryptedText> passwordHash,
+    });
 
 class $$ScrobblerTableTableFilterComposer
     extends Composer<_$AppDatabase, $ScrobblerTableTable> {
@@ -5072,18 +6026,25 @@ class $$ScrobblerTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get username => $composableBuilder(
-      column: $table.username, builder: (column) => ColumnFilters(column));
+    column: $table.username,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<DecryptedText, DecryptedText, String>
-      get passwordHash => $composableBuilder(
-          column: $table.passwordHash,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get passwordHash => $composableBuilder(
+    column: $table.passwordHash,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$ScrobblerTableTableOrderingComposer
@@ -5096,17 +6057,24 @@ class $$ScrobblerTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get username => $composableBuilder(
-      column: $table.username, builder: (column) => ColumnOrderings(column));
+    column: $table.username,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get passwordHash => $composableBuilder(
-      column: $table.passwordHash,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.passwordHash,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ScrobblerTableTableAnnotationComposer
@@ -5129,27 +6097,38 @@ class $$ScrobblerTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<DecryptedText, String> get passwordHash =>
       $composableBuilder(
-          column: $table.passwordHash, builder: (column) => column);
+        column: $table.passwordHash,
+        builder: (column) => column,
+      );
 }
 
-class $$ScrobblerTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $ScrobblerTableTable,
-    ScrobblerTableData,
-    $$ScrobblerTableTableFilterComposer,
-    $$ScrobblerTableTableOrderingComposer,
-    $$ScrobblerTableTableAnnotationComposer,
-    $$ScrobblerTableTableCreateCompanionBuilder,
-    $$ScrobblerTableTableUpdateCompanionBuilder,
-    (
-      ScrobblerTableData,
-      BaseReferences<_$AppDatabase, $ScrobblerTableTable, ScrobblerTableData>
-    ),
-    ScrobblerTableData,
-    PrefetchHooks Function()> {
+class $$ScrobblerTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ScrobblerTableTable,
+          ScrobblerTableData,
+          $$ScrobblerTableTableFilterComposer,
+          $$ScrobblerTableTableOrderingComposer,
+          $$ScrobblerTableTableAnnotationComposer,
+          $$ScrobblerTableTableCreateCompanionBuilder,
+          $$ScrobblerTableTableUpdateCompanionBuilder,
+          (
+            ScrobblerTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $ScrobblerTableTable,
+              ScrobblerTableData
+            >,
+          ),
+          ScrobblerTableData,
+          PrefetchHooks Function()
+        > {
   $$ScrobblerTableTableTableManager(
-      _$AppDatabase db, $ScrobblerTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $ScrobblerTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -5158,68 +6137,71 @@ class $$ScrobblerTableTableTableManager extends RootTableManager<
               $$ScrobblerTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$ScrobblerTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<String> username = const Value.absent(),
-            Value<DecryptedText> passwordHash = const Value.absent(),
-          }) =>
-              ScrobblerTableCompanion(
-            id: id,
-            createdAt: createdAt,
-            username: username,
-            passwordHash: passwordHash,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            required String username,
-            required DecryptedText passwordHash,
-          }) =>
-              ScrobblerTableCompanion.insert(
-            id: id,
-            createdAt: createdAt,
-            username: username,
-            passwordHash: passwordHash,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> username = const Value.absent(),
+                Value<DecryptedText> passwordHash = const Value.absent(),
+              }) => ScrobblerTableCompanion(
+                id: id,
+                createdAt: createdAt,
+                username: username,
+                passwordHash: passwordHash,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                required String username,
+                required DecryptedText passwordHash,
+              }) => ScrobblerTableCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                username: username,
+                passwordHash: passwordHash,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$ScrobblerTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $ScrobblerTableTable,
-    ScrobblerTableData,
-    $$ScrobblerTableTableFilterComposer,
-    $$ScrobblerTableTableOrderingComposer,
-    $$ScrobblerTableTableAnnotationComposer,
-    $$ScrobblerTableTableCreateCompanionBuilder,
-    $$ScrobblerTableTableUpdateCompanionBuilder,
-    (
+typedef $$ScrobblerTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ScrobblerTableTable,
       ScrobblerTableData,
-      BaseReferences<_$AppDatabase, $ScrobblerTableTable, ScrobblerTableData>
-    ),
-    ScrobblerTableData,
-    PrefetchHooks Function()>;
-typedef $$SkipSegmentTableTableCreateCompanionBuilder
-    = SkipSegmentTableCompanion Function({
-  Value<int> id,
-  required int start,
-  required int end,
-  required String trackId,
-  Value<DateTime> createdAt,
-});
-typedef $$SkipSegmentTableTableUpdateCompanionBuilder
-    = SkipSegmentTableCompanion Function({
-  Value<int> id,
-  Value<int> start,
-  Value<int> end,
-  Value<String> trackId,
-  Value<DateTime> createdAt,
-});
+      $$ScrobblerTableTableFilterComposer,
+      $$ScrobblerTableTableOrderingComposer,
+      $$ScrobblerTableTableAnnotationComposer,
+      $$ScrobblerTableTableCreateCompanionBuilder,
+      $$ScrobblerTableTableUpdateCompanionBuilder,
+      (
+        ScrobblerTableData,
+        BaseReferences<_$AppDatabase, $ScrobblerTableTable, ScrobblerTableData>,
+      ),
+      ScrobblerTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$SkipSegmentTableTableCreateCompanionBuilder =
+    SkipSegmentTableCompanion Function({
+      Value<int> id,
+      required int start,
+      required int end,
+      required String trackId,
+      Value<DateTime> createdAt,
+    });
+typedef $$SkipSegmentTableTableUpdateCompanionBuilder =
+    SkipSegmentTableCompanion Function({
+      Value<int> id,
+      Value<int> start,
+      Value<int> end,
+      Value<String> trackId,
+      Value<DateTime> createdAt,
+    });
 
 class $$SkipSegmentTableTableFilterComposer
     extends Composer<_$AppDatabase, $SkipSegmentTableTable> {
@@ -5231,19 +6213,29 @@ class $$SkipSegmentTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get start => $composableBuilder(
-      column: $table.start, builder: (column) => ColumnFilters(column));
+    column: $table.start,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get end => $composableBuilder(
-      column: $table.end, builder: (column) => ColumnFilters(column));
+    column: $table.end,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnFilters(column));
+    column: $table.trackId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$SkipSegmentTableTableOrderingComposer
@@ -5256,19 +6248,29 @@ class $$SkipSegmentTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get start => $composableBuilder(
-      column: $table.start, builder: (column) => ColumnOrderings(column));
+    column: $table.start,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get end => $composableBuilder(
-      column: $table.end, builder: (column) => ColumnOrderings(column));
+    column: $table.end,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnOrderings(column));
+    column: $table.trackId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SkipSegmentTableTableAnnotationComposer
@@ -5296,25 +6298,33 @@ class $$SkipSegmentTableTableAnnotationComposer
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
-class $$SkipSegmentTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SkipSegmentTableTable,
-    SkipSegmentTableData,
-    $$SkipSegmentTableTableFilterComposer,
-    $$SkipSegmentTableTableOrderingComposer,
-    $$SkipSegmentTableTableAnnotationComposer,
-    $$SkipSegmentTableTableCreateCompanionBuilder,
-    $$SkipSegmentTableTableUpdateCompanionBuilder,
-    (
-      SkipSegmentTableData,
-      BaseReferences<_$AppDatabase, $SkipSegmentTableTable,
-          SkipSegmentTableData>
-    ),
-    SkipSegmentTableData,
-    PrefetchHooks Function()> {
+class $$SkipSegmentTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SkipSegmentTableTable,
+          SkipSegmentTableData,
+          $$SkipSegmentTableTableFilterComposer,
+          $$SkipSegmentTableTableOrderingComposer,
+          $$SkipSegmentTableTableAnnotationComposer,
+          $$SkipSegmentTableTableCreateCompanionBuilder,
+          $$SkipSegmentTableTableUpdateCompanionBuilder,
+          (
+            SkipSegmentTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $SkipSegmentTableTable,
+              SkipSegmentTableData
+            >,
+          ),
+          SkipSegmentTableData,
+          PrefetchHooks Function()
+        > {
   $$SkipSegmentTableTableTableManager(
-      _$AppDatabase db, $SkipSegmentTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $SkipSegmentTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -5323,73 +6333,79 @@ class $$SkipSegmentTableTableTableManager extends RootTableManager<
               $$SkipSegmentTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$SkipSegmentTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> start = const Value.absent(),
-            Value<int> end = const Value.absent(),
-            Value<String> trackId = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SkipSegmentTableCompanion(
-            id: id,
-            start: start,
-            end: end,
-            trackId: trackId,
-            createdAt: createdAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int start,
-            required int end,
-            required String trackId,
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SkipSegmentTableCompanion.insert(
-            id: id,
-            start: start,
-            end: end,
-            trackId: trackId,
-            createdAt: createdAt,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> start = const Value.absent(),
+                Value<int> end = const Value.absent(),
+                Value<String> trackId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => SkipSegmentTableCompanion(
+                id: id,
+                start: start,
+                end: end,
+                trackId: trackId,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int start,
+                required int end,
+                required String trackId,
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => SkipSegmentTableCompanion.insert(
+                id: id,
+                start: start,
+                end: end,
+                trackId: trackId,
+                createdAt: createdAt,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$SkipSegmentTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SkipSegmentTableTable,
-    SkipSegmentTableData,
-    $$SkipSegmentTableTableFilterComposer,
-    $$SkipSegmentTableTableOrderingComposer,
-    $$SkipSegmentTableTableAnnotationComposer,
-    $$SkipSegmentTableTableCreateCompanionBuilder,
-    $$SkipSegmentTableTableUpdateCompanionBuilder,
-    (
+typedef $$SkipSegmentTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SkipSegmentTableTable,
       SkipSegmentTableData,
-      BaseReferences<_$AppDatabase, $SkipSegmentTableTable,
-          SkipSegmentTableData>
-    ),
-    SkipSegmentTableData,
-    PrefetchHooks Function()>;
-typedef $$SourceMatchTableTableCreateCompanionBuilder
-    = SourceMatchTableCompanion Function({
-  Value<int> id,
-  required String trackId,
-  Value<String> sourceInfo,
-  required String sourceType,
-  Value<DateTime> createdAt,
-});
-typedef $$SourceMatchTableTableUpdateCompanionBuilder
-    = SourceMatchTableCompanion Function({
-  Value<int> id,
-  Value<String> trackId,
-  Value<String> sourceInfo,
-  Value<String> sourceType,
-  Value<DateTime> createdAt,
-});
+      $$SkipSegmentTableTableFilterComposer,
+      $$SkipSegmentTableTableOrderingComposer,
+      $$SkipSegmentTableTableAnnotationComposer,
+      $$SkipSegmentTableTableCreateCompanionBuilder,
+      $$SkipSegmentTableTableUpdateCompanionBuilder,
+      (
+        SkipSegmentTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $SkipSegmentTableTable,
+          SkipSegmentTableData
+        >,
+      ),
+      SkipSegmentTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$SourceMatchTableTableCreateCompanionBuilder =
+    SourceMatchTableCompanion Function({
+      Value<int> id,
+      required String trackId,
+      Value<String> sourceInfo,
+      required String sourceType,
+      Value<DateTime> createdAt,
+    });
+typedef $$SourceMatchTableTableUpdateCompanionBuilder =
+    SourceMatchTableCompanion Function({
+      Value<int> id,
+      Value<String> trackId,
+      Value<String> sourceInfo,
+      Value<String> sourceType,
+      Value<DateTime> createdAt,
+    });
 
 class $$SourceMatchTableTableFilterComposer
     extends Composer<_$AppDatabase, $SourceMatchTableTable> {
@@ -5401,19 +6417,29 @@ class $$SourceMatchTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnFilters(column));
+    column: $table.trackId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get sourceInfo => $composableBuilder(
-      column: $table.sourceInfo, builder: (column) => ColumnFilters(column));
+    column: $table.sourceInfo,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get sourceType => $composableBuilder(
-      column: $table.sourceType, builder: (column) => ColumnFilters(column));
+    column: $table.sourceType,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$SourceMatchTableTableOrderingComposer
@@ -5426,19 +6452,29 @@ class $$SourceMatchTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnOrderings(column));
+    column: $table.trackId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get sourceInfo => $composableBuilder(
-      column: $table.sourceInfo, builder: (column) => ColumnOrderings(column));
+    column: $table.sourceInfo,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get sourceType => $composableBuilder(
-      column: $table.sourceType, builder: (column) => ColumnOrderings(column));
+    column: $table.sourceType,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SourceMatchTableTableAnnotationComposer
@@ -5457,34 +6493,46 @@ class $$SourceMatchTableTableAnnotationComposer
       $composableBuilder(column: $table.trackId, builder: (column) => column);
 
   GeneratedColumn<String> get sourceInfo => $composableBuilder(
-      column: $table.sourceInfo, builder: (column) => column);
+    column: $table.sourceInfo,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get sourceType => $composableBuilder(
-      column: $table.sourceType, builder: (column) => column);
+    column: $table.sourceType,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
-class $$SourceMatchTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SourceMatchTableTable,
-    SourceMatchTableData,
-    $$SourceMatchTableTableFilterComposer,
-    $$SourceMatchTableTableOrderingComposer,
-    $$SourceMatchTableTableAnnotationComposer,
-    $$SourceMatchTableTableCreateCompanionBuilder,
-    $$SourceMatchTableTableUpdateCompanionBuilder,
-    (
-      SourceMatchTableData,
-      BaseReferences<_$AppDatabase, $SourceMatchTableTable,
-          SourceMatchTableData>
-    ),
-    SourceMatchTableData,
-    PrefetchHooks Function()> {
+class $$SourceMatchTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SourceMatchTableTable,
+          SourceMatchTableData,
+          $$SourceMatchTableTableFilterComposer,
+          $$SourceMatchTableTableOrderingComposer,
+          $$SourceMatchTableTableAnnotationComposer,
+          $$SourceMatchTableTableCreateCompanionBuilder,
+          $$SourceMatchTableTableUpdateCompanionBuilder,
+          (
+            SourceMatchTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $SourceMatchTableTable,
+              SourceMatchTableData
+            >,
+          ),
+          SourceMatchTableData,
+          PrefetchHooks Function()
+        > {
   $$SourceMatchTableTableTableManager(
-      _$AppDatabase db, $SourceMatchTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $SourceMatchTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -5493,77 +6541,83 @@ class $$SourceMatchTableTableTableManager extends RootTableManager<
               $$SourceMatchTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$SourceMatchTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trackId = const Value.absent(),
-            Value<String> sourceInfo = const Value.absent(),
-            Value<String> sourceType = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SourceMatchTableCompanion(
-            id: id,
-            trackId: trackId,
-            sourceInfo: sourceInfo,
-            sourceType: sourceType,
-            createdAt: createdAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trackId,
-            Value<String> sourceInfo = const Value.absent(),
-            required String sourceType,
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SourceMatchTableCompanion.insert(
-            id: id,
-            trackId: trackId,
-            sourceInfo: sourceInfo,
-            sourceType: sourceType,
-            createdAt: createdAt,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trackId = const Value.absent(),
+                Value<String> sourceInfo = const Value.absent(),
+                Value<String> sourceType = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => SourceMatchTableCompanion(
+                id: id,
+                trackId: trackId,
+                sourceInfo: sourceInfo,
+                sourceType: sourceType,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trackId,
+                Value<String> sourceInfo = const Value.absent(),
+                required String sourceType,
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => SourceMatchTableCompanion.insert(
+                id: id,
+                trackId: trackId,
+                sourceInfo: sourceInfo,
+                sourceType: sourceType,
+                createdAt: createdAt,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$SourceMatchTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SourceMatchTableTable,
-    SourceMatchTableData,
-    $$SourceMatchTableTableFilterComposer,
-    $$SourceMatchTableTableOrderingComposer,
-    $$SourceMatchTableTableAnnotationComposer,
-    $$SourceMatchTableTableCreateCompanionBuilder,
-    $$SourceMatchTableTableUpdateCompanionBuilder,
-    (
+typedef $$SourceMatchTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SourceMatchTableTable,
       SourceMatchTableData,
-      BaseReferences<_$AppDatabase, $SourceMatchTableTable,
-          SourceMatchTableData>
-    ),
-    SourceMatchTableData,
-    PrefetchHooks Function()>;
-typedef $$AudioPlayerStateTableTableCreateCompanionBuilder
-    = AudioPlayerStateTableCompanion Function({
-  Value<int> id,
-  required bool playing,
-  required PlaylistMode loopMode,
-  required bool shuffled,
-  required List<String> collections,
-  Value<List<SpotubeTrackObject>> tracks,
-  Value<int> currentIndex,
-});
-typedef $$AudioPlayerStateTableTableUpdateCompanionBuilder
-    = AudioPlayerStateTableCompanion Function({
-  Value<int> id,
-  Value<bool> playing,
-  Value<PlaylistMode> loopMode,
-  Value<bool> shuffled,
-  Value<List<String>> collections,
-  Value<List<SpotubeTrackObject>> tracks,
-  Value<int> currentIndex,
-});
+      $$SourceMatchTableTableFilterComposer,
+      $$SourceMatchTableTableOrderingComposer,
+      $$SourceMatchTableTableAnnotationComposer,
+      $$SourceMatchTableTableCreateCompanionBuilder,
+      $$SourceMatchTableTableUpdateCompanionBuilder,
+      (
+        SourceMatchTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $SourceMatchTableTable,
+          SourceMatchTableData
+        >,
+      ),
+      SourceMatchTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$AudioPlayerStateTableTableCreateCompanionBuilder =
+    AudioPlayerStateTableCompanion Function({
+      Value<int> id,
+      required bool playing,
+      required PlaylistMode loopMode,
+      required bool shuffled,
+      required List<String> collections,
+      Value<List<SpotubeTrackObject>> tracks,
+      Value<int> currentIndex,
+    });
+typedef $$AudioPlayerStateTableTableUpdateCompanionBuilder =
+    AudioPlayerStateTableCompanion Function({
+      Value<int> id,
+      Value<bool> playing,
+      Value<PlaylistMode> loopMode,
+      Value<bool> shuffled,
+      Value<List<String>> collections,
+      Value<List<SpotubeTrackObject>> tracks,
+      Value<int> currentIndex,
+    });
 
 class $$AudioPlayerStateTableTableFilterComposer
     extends Composer<_$AppDatabase, $AudioPlayerStateTableTable> {
@@ -5575,32 +6629,46 @@ class $$AudioPlayerStateTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get playing => $composableBuilder(
-      column: $table.playing, builder: (column) => ColumnFilters(column));
+    column: $table.playing,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<PlaylistMode, PlaylistMode, String>
-      get loopMode => $composableBuilder(
-          column: $table.loopMode,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get loopMode => $composableBuilder(
+    column: $table.loopMode,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<bool> get shuffled => $composableBuilder(
-      column: $table.shuffled, builder: (column) => ColumnFilters(column));
+    column: $table.shuffled,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get collections => $composableBuilder(
-          column: $table.collections,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get collections => $composableBuilder(
+    column: $table.collections,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
-  ColumnWithTypeConverterFilters<List<SpotubeTrackObject>,
-          List<SpotubeTrackObject>, String>
-      get tracks => $composableBuilder(
-          column: $table.tracks,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  ColumnWithTypeConverterFilters<
+    List<SpotubeTrackObject>,
+    List<SpotubeTrackObject>,
+    String
+  >
+  get tracks => $composableBuilder(
+    column: $table.tracks,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<int> get currentIndex => $composableBuilder(
-      column: $table.currentIndex, builder: (column) => ColumnFilters(column));
+    column: $table.currentIndex,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$AudioPlayerStateTableTableOrderingComposer
@@ -5613,26 +6681,39 @@ class $$AudioPlayerStateTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get playing => $composableBuilder(
-      column: $table.playing, builder: (column) => ColumnOrderings(column));
+    column: $table.playing,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get loopMode => $composableBuilder(
-      column: $table.loopMode, builder: (column) => ColumnOrderings(column));
+    column: $table.loopMode,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get shuffled => $composableBuilder(
-      column: $table.shuffled, builder: (column) => ColumnOrderings(column));
+    column: $table.shuffled,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get collections => $composableBuilder(
-      column: $table.collections, builder: (column) => ColumnOrderings(column));
+    column: $table.collections,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get tracks => $composableBuilder(
-      column: $table.tracks, builder: (column) => ColumnOrderings(column));
+    column: $table.tracks,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get currentIndex => $composableBuilder(
-      column: $table.currentIndex,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.currentIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AudioPlayerStateTableTableAnnotationComposer
@@ -5658,122 +6739,145 @@ class $$AudioPlayerStateTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<List<String>, String> get collections =>
       $composableBuilder(
-          column: $table.collections, builder: (column) => column);
+        column: $table.collections,
+        builder: (column) => column,
+      );
 
   GeneratedColumnWithTypeConverter<List<SpotubeTrackObject>, String>
-      get tracks => $composableBuilder(
-          column: $table.tracks, builder: (column) => column);
+  get tracks =>
+      $composableBuilder(column: $table.tracks, builder: (column) => column);
 
   GeneratedColumn<int> get currentIndex => $composableBuilder(
-      column: $table.currentIndex, builder: (column) => column);
+    column: $table.currentIndex,
+    builder: (column) => column,
+  );
 }
 
-class $$AudioPlayerStateTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $AudioPlayerStateTableTable,
-    AudioPlayerStateTableData,
-    $$AudioPlayerStateTableTableFilterComposer,
-    $$AudioPlayerStateTableTableOrderingComposer,
-    $$AudioPlayerStateTableTableAnnotationComposer,
-    $$AudioPlayerStateTableTableCreateCompanionBuilder,
-    $$AudioPlayerStateTableTableUpdateCompanionBuilder,
-    (
-      AudioPlayerStateTableData,
-      BaseReferences<_$AppDatabase, $AudioPlayerStateTableTable,
-          AudioPlayerStateTableData>
-    ),
-    AudioPlayerStateTableData,
-    PrefetchHooks Function()> {
+class $$AudioPlayerStateTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AudioPlayerStateTableTable,
+          AudioPlayerStateTableData,
+          $$AudioPlayerStateTableTableFilterComposer,
+          $$AudioPlayerStateTableTableOrderingComposer,
+          $$AudioPlayerStateTableTableAnnotationComposer,
+          $$AudioPlayerStateTableTableCreateCompanionBuilder,
+          $$AudioPlayerStateTableTableUpdateCompanionBuilder,
+          (
+            AudioPlayerStateTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $AudioPlayerStateTableTable,
+              AudioPlayerStateTableData
+            >,
+          ),
+          AudioPlayerStateTableData,
+          PrefetchHooks Function()
+        > {
   $$AudioPlayerStateTableTableTableManager(
-      _$AppDatabase db, $AudioPlayerStateTableTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $AudioPlayerStateTableTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
               $$AudioPlayerStateTableTableFilterComposer(
-                  $db: db, $table: table),
+                $db: db,
+                $table: table,
+              ),
           createOrderingComposer: () =>
               $$AudioPlayerStateTableTableOrderingComposer(
-                  $db: db, $table: table),
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer: () =>
               $$AudioPlayerStateTableTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<bool> playing = const Value.absent(),
-            Value<PlaylistMode> loopMode = const Value.absent(),
-            Value<bool> shuffled = const Value.absent(),
-            Value<List<String>> collections = const Value.absent(),
-            Value<List<SpotubeTrackObject>> tracks = const Value.absent(),
-            Value<int> currentIndex = const Value.absent(),
-          }) =>
-              AudioPlayerStateTableCompanion(
-            id: id,
-            playing: playing,
-            loopMode: loopMode,
-            shuffled: shuffled,
-            collections: collections,
-            tracks: tracks,
-            currentIndex: currentIndex,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required bool playing,
-            required PlaylistMode loopMode,
-            required bool shuffled,
-            required List<String> collections,
-            Value<List<SpotubeTrackObject>> tracks = const Value.absent(),
-            Value<int> currentIndex = const Value.absent(),
-          }) =>
-              AudioPlayerStateTableCompanion.insert(
-            id: id,
-            playing: playing,
-            loopMode: loopMode,
-            shuffled: shuffled,
-            collections: collections,
-            tracks: tracks,
-            currentIndex: currentIndex,
-          ),
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<bool> playing = const Value.absent(),
+                Value<PlaylistMode> loopMode = const Value.absent(),
+                Value<bool> shuffled = const Value.absent(),
+                Value<List<String>> collections = const Value.absent(),
+                Value<List<SpotubeTrackObject>> tracks = const Value.absent(),
+                Value<int> currentIndex = const Value.absent(),
+              }) => AudioPlayerStateTableCompanion(
+                id: id,
+                playing: playing,
+                loopMode: loopMode,
+                shuffled: shuffled,
+                collections: collections,
+                tracks: tracks,
+                currentIndex: currentIndex,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required bool playing,
+                required PlaylistMode loopMode,
+                required bool shuffled,
+                required List<String> collections,
+                Value<List<SpotubeTrackObject>> tracks = const Value.absent(),
+                Value<int> currentIndex = const Value.absent(),
+              }) => AudioPlayerStateTableCompanion.insert(
+                id: id,
+                playing: playing,
+                loopMode: loopMode,
+                shuffled: shuffled,
+                collections: collections,
+                tracks: tracks,
+                currentIndex: currentIndex,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$AudioPlayerStateTableTableProcessedTableManager
-    = ProcessedTableManager<
-        _$AppDatabase,
-        $AudioPlayerStateTableTable,
+typedef $$AudioPlayerStateTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AudioPlayerStateTableTable,
+      AudioPlayerStateTableData,
+      $$AudioPlayerStateTableTableFilterComposer,
+      $$AudioPlayerStateTableTableOrderingComposer,
+      $$AudioPlayerStateTableTableAnnotationComposer,
+      $$AudioPlayerStateTableTableCreateCompanionBuilder,
+      $$AudioPlayerStateTableTableUpdateCompanionBuilder,
+      (
         AudioPlayerStateTableData,
-        $$AudioPlayerStateTableTableFilterComposer,
-        $$AudioPlayerStateTableTableOrderingComposer,
-        $$AudioPlayerStateTableTableAnnotationComposer,
-        $$AudioPlayerStateTableTableCreateCompanionBuilder,
-        $$AudioPlayerStateTableTableUpdateCompanionBuilder,
-        (
-          AudioPlayerStateTableData,
-          BaseReferences<_$AppDatabase, $AudioPlayerStateTableTable,
-              AudioPlayerStateTableData>
-        ),
-        AudioPlayerStateTableData,
-        PrefetchHooks Function()>;
-typedef $$HistoryTableTableCreateCompanionBuilder = HistoryTableCompanion
-    Function({
-  Value<int> id,
-  Value<DateTime> createdAt,
-  required HistoryEntryType type,
-  required String itemId,
-  required Map<String, dynamic> data,
-});
-typedef $$HistoryTableTableUpdateCompanionBuilder = HistoryTableCompanion
-    Function({
-  Value<int> id,
-  Value<DateTime> createdAt,
-  Value<HistoryEntryType> type,
-  Value<String> itemId,
-  Value<Map<String, dynamic>> data,
-});
+        BaseReferences<
+          _$AppDatabase,
+          $AudioPlayerStateTableTable,
+          AudioPlayerStateTableData
+        >,
+      ),
+      AudioPlayerStateTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$HistoryTableTableCreateCompanionBuilder =
+    HistoryTableCompanion Function({
+      Value<int> id,
+      Value<DateTime> createdAt,
+      required HistoryEntryType type,
+      required String itemId,
+      required Map<String, dynamic> data,
+    });
+typedef $$HistoryTableTableUpdateCompanionBuilder =
+    HistoryTableCompanion Function({
+      Value<int> id,
+      Value<DateTime> createdAt,
+      Value<HistoryEntryType> type,
+      Value<String> itemId,
+      Value<Map<String, dynamic>> data,
+    });
 
 class $$HistoryTableTableFilterComposer
     extends Composer<_$AppDatabase, $HistoryTableTable> {
@@ -5785,24 +6889,35 @@ class $$HistoryTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<HistoryEntryType, HistoryEntryType, String>
-      get type => $composableBuilder(
-          column: $table.type,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<String> get itemId => $composableBuilder(
-      column: $table.itemId, builder: (column) => ColumnFilters(column));
+    column: $table.itemId,
+    builder: (column) => ColumnFilters(column),
+  );
 
-  ColumnWithTypeConverterFilters<Map<String, dynamic>, Map<String, dynamic>,
-          String>
-      get data => $composableBuilder(
-          column: $table.data,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  ColumnWithTypeConverterFilters<
+    Map<String, dynamic>,
+    Map<String, dynamic>,
+    String
+  >
+  get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$HistoryTableTableOrderingComposer
@@ -5815,19 +6930,29 @@ class $$HistoryTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get itemId => $composableBuilder(
-      column: $table.itemId, builder: (column) => ColumnOrderings(column));
+    column: $table.itemId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get data => $composableBuilder(
-      column: $table.data, builder: (column) => ColumnOrderings(column));
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$HistoryTableTableAnnotationComposer
@@ -5855,23 +6980,27 @@ class $$HistoryTableTableAnnotationComposer
       $composableBuilder(column: $table.data, builder: (column) => column);
 }
 
-class $$HistoryTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $HistoryTableTable,
-    HistoryTableData,
-    $$HistoryTableTableFilterComposer,
-    $$HistoryTableTableOrderingComposer,
-    $$HistoryTableTableAnnotationComposer,
-    $$HistoryTableTableCreateCompanionBuilder,
-    $$HistoryTableTableUpdateCompanionBuilder,
-    (
-      HistoryTableData,
-      BaseReferences<_$AppDatabase, $HistoryTableTable, HistoryTableData>
-    ),
-    HistoryTableData,
-    PrefetchHooks Function()> {
+class $$HistoryTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HistoryTableTable,
+          HistoryTableData,
+          $$HistoryTableTableFilterComposer,
+          $$HistoryTableTableOrderingComposer,
+          $$HistoryTableTableAnnotationComposer,
+          $$HistoryTableTableCreateCompanionBuilder,
+          $$HistoryTableTableUpdateCompanionBuilder,
+          (
+            HistoryTableData,
+            BaseReferences<_$AppDatabase, $HistoryTableTable, HistoryTableData>,
+          ),
+          HistoryTableData,
+          PrefetchHooks Function()
+        > {
   $$HistoryTableTableTableManager(_$AppDatabase db, $HistoryTableTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -5880,68 +7009,71 @@ class $$HistoryTableTableTableManager extends RootTableManager<
               $$HistoryTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$HistoryTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<HistoryEntryType> type = const Value.absent(),
-            Value<String> itemId = const Value.absent(),
-            Value<Map<String, dynamic>> data = const Value.absent(),
-          }) =>
-              HistoryTableCompanion(
-            id: id,
-            createdAt: createdAt,
-            type: type,
-            itemId: itemId,
-            data: data,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            required HistoryEntryType type,
-            required String itemId,
-            required Map<String, dynamic> data,
-          }) =>
-              HistoryTableCompanion.insert(
-            id: id,
-            createdAt: createdAt,
-            type: type,
-            itemId: itemId,
-            data: data,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<HistoryEntryType> type = const Value.absent(),
+                Value<String> itemId = const Value.absent(),
+                Value<Map<String, dynamic>> data = const Value.absent(),
+              }) => HistoryTableCompanion(
+                id: id,
+                createdAt: createdAt,
+                type: type,
+                itemId: itemId,
+                data: data,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                required HistoryEntryType type,
+                required String itemId,
+                required Map<String, dynamic> data,
+              }) => HistoryTableCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                type: type,
+                itemId: itemId,
+                data: data,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$HistoryTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $HistoryTableTable,
-    HistoryTableData,
-    $$HistoryTableTableFilterComposer,
-    $$HistoryTableTableOrderingComposer,
-    $$HistoryTableTableAnnotationComposer,
-    $$HistoryTableTableCreateCompanionBuilder,
-    $$HistoryTableTableUpdateCompanionBuilder,
-    (
+typedef $$HistoryTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HistoryTableTable,
       HistoryTableData,
-      BaseReferences<_$AppDatabase, $HistoryTableTable, HistoryTableData>
-    ),
-    HistoryTableData,
-    PrefetchHooks Function()>;
-typedef $$LyricsTableTableCreateCompanionBuilder = LyricsTableCompanion
-    Function({
-  Value<int> id,
-  required String trackId,
-  required SubtitleSimple data,
-});
-typedef $$LyricsTableTableUpdateCompanionBuilder = LyricsTableCompanion
-    Function({
-  Value<int> id,
-  Value<String> trackId,
-  Value<SubtitleSimple> data,
-});
+      $$HistoryTableTableFilterComposer,
+      $$HistoryTableTableOrderingComposer,
+      $$HistoryTableTableAnnotationComposer,
+      $$HistoryTableTableCreateCompanionBuilder,
+      $$HistoryTableTableUpdateCompanionBuilder,
+      (
+        HistoryTableData,
+        BaseReferences<_$AppDatabase, $HistoryTableTable, HistoryTableData>,
+      ),
+      HistoryTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$LyricsTableTableCreateCompanionBuilder =
+    LyricsTableCompanion Function({
+      Value<int> id,
+      required String trackId,
+      required SubtitleSimple data,
+    });
+typedef $$LyricsTableTableUpdateCompanionBuilder =
+    LyricsTableCompanion Function({
+      Value<int> id,
+      Value<String> trackId,
+      Value<SubtitleSimple> data,
+    });
 
 class $$LyricsTableTableFilterComposer
     extends Composer<_$AppDatabase, $LyricsTableTable> {
@@ -5953,15 +7085,20 @@ class $$LyricsTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnFilters(column));
+    column: $table.trackId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<SubtitleSimple, SubtitleSimple, String>
-      get data => $composableBuilder(
-          column: $table.data,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$LyricsTableTableOrderingComposer
@@ -5974,13 +7111,19 @@ class $$LyricsTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnOrderings(column));
+    column: $table.trackId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get data => $composableBuilder(
-      column: $table.data, builder: (column) => ColumnOrderings(column));
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LyricsTableTableAnnotationComposer
@@ -6002,23 +7145,27 @@ class $$LyricsTableTableAnnotationComposer
       $composableBuilder(column: $table.data, builder: (column) => column);
 }
 
-class $$LyricsTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $LyricsTableTable,
-    LyricsTableData,
-    $$LyricsTableTableFilterComposer,
-    $$LyricsTableTableOrderingComposer,
-    $$LyricsTableTableAnnotationComposer,
-    $$LyricsTableTableCreateCompanionBuilder,
-    $$LyricsTableTableUpdateCompanionBuilder,
-    (
-      LyricsTableData,
-      BaseReferences<_$AppDatabase, $LyricsTableTable, LyricsTableData>
-    ),
-    LyricsTableData,
-    PrefetchHooks Function()> {
+class $$LyricsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LyricsTableTable,
+          LyricsTableData,
+          $$LyricsTableTableFilterComposer,
+          $$LyricsTableTableOrderingComposer,
+          $$LyricsTableTableAnnotationComposer,
+          $$LyricsTableTableCreateCompanionBuilder,
+          $$LyricsTableTableUpdateCompanionBuilder,
+          (
+            LyricsTableData,
+            BaseReferences<_$AppDatabase, $LyricsTableTable, LyricsTableData>,
+          ),
+          LyricsTableData,
+          PrefetchHooks Function()
+        > {
   $$LyricsTableTableTableManager(_$AppDatabase db, $LyricsTableTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -6027,78 +7174,77 @@ class $$LyricsTableTableTableManager extends RootTableManager<
               $$LyricsTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$LyricsTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trackId = const Value.absent(),
-            Value<SubtitleSimple> data = const Value.absent(),
-          }) =>
-              LyricsTableCompanion(
-            id: id,
-            trackId: trackId,
-            data: data,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trackId,
-            required SubtitleSimple data,
-          }) =>
-              LyricsTableCompanion.insert(
-            id: id,
-            trackId: trackId,
-            data: data,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trackId = const Value.absent(),
+                Value<SubtitleSimple> data = const Value.absent(),
+              }) => LyricsTableCompanion(id: id, trackId: trackId, data: data),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trackId,
+                required SubtitleSimple data,
+              }) => LyricsTableCompanion.insert(
+                id: id,
+                trackId: trackId,
+                data: data,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$LyricsTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $LyricsTableTable,
-    LyricsTableData,
-    $$LyricsTableTableFilterComposer,
-    $$LyricsTableTableOrderingComposer,
-    $$LyricsTableTableAnnotationComposer,
-    $$LyricsTableTableCreateCompanionBuilder,
-    $$LyricsTableTableUpdateCompanionBuilder,
-    (
+typedef $$LyricsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LyricsTableTable,
       LyricsTableData,
-      BaseReferences<_$AppDatabase, $LyricsTableTable, LyricsTableData>
-    ),
-    LyricsTableData,
-    PrefetchHooks Function()>;
-typedef $$PluginsTableTableCreateCompanionBuilder = PluginsTableCompanion
-    Function({
-  Value<int> id,
-  required String name,
-  required String description,
-  required String version,
-  required String author,
-  required String entryPoint,
-  required List<String> apis,
-  required List<String> abilities,
-  Value<bool> selectedForMetadata,
-  Value<bool> selectedForAudioSource,
-  Value<String?> repository,
-  Value<String> pluginApiVersion,
-});
-typedef $$PluginsTableTableUpdateCompanionBuilder = PluginsTableCompanion
-    Function({
-  Value<int> id,
-  Value<String> name,
-  Value<String> description,
-  Value<String> version,
-  Value<String> author,
-  Value<String> entryPoint,
-  Value<List<String>> apis,
-  Value<List<String>> abilities,
-  Value<bool> selectedForMetadata,
-  Value<bool> selectedForAudioSource,
-  Value<String?> repository,
-  Value<String> pluginApiVersion,
-});
+      $$LyricsTableTableFilterComposer,
+      $$LyricsTableTableOrderingComposer,
+      $$LyricsTableTableAnnotationComposer,
+      $$LyricsTableTableCreateCompanionBuilder,
+      $$LyricsTableTableUpdateCompanionBuilder,
+      (
+        LyricsTableData,
+        BaseReferences<_$AppDatabase, $LyricsTableTable, LyricsTableData>,
+      ),
+      LyricsTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$PluginsTableTableCreateCompanionBuilder =
+    PluginsTableCompanion Function({
+      Value<int> id,
+      required String name,
+      required String description,
+      required String version,
+      required String author,
+      required String entryPoint,
+      required List<String> apis,
+      required List<String> abilities,
+      Value<bool> selectedForMetadata,
+      Value<bool> selectedForAudioSource,
+      Value<String?> repository,
+      Value<String> pluginApiVersion,
+    });
+typedef $$PluginsTableTableUpdateCompanionBuilder =
+    PluginsTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> description,
+      Value<String> version,
+      Value<String> author,
+      Value<String> entryPoint,
+      Value<List<String>> apis,
+      Value<List<String>> abilities,
+      Value<bool> selectedForMetadata,
+      Value<bool> selectedForAudioSource,
+      Value<String?> repository,
+      Value<String> pluginApiVersion,
+    });
 
 class $$PluginsTableTableFilterComposer
     extends Composer<_$AppDatabase, $PluginsTableTable> {
@@ -6110,47 +7256,66 @@ class $$PluginsTableTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get version => $composableBuilder(
-      column: $table.version, builder: (column) => ColumnFilters(column));
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get author => $composableBuilder(
-      column: $table.author, builder: (column) => ColumnFilters(column));
+    column: $table.author,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get entryPoint => $composableBuilder(
-      column: $table.entryPoint, builder: (column) => ColumnFilters(column));
+    column: $table.entryPoint,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<List<String>, List<String>, String> get apis =>
       $composableBuilder(
-          column: $table.apis,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+        column: $table.apis,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get abilities => $composableBuilder(
-          column: $table.abilities,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
+  get abilities => $composableBuilder(
+    column: $table.abilities,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<bool> get selectedForMetadata => $composableBuilder(
-      column: $table.selectedForMetadata,
-      builder: (column) => ColumnFilters(column));
+    column: $table.selectedForMetadata,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get selectedForAudioSource => $composableBuilder(
-      column: $table.selectedForAudioSource,
-      builder: (column) => ColumnFilters(column));
+    column: $table.selectedForAudioSource,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get repository => $composableBuilder(
-      column: $table.repository, builder: (column) => ColumnFilters(column));
+    column: $table.repository,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get pluginApiVersion => $composableBuilder(
-      column: $table.pluginApiVersion,
-      builder: (column) => ColumnFilters(column));
+    column: $table.pluginApiVersion,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$PluginsTableTableOrderingComposer
@@ -6163,43 +7328,64 @@ class $$PluginsTableTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get version => $composableBuilder(
-      column: $table.version, builder: (column) => ColumnOrderings(column));
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get author => $composableBuilder(
-      column: $table.author, builder: (column) => ColumnOrderings(column));
+    column: $table.author,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get entryPoint => $composableBuilder(
-      column: $table.entryPoint, builder: (column) => ColumnOrderings(column));
+    column: $table.entryPoint,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get apis => $composableBuilder(
-      column: $table.apis, builder: (column) => ColumnOrderings(column));
+    column: $table.apis,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get abilities => $composableBuilder(
-      column: $table.abilities, builder: (column) => ColumnOrderings(column));
+    column: $table.abilities,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get selectedForMetadata => $composableBuilder(
-      column: $table.selectedForMetadata,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.selectedForMetadata,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get selectedForAudioSource => $composableBuilder(
-      column: $table.selectedForAudioSource,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.selectedForAudioSource,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get repository => $composableBuilder(
-      column: $table.repository, builder: (column) => ColumnOrderings(column));
+    column: $table.repository,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get pluginApiVersion => $composableBuilder(
-      column: $table.pluginApiVersion,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.pluginApiVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PluginsTableTableAnnotationComposer
@@ -6218,7 +7404,9 @@ class $$PluginsTableTableAnnotationComposer
       $composableBuilder(column: $table.name, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
+    column: $table.description,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get version =>
       $composableBuilder(column: $table.version, builder: (column) => column);
@@ -6227,7 +7415,9 @@ class $$PluginsTableTableAnnotationComposer
       $composableBuilder(column: $table.author, builder: (column) => column);
 
   GeneratedColumn<String> get entryPoint => $composableBuilder(
-      column: $table.entryPoint, builder: (column) => column);
+    column: $table.entryPoint,
+    builder: (column) => column,
+  );
 
   GeneratedColumnWithTypeConverter<List<String>, String> get apis =>
       $composableBuilder(column: $table.apis, builder: (column) => column);
@@ -6236,35 +7426,47 @@ class $$PluginsTableTableAnnotationComposer
       $composableBuilder(column: $table.abilities, builder: (column) => column);
 
   GeneratedColumn<bool> get selectedForMetadata => $composableBuilder(
-      column: $table.selectedForMetadata, builder: (column) => column);
+    column: $table.selectedForMetadata,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get selectedForAudioSource => $composableBuilder(
-      column: $table.selectedForAudioSource, builder: (column) => column);
+    column: $table.selectedForAudioSource,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get repository => $composableBuilder(
-      column: $table.repository, builder: (column) => column);
+    column: $table.repository,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get pluginApiVersion => $composableBuilder(
-      column: $table.pluginApiVersion, builder: (column) => column);
+    column: $table.pluginApiVersion,
+    builder: (column) => column,
+  );
 }
 
-class $$PluginsTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PluginsTableTable,
-    PluginsTableData,
-    $$PluginsTableTableFilterComposer,
-    $$PluginsTableTableOrderingComposer,
-    $$PluginsTableTableAnnotationComposer,
-    $$PluginsTableTableCreateCompanionBuilder,
-    $$PluginsTableTableUpdateCompanionBuilder,
-    (
-      PluginsTableData,
-      BaseReferences<_$AppDatabase, $PluginsTableTable, PluginsTableData>
-    ),
-    PluginsTableData,
-    PrefetchHooks Function()> {
+class $$PluginsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PluginsTableTable,
+          PluginsTableData,
+          $$PluginsTableTableFilterComposer,
+          $$PluginsTableTableOrderingComposer,
+          $$PluginsTableTableAnnotationComposer,
+          $$PluginsTableTableCreateCompanionBuilder,
+          $$PluginsTableTableUpdateCompanionBuilder,
+          (
+            PluginsTableData,
+            BaseReferences<_$AppDatabase, $PluginsTableTable, PluginsTableData>,
+          ),
+          PluginsTableData,
+          PrefetchHooks Function()
+        > {
   $$PluginsTableTableTableManager(_$AppDatabase db, $PluginsTableTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -6273,84 +7475,87 @@ class $$PluginsTableTableTableManager extends RootTableManager<
               $$PluginsTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$PluginsTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String> description = const Value.absent(),
-            Value<String> version = const Value.absent(),
-            Value<String> author = const Value.absent(),
-            Value<String> entryPoint = const Value.absent(),
-            Value<List<String>> apis = const Value.absent(),
-            Value<List<String>> abilities = const Value.absent(),
-            Value<bool> selectedForMetadata = const Value.absent(),
-            Value<bool> selectedForAudioSource = const Value.absent(),
-            Value<String?> repository = const Value.absent(),
-            Value<String> pluginApiVersion = const Value.absent(),
-          }) =>
-              PluginsTableCompanion(
-            id: id,
-            name: name,
-            description: description,
-            version: version,
-            author: author,
-            entryPoint: entryPoint,
-            apis: apis,
-            abilities: abilities,
-            selectedForMetadata: selectedForMetadata,
-            selectedForAudioSource: selectedForAudioSource,
-            repository: repository,
-            pluginApiVersion: pluginApiVersion,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required String description,
-            required String version,
-            required String author,
-            required String entryPoint,
-            required List<String> apis,
-            required List<String> abilities,
-            Value<bool> selectedForMetadata = const Value.absent(),
-            Value<bool> selectedForAudioSource = const Value.absent(),
-            Value<String?> repository = const Value.absent(),
-            Value<String> pluginApiVersion = const Value.absent(),
-          }) =>
-              PluginsTableCompanion.insert(
-            id: id,
-            name: name,
-            description: description,
-            version: version,
-            author: author,
-            entryPoint: entryPoint,
-            apis: apis,
-            abilities: abilities,
-            selectedForMetadata: selectedForMetadata,
-            selectedForAudioSource: selectedForAudioSource,
-            repository: repository,
-            pluginApiVersion: pluginApiVersion,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> version = const Value.absent(),
+                Value<String> author = const Value.absent(),
+                Value<String> entryPoint = const Value.absent(),
+                Value<List<String>> apis = const Value.absent(),
+                Value<List<String>> abilities = const Value.absent(),
+                Value<bool> selectedForMetadata = const Value.absent(),
+                Value<bool> selectedForAudioSource = const Value.absent(),
+                Value<String?> repository = const Value.absent(),
+                Value<String> pluginApiVersion = const Value.absent(),
+              }) => PluginsTableCompanion(
+                id: id,
+                name: name,
+                description: description,
+                version: version,
+                author: author,
+                entryPoint: entryPoint,
+                apis: apis,
+                abilities: abilities,
+                selectedForMetadata: selectedForMetadata,
+                selectedForAudioSource: selectedForAudioSource,
+                repository: repository,
+                pluginApiVersion: pluginApiVersion,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required String description,
+                required String version,
+                required String author,
+                required String entryPoint,
+                required List<String> apis,
+                required List<String> abilities,
+                Value<bool> selectedForMetadata = const Value.absent(),
+                Value<bool> selectedForAudioSource = const Value.absent(),
+                Value<String?> repository = const Value.absent(),
+                Value<String> pluginApiVersion = const Value.absent(),
+              }) => PluginsTableCompanion.insert(
+                id: id,
+                name: name,
+                description: description,
+                version: version,
+                author: author,
+                entryPoint: entryPoint,
+                apis: apis,
+                abilities: abilities,
+                selectedForMetadata: selectedForMetadata,
+                selectedForAudioSource: selectedForAudioSource,
+                repository: repository,
+                pluginApiVersion: pluginApiVersion,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$PluginsTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PluginsTableTable,
-    PluginsTableData,
-    $$PluginsTableTableFilterComposer,
-    $$PluginsTableTableOrderingComposer,
-    $$PluginsTableTableAnnotationComposer,
-    $$PluginsTableTableCreateCompanionBuilder,
-    $$PluginsTableTableUpdateCompanionBuilder,
-    (
+typedef $$PluginsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PluginsTableTable,
       PluginsTableData,
-      BaseReferences<_$AppDatabase, $PluginsTableTable, PluginsTableData>
-    ),
-    PluginsTableData,
-    PrefetchHooks Function()>;
+      $$PluginsTableTableFilterComposer,
+      $$PluginsTableTableOrderingComposer,
+      $$PluginsTableTableAnnotationComposer,
+      $$PluginsTableTableCreateCompanionBuilder,
+      $$PluginsTableTableUpdateCompanionBuilder,
+      (
+        PluginsTableData,
+        BaseReferences<_$AppDatabase, $PluginsTableTable, PluginsTableData>,
+      ),
+      PluginsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;

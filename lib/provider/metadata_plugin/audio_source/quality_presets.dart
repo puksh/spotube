@@ -13,7 +13,7 @@ part 'quality_presets.g.dart';
 part 'quality_presets.freezed.dart';
 
 @freezed
-class AudioSourcePresetsState with _$AudioSourcePresetsState {
+abstract class AudioSourcePresetsState with _$AudioSourcePresetsState {
   factory AudioSourcePresetsState({
     @Default([]) final List<SpotubeAudioSourceContainerPreset> presets,
     @Default(0) final int selectedStreamingQualityIndex,
@@ -32,8 +32,10 @@ class AudioSourceAvailableQualityPresetsNotifier
   build() {
     final audioSourceSnapshot = ref.watch(audioSourcePluginProvider);
     final audioSourceConfigSnapshot = ref.watch(
-      metadataPluginsProvider.select((data) =>
-          data.whenData((value) => value.defaultAudioSourcePluginConfig)),
+      metadataPluginsProvider.select(
+        (data) =>
+            data.whenData((value) => value.defaultAudioSourcePluginConfig),
+      ),
     );
 
     _initialize(audioSourceSnapshot, audioSourceConfigSnapshot);
@@ -42,9 +44,11 @@ class AudioSourceAvailableQualityPresetsNotifier
       final isNewLossless =
           next.presets.elementAtOrNull(next.selectedStreamingContainerIndex)
               is SpotubeAudioSourceContainerPresetLossless;
-      final isOldLossless = previous?.presets
-              .elementAtOrNull(previous.selectedStreamingContainerIndex)
-          is SpotubeAudioSourceContainerPresetLossless;
+      final isOldLossless =
+          previous?.presets.elementAtOrNull(
+                previous.selectedStreamingContainerIndex,
+              )
+              is SpotubeAudioSourceContainerPresetLossless;
       if (!isOldLossless && isNewLossless) {
         audioPlayer.setDemuxerBufferSize(6 * 1024 * 1024); // 6MB
       } else if (isOldLossless && !isNewLossless) {
@@ -65,15 +69,14 @@ class AudioSourceAvailableQualityPresetsNotifier
           throw MetadataPluginException.noDefaultAudioSourcePlugin();
         }
         final preferences = await SharedPreferences.getInstance();
-        final persistedStateStr =
-            preferences.getString("audioSourceState-${audioSourceConfig.slug}");
+        final persistedStateStr = preferences.getString(
+          "audioSourceState-${audioSourceConfig.slug}",
+        );
 
         if (persistedStateStr != null) {
-          state =
-              AudioSourcePresetsState.fromJson(jsonDecode(persistedStateStr))
-                  .copyWith(
-            presets: audioSource.audioSource.supportedPresets,
-          );
+          state = AudioSourcePresetsState.fromJson(
+            jsonDecode(persistedStateStr),
+          ).copyWith(presets: audioSource.audioSource.supportedPresets);
         } else {
           state = AudioSourcePresetsState(
             presets: audioSource.audioSource.supportedPresets,
@@ -112,8 +115,11 @@ class AudioSourceAvailableQualityPresetsNotifier
   }
 
   void _updatePreferences() async {
-    final audioSourceConfig = await ref.read(metadataPluginsProvider
-        .selectAsync((data) => data.defaultAudioSourcePluginConfig));
+    final audioSourceConfig = await ref.read(
+      metadataPluginsProvider.selectAsync(
+        (data) => data.defaultAudioSourcePluginConfig,
+      ),
+    );
     if (audioSourceConfig == null) {
       throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
@@ -126,7 +132,8 @@ class AudioSourceAvailableQualityPresetsNotifier
   }
 }
 
-final audioSourcePresetsProvider = NotifierProvider<
-    AudioSourceAvailableQualityPresetsNotifier, AudioSourcePresetsState>(
-  () => AudioSourceAvailableQualityPresetsNotifier(),
-);
+final audioSourcePresetsProvider =
+    NotifierProvider<
+      AudioSourceAvailableQualityPresetsNotifier,
+      AudioSourcePresetsState
+    >(() => AudioSourceAvailableQualityPresetsNotifier());

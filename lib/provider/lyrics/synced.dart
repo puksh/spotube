@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 import 'package:lrc/lrc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotube/models/database/database.dart';
@@ -12,8 +13,11 @@ import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 
-class SyncedLyricsNotifier
-    extends FamilyAsyncNotifier<SubtitleSimple, SpotubeTrackObject?> {
+class SyncedLyricsNotifier extends AsyncNotifier<SubtitleSimple> {
+  SyncedLyricsNotifier(this._arg);
+  final SpotubeTrackObject? _arg;
+  SpotubeTrackObject? get arg => _arg;
+
   SpotubeTrackObject get _track => arg!;
 
   /// Lyrics credits: [lrclib.net](https://lrclib.net) and their contributors
@@ -37,7 +41,7 @@ class SyncedLyricsNotifier
       options: Options(
         headers: {
           "User-Agent":
-              "Spotube v${packageInfo.version} (https://github.com/KRTirtho/spotube)"
+              "Spotube v${packageInfo.version} (https://github.com/KRTirtho/spotube)",
         },
         responseType: ResponseType.json,
       ),
@@ -57,10 +61,9 @@ class SyncedLyricsNotifier
 
     final syncedLyricsRaw = json["syncedLyrics"] as String?;
     final syncedLyrics = syncedLyricsRaw?.isNotEmpty == true
-        ? Lrc.parse(syncedLyricsRaw!)
-            .lyrics
-            .map(LyricSlice.fromLrcLine)
-            .toList()
+        ? Lrc.parse(
+            syncedLyricsRaw!,
+          ).lyrics.map(LyricSlice.fromLrcLine).toList()
         : null;
 
     if (syncedLyrics?.isNotEmpty == true) {
@@ -88,7 +91,8 @@ class SyncedLyricsNotifier
   }
 
   @override
-  FutureOr<SubtitleSimple> build(track) async {
+  FutureOr<SubtitleSimple> build() async {
+    final track = arg;
     try {
       final database = ref.watch(databaseProvider);
 
@@ -96,10 +100,11 @@ class SyncedLyricsNotifier
         throw "No track currently";
       }
 
-      final cachedLyrics = await (database.select(database.lyricsTable)
-            ..where((tbl) => tbl.trackId.equals(track.id)))
-          .map((row) => row.data)
-          .getSingleOrNull();
+      final cachedLyrics =
+          await (database.select(database.lyricsTable)
+                ..where((tbl) => tbl.trackId.equals(track.id)))
+              .map((row) => row.data)
+              .getSingleOrNull();
 
       SubtitleSimple? lyrics = cachedLyrics;
 
@@ -114,11 +119,10 @@ class SyncedLyricsNotifier
       }
 
       if (cachedLyrics == null || cachedLyrics.lyrics.isEmpty) {
-        await database.into(database.lyricsTable).insert(
-              LyricsTableCompanion.insert(
-                trackId: track.id,
-                data: lyrics,
-              ),
+        await database
+            .into(database.lyricsTable)
+            .insert(
+              LyricsTableCompanion.insert(trackId: track.id, data: lyrics),
               mode: InsertMode.replace,
             );
       }
@@ -133,17 +137,22 @@ class SyncedLyricsNotifier
 
 final syncedLyricsDelayProvider = StateProvider<int>((ref) => 0);
 
-final syncedLyricsProvider = AsyncNotifierProviderFamily<SyncedLyricsNotifier,
-    SubtitleSimple, SpotubeTrackObject?>(
-  () => SyncedLyricsNotifier(),
-);
+final syncedLyricsProvider =
+    AsyncNotifierProvider.family<
+      SyncedLyricsNotifier,
+      SubtitleSimple,
+      SpotubeTrackObject?
+    >((arg) => SyncedLyricsNotifier(arg));
 
-final syncedLyricsMapProvider =
-    FutureProvider.family((ref, SpotubeTrackObject? track) async {
+final syncedLyricsMapProvider = FutureProvider.family((
+  ref,
+  SpotubeTrackObject? track,
+) async {
   final syncedLyrics = await ref.watch(syncedLyricsProvider(track).future);
 
-  final isStaticLyrics =
-      syncedLyrics.lyrics.every((l) => l.time == Duration.zero);
+  final isStaticLyrics = syncedLyrics.lyrics.every(
+    (l) => l.time == Duration.zero,
+  );
 
   final lyricsMap = syncedLyrics.lyrics
       .map((lyric) => {lyric.time.inSeconds: lyric.text})

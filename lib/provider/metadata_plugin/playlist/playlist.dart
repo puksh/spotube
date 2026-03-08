@@ -8,7 +8,11 @@ import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 
 class MetadataPluginPlaylistNotifier
-    extends AutoDisposeFamilyAsyncNotifier<SpotubeFullPlaylistObject, String> {
+    extends AsyncNotifier<SpotubeFullPlaylistObject> {
+  MetadataPluginPlaylistNotifier(this._arg);
+  final String _arg;
+  String get arg => _arg;
+
   Future<MetadataPlugin> get metadataPlugin async {
     final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
@@ -20,10 +24,10 @@ class MetadataPluginPlaylistNotifier
   }
 
   @override
-  build(playlistId) async {
+  build() async {
     ref.cacheFor();
 
-    return (await metadataPlugin).playlist.getPlaylist(playlistId);
+    return (await metadataPlugin).playlist.getPlaylist(arg);
   }
 
   Future<void> create({
@@ -33,20 +37,21 @@ class MetadataPluginPlaylistNotifier
     bool? collaborative,
     void Function(dynamic error)? onError,
   }) async {
-    final userId = await ref
-        .read(metadataPluginUserProvider.selectAsync((data) => data?.id));
+    final userId = await ref.read(
+      metadataPluginUserProvider.selectAsync((data) => data?.id),
+    );
     if (userId == null) {
       throw Exception('User ID is not available. Please log in first.');
     }
     state = const AsyncValue.loading();
     try {
       final playlist = await (await metadataPlugin).playlist.create(
-            userId,
-            name: name,
-            description: description,
-            public: public,
-            collaborative: collaborative,
-          );
+        userId,
+        name: name,
+        description: description,
+        public: public,
+        collaborative: collaborative,
+      );
       if (playlist != null) {
         state = AsyncValue.data(playlist);
       }
@@ -72,12 +77,12 @@ class MetadataPluginPlaylistNotifier
         throw Exception('No modifications provided.');
       }
       await (await metadataPlugin).playlist.update(
-            arg,
-            name: name,
-            description: description,
-            public: public,
-            collaborative: collaborative,
-          );
+        arg,
+        name: name,
+        description: description,
+        public: public,
+        collaborative: collaborative,
+      );
       ref.invalidateSelf();
     } on Exception catch (e) {
       onError?.call(e);
@@ -85,8 +90,10 @@ class MetadataPluginPlaylistNotifier
     }
   }
 
-  Future<void> addTracks(List<String> trackIds,
-      [void Function(dynamic error)? onError]) async {
+  Future<void> addTracks(
+    List<String> trackIds, [
+    void Function(dynamic error)? onError,
+  ]) async {
     if (state.value == null) return;
 
     try {
@@ -99,8 +106,10 @@ class MetadataPluginPlaylistNotifier
     }
   }
 
-  Future<void> removeTracks(List<String> trackIds,
-      [void Function(dynamic error)? onError]) async {
+  Future<void> removeTracks(
+    List<String> trackIds, [
+    void Function(dynamic error)? onError,
+  ]) async {
     try {
       if (state.value == null) return;
 
@@ -115,8 +124,9 @@ class MetadataPluginPlaylistNotifier
 
   Future<void> delete() async {
     if (state.value == null) return;
-    final userId = await ref
-        .read(metadataPluginUserProvider.selectAsync((data) => data?.id));
+    final userId = await ref.read(
+      metadataPluginUserProvider.selectAsync((data) => data?.id),
+    );
     if (userId == null || userId != state.value!.owner.id) {
       throw Exception('You can only delete your own playlists.');
     }
@@ -125,7 +135,7 @@ class MetadataPluginPlaylistNotifier
   }
 }
 
-final metadataPluginPlaylistProvider = AutoDisposeAsyncNotifierProviderFamily<
-    MetadataPluginPlaylistNotifier, SpotubeFullPlaylistObject, String>(
-  () => MetadataPluginPlaylistNotifier(),
-);
+final metadataPluginPlaylistProvider = AsyncNotifierProvider.autoDispose
+    .family<MetadataPluginPlaylistNotifier, SpotubeFullPlaylistObject, String>(
+      (arg) => MetadataPluginPlaylistNotifier(arg),
+    );

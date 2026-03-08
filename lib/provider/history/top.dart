@@ -1,4 +1,4 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 enum HistoryDuration {
   allTime(Duration(days: 365 * 2003)),
@@ -13,5 +13,6 @@ enum HistoryDuration {
   const HistoryDuration(this.duration);
 }
 
-final playbackHistoryTopDurationProvider =
-    StateProvider((ref) => HistoryDuration.days30);
+final playbackHistoryTopDurationProvider = StateProvider(
+  (ref) => HistoryDuration.days30,
+);

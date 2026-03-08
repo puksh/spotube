@@ -38,8 +38,9 @@ class PlayerView extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final sourcedCurrentTrack = ref.watch(activeTrackSourcesProvider);
-    final currentActiveTrack =
-        ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
+    final currentActiveTrack = ref.watch(
+      audioPlayerProvider.select((s) => s.activeTrack),
+    );
     final currentActiveTrackSource = sourcedCurrentTrack.asData?.value?.source;
     final isLocalTrack = currentActiveTrack is SpotubeLocalTrackObject;
     final mediaQuery = MediaQuery.sizeOf(context);
@@ -105,7 +106,7 @@ class PlayerView extends HookConsumerWidget {
                     size: const ButtonSize(1.2),
                     icon: const Icon(SpotubeIcons.angleDown),
                     onPressed: panelController.close,
-                  )
+                  ),
                 ],
                 trailing: [
                   if (!isLocalTrack)
@@ -120,16 +121,18 @@ class PlayerView extends HookConsumerWidget {
                             ? null
                             : () {
                                 showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return TrackDetailsDialog(
-                                        track: currentActiveTrack
-                                            as SpotubeFullTrackObject,
-                                      );
-                                    });
+                                  context: context,
+                                  builder: (context) {
+                                    return TrackDetailsDialog(
+                                      track:
+                                          currentActiveTrack
+                                              as SpotubeFullTrackObject,
+                                    );
+                                  },
+                                );
                               },
                       ),
-                    )
+                    ),
                 ],
               ),
             ),
@@ -142,8 +145,10 @@ class PlayerView extends HookConsumerWidget {
                 children: [
                   Container(
                     margin: const EdgeInsets.all(8),
-                    constraints:
-                        const BoxConstraints(maxHeight: 300, maxWidth: 300),
+                    constraints: const BoxConstraints(
+                      maxHeight: 300,
+                      maxWidth: 300,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
@@ -181,22 +186,22 @@ class PlayerView extends HookConsumerWidget {
                         if (isLocalTrack)
                           Text(
                             currentActiveTrack.artists.asString(),
-                            style: theme.typography.normal
-                                .copyWith(fontWeight: FontWeight.bold),
+                            style: theme.typography.normal.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           )
                         else
                           ArtistLink(
                             artists: currentActiveTrack?.artists ?? [],
-                            textStyle: theme.typography.normal
-                                .copyWith(fontWeight: FontWeight.bold),
+                            textStyle: theme.typography.normal.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                             onRouteChange: (route) {
                               panelController.close();
-                              context.router.navigateNamed(route);
+                              context.router.navigatePath(route);
                             },
                             onOverflowArtistClick: () => context.navigateTo(
-                              TrackRoute(
-                                trackId: currentActiveTrack!.id,
-                              ),
+                              TrackRoute(trackId: currentActiveTrack!.id),
                             ),
                           ),
                       ],
@@ -239,31 +244,34 @@ class PlayerView extends HookConsumerWidget {
                   const SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Consumer(builder: (context, ref, _) {
-                      final volume = ref.watch(volumeProvider);
-                      return VolumeSlider(
-                        fullWidth: true,
-                        value: volume,
-                        onChanged: (value) {
-                          ref.read(volumeProvider.notifier).setVolume(value);
-                        },
-                      );
-                    }),
+                    child: Consumer(
+                      builder: (context, ref, _) {
+                        final volume = ref.watch(volumeProvider);
+                        return VolumeSlider(
+                          fullWidth: true,
+                          value: volume,
+                          onChanged: (value) {
+                            ref.read(volumeProvider.notifier).setVolume(value);
+                          },
+                        );
+                      },
+                    ),
                   ),
                   const Gap(25),
                   OutlineBadge(
-                    style: const ButtonStyle.outline(
-                      size: ButtonSize.normal,
-                      density: ButtonDensity.dense,
-                      shape: ButtonShape.rectangle,
-                    ).copyWith(
-                      textStyle: (context, states, value) {
-                        return value.copyWith(fontWeight: FontWeight.w500);
-                      },
-                    ),
+                    style:
+                        const ButtonStyle.outline(
+                          size: ButtonSize.normal,
+                          density: ButtonDensity.dense,
+                          shape: ButtonShape.rectangle,
+                        ).copyWith(
+                          textStyle: (context, states, value) {
+                            return value.copyWith(fontWeight: FontWeight.w500);
+                          },
+                        ),
                     leading: const Icon(SpotubeIcons.lightningOutlined),
                     child: Text(qualityLabel),
-                  )
+                  ),
                 ],
               ),
             ),

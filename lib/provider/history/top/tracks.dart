@@ -11,46 +11,55 @@ import 'package:spotube/provider/metadata_plugin/utils/family_paginated.dart';
 typedef PlaybackHistoryTrack = ({int count, SpotubeTrackObject track});
 typedef PlaybackHistoryArtist = ({int count, SpotubeSimpleArtistObject artist});
 
-class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
-    PlaybackHistoryTrack, HistoryDuration> {
-  HistoryTopTracksNotifier() : super();
+class HistoryTopTracksNotifier
+    extends
+        FamilyPaginatedAsyncNotifier<PlaybackHistoryTrack, HistoryDuration> {
+  HistoryTopTracksNotifier(this._arg);
+  final HistoryDuration _arg;
+  @override
+  HistoryDuration get arg => _arg;
 
   SimpleSelectStatement<$HistoryTableTable, HistoryTableData>
-      createTracksQuery() {
+  createTracksQuery() {
     final database = ref.read(databaseProvider);
 
-    return database.select(database.historyTable)
-      ..where(
-        (tbl) =>
-            tbl.type.equalsValue(HistoryEntryType.track) &
-            tbl.createdAt.isBiggerOrEqualValue(switch (arg) {
-              HistoryDuration.allTime => DateTime(1970),
-              // from start of the week
-              HistoryDuration.days7 => DateTime.now()
-                  .subtract(Duration(days: DateTime.now().weekday - 1)),
-              // from start of the month
-              HistoryDuration.days30 =>
-                DateTime.now().subtract(Duration(days: DateTime.now().day - 1)),
-              // from start of the 6th month
-              HistoryDuration.months6 => DateTime.now()
+    return database.select(database.historyTable)..where(
+      (tbl) =>
+          tbl.type.equalsValue(HistoryEntryType.track) &
+          tbl.createdAt.isBiggerOrEqualValue(switch (arg) {
+            HistoryDuration.allTime => DateTime(1970),
+            // from start of the week
+            HistoryDuration.days7 => DateTime.now().subtract(
+              Duration(days: DateTime.now().weekday - 1),
+            ),
+            // from start of the month
+            HistoryDuration.days30 => DateTime.now().subtract(
+              Duration(days: DateTime.now().day - 1),
+            ),
+            // from start of the 6th month
+            HistoryDuration.months6 =>
+              DateTime.now()
                   .subtract(Duration(days: DateTime.now().day - 1))
                   .subtract(const Duration(days: 30 * 6)),
-              // from start of the year
-              HistoryDuration.year => DateTime.now()
+            // from start of the year
+            HistoryDuration.year =>
+              DateTime.now()
                   .subtract(Duration(days: DateTime.now().day - 1))
                   .subtract(const Duration(days: 30 * 12)),
-              HistoryDuration.years2 => DateTime.now()
+            HistoryDuration.years2 =>
+              DateTime.now()
                   .subtract(Duration(days: DateTime.now().day - 1))
                   .subtract(const Duration(days: 30 * 12 * 2)),
-            }),
-      );
+          }),
+    );
   }
 
   Future<void> fixImageNotLoadingForArtistIssue(
     List<HistoryTableData> entries,
   ) async {
-    final nonImageArtistTracks =
-        entries.where((e) => e.track!.artists.any((a) => a.images == null));
+    final nonImageArtistTracks = entries.where(
+      (e) => e.track!.artists.any((a) => a.images == null),
+    );
 
     if (nonImageArtistTracks.isEmpty) return;
 
@@ -71,8 +80,9 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
       var track = e.track!;
       final includedArtists = track.artists
           .map((a) {
-            final fullArtist =
-                artists.firstWhereOrNull((artist) => artist.id == a.id);
+            final fullArtist = artists.firstWhereOrNull(
+              (artist) => artist.id == a.id,
+            );
 
             return fullArtist != null
                 ? a.copyWith(images: fullArtist.images)
@@ -87,8 +97,9 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
     });
 
     assert(
-      imagedArtistTracks
-          .every((e) => e.track!.artists.every((a) => a.images != null)),
+      imagedArtistTracks.every(
+        (e) => e.track!.artists.every((a) => a.images != null),
+      ),
       'Tracks artists should have images',
     );
 
@@ -119,13 +130,15 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
   }
 
   @override
-  build(arg) async {
+  build() async {
     final subscription = createTracksQuery().watch().listen((event) {
       if (state.asData == null) return;
-      state = AsyncData(state.asData!.value.copyWith(
-        items: getTracksWithCount(event),
-        hasMore: false,
-      ));
+      state = AsyncData(
+        state.asData!.value.copyWith(
+          items: getTracksWithCount(event),
+          hasMore: false,
+        ),
+      );
     });
 
     ref.onDispose(() {
@@ -144,8 +157,7 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
   List<PlaybackHistoryArtist> getArtistsWithCount(
     Iterable<SpotubeSimpleArtistObject> artists,
   ) {
-    return groupBy(artists, (artist) => artist.id)
-        .entries
+    return groupBy(artists, (artist) => artist.id).entries
         .map((entry) {
           return (
             count: entry.value.length,
@@ -153,7 +165,8 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
             /// Previously, due to a bug, artist images were not being saved.
             /// Now it's fixed, but we need to handle the case where images are null.
             /// So we take the first artist with images if available, otherwise the first one.
-            artist: entry.value.firstWhereOrNull((a) => a.images != null) ??
+            artist:
+                entry.value.firstWhereOrNull((a) => a.images != null) ??
                 entry.value.first,
           );
         })
@@ -164,11 +177,7 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
   List<PlaybackHistoryTrack> getTracksWithCount(List<HistoryTableData> tracks) {
     fixImageNotLoadingForArtistIssue(tracks);
 
-    return groupBy(
-      tracks,
-      (track) => track.track!.id,
-    )
-        .entries
+    return groupBy(tracks, (track) => track.track!.id).entries
         .map((entry) {
           return (
             count: entry.value.length,
@@ -176,9 +185,11 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
             /// Previously, due to a bug, artist images were not being saved.
             /// Now it's fixed, but we need to handle the case where images are null.
             /// So we take the first artist with images if available, otherwise the first one.
-            track: entry.value
+            track:
+                entry.value
                     .firstWhereOrNull(
-                        (t) => t.track!.artists.every((a) => a.images != null))
+                      (t) => t.track!.artists.every((a) => a.images != null),
+                    )
                     ?.track! ??
                 entry.value.first.track!,
           );
@@ -188,9 +199,9 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
   }
 }
 
-final historyTopTracksProvider = AsyncNotifierProviderFamily<
-    HistoryTopTracksNotifier,
-    SpotubePaginationResponseObject<PlaybackHistoryTrack>,
-    HistoryDuration>(
-  () => HistoryTopTracksNotifier(),
-);
+final historyTopTracksProvider =
+    AsyncNotifierProvider.family<
+      HistoryTopTracksNotifier,
+      SpotubePaginationResponseObject<PlaybackHistoryTrack>,
+      HistoryDuration
+    >((arg) => HistoryTopTracksNotifier(arg));
