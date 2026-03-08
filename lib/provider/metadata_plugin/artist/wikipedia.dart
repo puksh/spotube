@@ -6,13 +6,17 @@ import 'package:wikipedia_api/wikipedia_api.dart';
 final artistWikipediaSummaryProvider =
     FutureProvider.autoDispose.family<Summary?, SpotubeFullArtistObject>(
   (ref, artist) async {
-    final query = artist.name.replaceAll(" ", "_");
-    final res = await wikipedia.pageContent.pageSummaryTitleGet(query);
+    try {
+      final query = artist.name.replaceAll(" ", "_");
+      final res = await wikipedia.pageContent.pageSummaryTitleGet(query);
 
-    if (res?.type != "standard") {
-      return await wikipedia.pageContent
-          .pageSummaryTitleGet("${query}_(singer)");
+      if (res?.type != "standard") {
+        return await wikipedia.pageContent
+            .pageSummaryTitleGet("${query}_(singer)");
+      }
+      return res;
+    } catch (_) {
+      return null;
     }
-    return res;
   },
 );

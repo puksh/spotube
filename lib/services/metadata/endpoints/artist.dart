@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:hetu_script/hetu_script.dart';
 import 'package:hetu_script/values.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -10,9 +11,32 @@ class MetadataPluginArtistEndpoint {
       (hetu.fetch("metadataPlugin") as HTInstance).memberGet("artist")
           as HTInstance;
 
+  /// Invokes [method] with retry on HTTP 429 (rate-limit) responses.
+  Future<dynamic> _invoke(
+    String method, {
+    List<dynamic>? positionalArgs,
+    Map<String, dynamic>? namedArgs,
+    int maxAttempts = 4,
+  }) async {
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        return await hetuMetadataArtist.invoke(
+          method,
+          positionalArgs: positionalArgs ?? [],
+          namedArgs: namedArgs ?? {},
+        );
+      } on DioException catch (e) {
+        if (e.response?.statusCode == 429 && attempt < maxAttempts - 1) {
+          await Future.delayed(Duration(seconds: 1 << attempt));
+          continue;
+        }
+        rethrow;
+      }
+    }
+  }
+
   Future<SpotubeFullArtistObject> getArtist(String id) async {
-    final raw = await hetuMetadataArtist
-        .invoke("getArtist", positionalArgs: [id]) as Map;
+    final raw = await _invoke("getArtist", positionalArgs: [id]) as Map;
 
     return SpotubeFullArtistObject.fromJson(
       raw.cast<String, dynamic>(),
@@ -24,7 +48,7 @@ class MetadataPluginArtistEndpoint {
     int? offset,
     int? limit,
   }) async {
-    final raw = await hetuMetadataArtist.invoke(
+    final raw = await _invoke(
       "topTracks",
       positionalArgs: [id],
       namedArgs: {
@@ -46,7 +70,7 @@ class MetadataPluginArtistEndpoint {
     int? offset,
     int? limit,
   }) async {
-    final raw = await hetuMetadataArtist.invoke(
+    final raw = await _invoke(
       "albums",
       positionalArgs: [id],
       namedArgs: {
@@ -64,17 +88,11 @@ class MetadataPluginArtistEndpoint {
   }
 
   Future<void> save(List<String> ids) async {
-    await hetuMetadataArtist.invoke(
-      "save",
-      positionalArgs: [ids],
-    );
+    await _invoke("save", positionalArgs: [ids]);
   }
 
   Future<void> unsave(List<String> ids) async {
-    await hetuMetadataArtist.invoke(
-      "unsave",
-      positionalArgs: [ids],
-    );
+    await _invoke("unsave", positionalArgs: [ids]);
   }
 
   Future<SpotubePaginationResponseObject<SpotubeFullArtistObject>> related(
@@ -82,7 +100,7 @@ class MetadataPluginArtistEndpoint {
     int? offset,
     int? limit,
   }) async {
-    final raw = await hetuMetadataArtist.invoke(
+    final raw = await _invoke(
       "related",
       positionalArgs: [id],
       namedArgs: {
