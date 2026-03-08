@@ -65,14 +65,6 @@ class PlaybuttonView extends StatelessWidget {
         final isGrid = useState(constrains.mdAndUp);
         final hasUserInteracted = useRef(false);
 
-        useEffect(() {
-          if (hasUserInteracted.value) return null;
-          if (isGrid.value != constrains.mdAndUp) {
-            isGrid.value = constrains.mdAndUp;
-          }
-          return null;
-        }, [constrains]);
-
         return SliverMainAxisGroup(
           slivers: [
             SliverToBoxAdapter(
