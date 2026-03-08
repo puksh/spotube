@@ -95,8 +95,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       } else {
         // Tracks are empty but collections are stale in DB — clear them
         await _updatePlayerState(
-          AudioPlayerStateTableCompanion(
-            collections: const Value(<String>[]),
+          const AudioPlayerStateTableCompanion(
+            collections: Value(<String>[]),
           ),
         );
       }
