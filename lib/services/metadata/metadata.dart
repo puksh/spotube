@@ -51,18 +51,17 @@ class MetadataPlugin {
         config.slug,
       ),
       onNavigatorPush: (route) {
-        return rootNavigatorKey.currentContext?.router
-            .pushWidget(Builder(builder: (context) {
-          pageContext = context;
-          return Scaffold(
-            headers: const [
-              TitleBar(
-                automaticallyImplyLeading: true,
-              )
-            ],
-            child: route,
-          );
-        }));
+        return rootNavigatorKey.currentContext?.router.pushWidget(
+          Builder(
+            builder: (context) {
+              pageContext = context;
+              return Scaffold(
+                headers: const [TitleBar(automaticallyImplyLeading: true)],
+                child: route,
+              );
+            },
+          ),
+        );
       },
       onNavigatorPop: () {
         pageContext?.maybePop();
@@ -74,29 +73,32 @@ class MetadataPlugin {
 
         return await rootNavigatorKey.currentContext!.router
             .push<List<Map<String, dynamic>>?>(
-          SettingsMetadataProviderFormRoute(
-            title: title,
-            fields:
-                fields.map((e) => MetadataFormFieldObject.fromJson(e)).toList(),
-          ),
-        );
+              SettingsMetadataProviderFormRoute(
+                title: title,
+                fields: fields
+                    .map((e) => MetadataFormFieldObject.fromJson(e))
+                    .toList(),
+              ),
+            );
       },
       createYoutubeEngine: () {
         return spotube_plugin.YouTubeEngine(
           search: (query) async {
             final result = await youtubeEngine.searchVideos(query);
             return result
-                .map((video) => {
-                      'id': video.id.value,
-                      'title': video.title,
-                      'author': video.author,
-                      'duration': video.duration?.inSeconds,
-                      'description': video.description,
-                      'uploadDate': video.uploadDate?.toIso8601String(),
-                      'viewCount': video.engagement.viewCount,
-                      'likeCount': video.engagement.likeCount,
-                      'isLive': video.isLive,
-                    })
+                .map(
+                  (video) => {
+                    'id': video.id.value,
+                    'title': video.title,
+                    'author': video.author,
+                    'duration': video.duration?.inMicroseconds,
+                    'description': video.description,
+                    'uploadDate': video.uploadDate?.toIso8601String(),
+                    'viewCount': video.engagement.viewCount,
+                    'likeCount': video.engagement.likeCount,
+                    'isLive': video.isLive,
+                  },
+                )
                 .toList();
           },
           getVideo: (videoId) async {
@@ -105,7 +107,7 @@ class MetadataPlugin {
               'id': video.id.value,
               'title': video.title,
               'author': video.author,
-              'duration': video.duration?.inSeconds,
+              'duration': video.duration?.inMicroseconds,
               'description': video.description,
               'uploadDate': video.uploadDate?.toIso8601String(),
               'viewCount': video.engagement.viewCount,
@@ -114,22 +116,20 @@ class MetadataPlugin {
             };
           },
           streamManifest: (videoId) {
-            return youtubeEngine.getStreamManifest(videoId).then(
-              (manifest) {
-                final streams = manifest.audioOnly
-                    .map(
-                      (stream) => {
-                        'url': stream.url.toString(),
-                        'quality': stream.qualityLabel,
-                        'bitrate': stream.bitrate.bitsPerSecond,
-                        'container': stream.container.name,
-                        'videoId': stream.videoId,
-                      },
-                    )
-                    .toList();
-                return streams;
-              },
-            );
+            return youtubeEngine.getStreamManifest(videoId).then((manifest) {
+              final streams = manifest.audioOnly
+                  .map(
+                    (stream) => {
+                      'url': stream.url.toString(),
+                      'quality': stream.qualityLabel,
+                      'bitrate': stream.bitrate.bitsPerSecond,
+                      'container': stream.container.name,
+                      'videoId': stream.videoId,
+                    },
+                  )
+                  .toList();
+              return streams;
+            });
           },
         );
       },

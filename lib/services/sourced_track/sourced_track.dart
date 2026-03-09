@@ -214,7 +214,10 @@ class SourcedTrack extends BasicSourcedTrack {
   ) {
     if (trackDuration == Duration.zero) return results;
     return results.where((r) {
-      if (r.duration == Duration.zero) return true;
+      // Treat any result with a duration under 1 second as "unknown" and
+      // keep it – this covers both Duration.zero and the seconds-encoded-
+      // as-microseconds artefact from older plugin data.
+      if (r.duration < const Duration(seconds: 1)) return true;
       return (r.duration - trackDuration).abs() <= _maxDurationDrift;
     }).toList();
   }
