@@ -13,6 +13,7 @@ import 'package:spotube/hooks/utils/use_force_update.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/lyrics/synced.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:auto_route/auto_route.dart';
@@ -33,6 +34,26 @@ class MiniLyricsPage extends HookConsumerWidget {
     final playlistQueue = ref.watch(audioPlayerProvider);
 
     final index = useState(0);
+
+    final lyricsAsync = ref.watch(
+      syncedLyricsProvider(playlistQueue.activeTrack),
+    );
+    final lyricsValue = lyricsAsync.asData?.value;
+    final hasSyncedLyrics = lyricsValue != null ? lyricsValue.rating > 0 : null;
+
+    // Reset to Synced tab on every track change
+    useEffect(() {
+      index.value = 0;
+      return null;
+    }, [playlistQueue.activeTrack?.id]);
+
+    // Auto-switch to Plain when only plain lyrics are available
+    useEffect(() {
+      if (hasSyncedLyrics == false) {
+        index.value = 1;
+      }
+      return null;
+    }, [hasSyncedLyrics]);
 
     final areaActive = useState(false);
     final hoverMode = useState(true);
@@ -79,18 +100,24 @@ class MiniLyricsPage extends HookConsumerWidget {
                       Tabs(
                         index: index.value,
                         onChanged: (i) {
+                          if (i == 0 && hasSyncedLyrics == false) return;
                           index.value = i;
                         },
                         children: [
-                          TabItem(child: Text(context.l10n.synced)),
+                          TabItem(
+                            child: Opacity(
+                              opacity: hasSyncedLyrics == false ? 0.4 : 1.0,
+                              child: Text(context.l10n.synced),
+                            ),
+                          ),
                           TabItem(child: Text(context.l10n.plain)),
                         ],
                       ),
                     const Spacer(),
                     Tooltip(
-                      tooltip:
-                          TooltipContainer(child: Text(context.l10n.lyrics))
-                              .call,
+                      tooltip: TooltipContainer(
+                        child: Text(context.l10n.lyrics),
+                      ).call,
                       child: IconButton(
                         variance: showLyrics.value
                             ? ButtonVariance.secondary
@@ -216,28 +243,29 @@ class MiniLyricsPage extends HookConsumerWidget {
                                 surfaceBlur: context.theme.surfaceBlur,
                                 surfaceOpacity:
                                     (context.theme.surfaceOpacity ?? 1) >= 1
-                                        ? 1
-                                        : 0.7,
+                                    ? 1
+                                    : 0.7,
                                 expands: true,
                                 builder: (context) => Consumer(
                                   builder: (context, ref, _) {
                                     final playlist = ref.watch(
                                       audioPlayerProvider,
                                     );
-                                    final playlistNotifier =
-                                        ref.read(audioPlayerProvider.notifier);
+                                    final playlistNotifier = ref.read(
+                                      audioPlayerProvider.notifier,
+                                    );
                                     return ConstrainedBox(
                                       constraints: BoxConstraints(
                                         maxHeight:
                                             MediaQuery.of(context).size.height *
-                                                0.8,
+                                            0.8,
                                       ),
                                       child:
                                           PlayerQueue.fromAudioPlayerNotifier(
-                                        floating: false,
-                                        playlist: playlist,
-                                        notifier: playlistNotifier,
-                                      ),
+                                            floating: false,
+                                            playlist: playlist,
+                                            notifier: playlistNotifier,
+                                          ),
                                     );
                                   },
                                 ),
@@ -249,16 +277,17 @@ class MiniLyricsPage extends HookConsumerWidget {
                   const Flexible(child: PlayerControls(compact: true)),
                   Tooltip(
                     tooltip: TooltipContainer(
-                            child: Text(context.l10n.exit_mini_player))
-                        .call,
+                      child: Text(context.l10n.exit_mini_player),
+                    ).call,
                     child: IconButton.ghost(
                       icon: const Icon(SpotubeIcons.maximize),
                       onPressed: () async {
                         if (!kIsDesktop) return;
 
                         try {
-                          await windowManager
-                              .setMinimumSize(const Size(300, 700));
+                          await windowManager.setMinimumSize(
+                            const Size(300, 700),
+                          );
                           await windowManager.setAlwaysOnTop(false);
                           if (wasMaximized.value) {
                             await windowManager.maximize();
@@ -270,7 +299,8 @@ class MiniLyricsPage extends HookConsumerWidget {
                             await windowManager.setHasShadow(true);
                           }
                           await Future.delayed(
-                              const Duration(milliseconds: 200));
+                            const Duration(milliseconds: 200),
+                          );
                         } finally {
                           if (context.mounted) {
                             context.navigateTo(const LyricsRoute());
@@ -281,7 +311,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

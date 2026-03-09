@@ -34,13 +34,39 @@ class LyricsPage extends HookConsumerWidget {
     final palette = usePaletteColor(albumArt, ref);
     final selectedIndex = useState(0);
 
+    final lyricsAsync = ref.watch(syncedLyricsProvider(playlist.activeTrack));
+    final lyricsValue = lyricsAsync.asData?.value;
+    final hasSyncedLyrics = lyricsValue != null ? lyricsValue.rating > 0 : null;
+
+    // Reset to Synced tab on every track change
+    useEffect(() {
+      selectedIndex.value = 0;
+      return null;
+    }, [playlist.activeTrack?.id]);
+
+    // Auto-switch to Plain when only plain lyrics are available
+    useEffect(() {
+      if (hasSyncedLyrics == false) {
+        selectedIndex.value = 1;
+      }
+      return null;
+    }, [hasSyncedLyrics]);
+
     Widget tabbar = Padding(
       padding: const EdgeInsets.all(10),
       child: Tabs(
         index: selectedIndex.value,
-        onChanged: (index) => selectedIndex.value = index,
+        onChanged: (index) {
+          if (index == 0 && hasSyncedLyrics == false) return;
+          selectedIndex.value = index;
+        },
         children: [
-          TabItem(child: Text(context.l10n.synced)),
+          TabItem(
+            child: Opacity(
+              opacity: hasSyncedLyrics == false ? 0.4 : 1.0,
+              child: Text(context.l10n.synced),
+            ),
+          ),
           TabItem(child: Text(context.l10n.plain)),
         ],
       ),
@@ -83,7 +109,7 @@ class LyricsPage extends HookConsumerWidget {
                   surfaceBlur: 0,
                   automaticallyImplyLeading: false,
                 )
-              : tabbar
+              : tabbar,
         ],
         child: Container(
           clipBehavior: Clip.hardEdge,

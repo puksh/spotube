@@ -6,10 +6,12 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
+import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/lyrics/synced.dart';
 
 @RoutePage()
 class PlayerLyricsPage extends HookConsumerWidget {
@@ -28,16 +30,38 @@ class PlayerLyricsPage extends HookConsumerWidget {
     final selectedIndex = useState(0);
     final palette = usePaletteColor(albumArt, ref);
 
+    final lyricsAsync = ref.watch(syncedLyricsProvider(playlist.activeTrack));
+    final lyricsValue = lyricsAsync.asData?.value;
+    final hasSyncedLyrics = lyricsValue != null ? lyricsValue.rating > 0 : null;
+
+    // Reset to Synced tab on every track change
+    useEffect(() {
+      selectedIndex.value = 0;
+      return null;
+    }, [playlist.activeTrack?.id]);
+
+    // Auto-switch to Plain when only plain lyrics are available
+    useEffect(() {
+      if (hasSyncedLyrics == false) {
+        selectedIndex.value = 1;
+      }
+      return null;
+    }, [hasSyncedLyrics]);
+
     final tabbar = TabList(
       index: selectedIndex.value,
-      onChanged: (index) => selectedIndex.value = index,
+      onChanged: (index) {
+        if (index == 0 && hasSyncedLyrics == false) return;
+        selectedIndex.value = index;
+      },
       children: [
         TabItem(
-          child: Text(context.l10n.synced),
+          child: Opacity(
+            opacity: hasSyncedLyrics == false ? 0.4 : 1.0,
+            child: Text(context.l10n.synced),
+          ),
         ),
-        TabItem(
-          child: Text(context.l10n.plain),
-        ),
+        TabItem(child: Text(context.l10n.plain)),
       ],
     );
 
@@ -45,9 +69,7 @@ class PlayerLyricsPage extends HookConsumerWidget {
       headers: [
         AppBar(
           leading: [tabbar],
-          trailing: const [
-            BackButton(icon: SpotubeIcons.angleDown),
-          ],
+          trailing: const [BackButton(icon: SpotubeIcons.angleDown)],
         ),
       ],
       child: IndexedStack(

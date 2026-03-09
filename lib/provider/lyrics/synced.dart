@@ -13,6 +13,9 @@ import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 
+// Cached once per app lifetime to avoid repeated platform channel calls
+Future<PackageInfo>? _packageInfoFuture;
+
 class SyncedLyricsNotifier extends AsyncNotifier<SubtitleSimple> {
   SyncedLyricsNotifier(this._arg);
   final SpotubeTrackObject? _arg;
@@ -23,7 +26,8 @@ class SyncedLyricsNotifier extends AsyncNotifier<SubtitleSimple> {
   /// Lyrics credits: [lrclib.net](https://lrclib.net) and their contributors
   /// Thanks for their generous public API
   Future<SubtitleSimple> getLRCLibLyrics() async {
-    final packageInfo = await PackageInfo.fromPlatform();
+    final packageInfo = await (_packageInfoFuture ??=
+        PackageInfo.fromPlatform());
 
     final res = await globalDio.getUri(
       Uri(
@@ -154,9 +158,9 @@ final syncedLyricsMapProvider = FutureProvider.family((
     (l) => l.time == Duration.zero,
   );
 
-  final lyricsMap = syncedLyrics.lyrics
-      .map((lyric) => {lyric.time.inSeconds: lyric.text})
-      .reduce((accumulator, lyricSlice) => {...accumulator, ...lyricSlice});
+  final lyricsMap = {
+    for (final lyric in syncedLyrics.lyrics) lyric.time.inSeconds: lyric.text,
+  };
 
   return (static: isStaticLyrics, lyricsMap: lyricsMap);
 });
