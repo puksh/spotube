@@ -39,27 +39,34 @@ class PlainLyrics extends HookConsumerWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (isModal != true) ...[
-              Center(
-                child: Text(
-                  playlist.activeTrack?.name ?? "",
-                  style: mediaQuery.mdAndUp
-                      ? typography.h3
-                      : typography.h4.copyWith(
-                          color: palette.titleTextColor,
-                        ),
+            if (isModal != true)
+              Padding(
+                padding: const EdgeInsets.only(top: 16, bottom: 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child: Text(
+                        playlist.activeTrack?.name ?? "",
+                        style:
+                            (mediaQuery.mdAndUp ? typography.h3 : typography.h4)
+                                .copyWith(color: palette.titleTextColor),
+                      ),
+                    ),
+                    const Gap(4),
+                    Center(
+                      child: Text(
+                        playlist.activeTrack?.artists.asString() ?? "",
+                        style:
+                            (mediaQuery.mdAndUp
+                                    ? typography.h4
+                                    : typography.large)
+                                .copyWith(color: palette.bodyTextColor),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Center(
-                child: Text(
-                  playlist.activeTrack?.artists.asString() ?? "",
-                  style: (mediaQuery.mdAndUp ? typography.h4 : typography.large)
-                      .copyWith(
-                    color: palette.bodyTextColor,
-                  ),
-                ),
-              )
-            ],
             Expanded(
               child: SingleChildScrollView(
                 child: Center(
@@ -90,18 +97,19 @@ class PlainLyrics extends HookConsumerWidget {
                           );
                         }
 
-                        final lyrics =
-                            lyricsQuery.asData?.value.lyrics.mapIndexed((i, e) {
-                          final next = lyricsQuery.asData?.value.lyrics
-                              .elementAtOrNull(i + 1);
-                          if (next != null &&
-                              e.time - next.time >
-                                  const Duration(milliseconds: 700)) {
-                            return "${e.text}\n";
-                          }
+                        final lyrics = lyricsQuery.asData?.value.lyrics
+                            .mapIndexed((i, e) {
+                              final next = lyricsQuery.asData?.value.lyrics
+                                  .elementAtOrNull(i + 1);
+                              if (next != null &&
+                                  e.time - next.time >
+                                      const Duration(milliseconds: 700)) {
+                                return "${e.text}\n";
+                              }
 
-                          return e.text;
-                        }).join("\n");
+                              return e.text;
+                            })
+                            .join("\n");
 
                         return AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 200),
@@ -113,8 +121,8 @@ class PlainLyrics extends HookConsumerWidget {
                             height: textZoomLevel.value < 70
                                 ? 1.5
                                 : textZoomLevel.value > 150
-                                    ? 1.7
-                                    : 2,
+                                ? 1.7
+                                : 2,
                           ),
                           child: SelectableText(
                             lyrics == null && playlist.activeTrack == null
