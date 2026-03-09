@@ -79,9 +79,6 @@ jobs:
           cache: true
           git-source: https://github.com/flutter/flutter.git
 
-      - name: Verify flutter
-        run: flutter --version
-
       - name: Run pub get
         run: flutter pub get
 
