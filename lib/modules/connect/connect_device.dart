@@ -37,7 +37,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
           onPressed: () {
             context.navigateTo(const ConnectRoute());
           },
-          trailing: const Icon(SpotubeIcons.speaker),
+          leading: const Icon(SpotubeIcons.speaker),
           child: Text(
             "${context.l10n.devices}"
             "${hasServices ? " (${connectClients.asData?.value.services.length})" : ""}",
@@ -51,15 +51,21 @@ class ConnectDeviceButton extends HookConsumerWidget {
         context.navigateTo(const ConnectRoute());
       },
       leading: connectClients.asData?.value.resolvedService != null
-          ? const Center(
-              child: DotItem(
-                size: 6,
-                borderRadius: 10,
-                color: Colors.green,
-              ),
+          ? const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: DotItem(
+                    size: 6,
+                    borderRadius: 10,
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Icon(SpotubeIcons.speaker),
+              ],
             )
-          : null,
-      trailing: const Icon(SpotubeIcons.speaker),
+          : const Icon(SpotubeIcons.speaker),
       child: Text(
         "${context.l10n.devices}"
         "${hasServices ? " (${connectClients.asData?.value.services.length})" : ""}",
