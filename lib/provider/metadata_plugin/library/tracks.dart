@@ -87,6 +87,9 @@ final metadataPluginIsSavedTrackProvider = FutureProvider.autoDispose
       final savedTracks = await ref.watch(
         metadataPluginSavedTracksProvider.future,
       );
+
+      if (!ref.mounted) return false;
+
       final allSavedTracks = savedTracks.hasMore
           ? await ref
                 .read(metadataPluginSavedTracksProvider.notifier)
