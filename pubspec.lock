@@ -1119,6 +1119,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  genius_api_unofficial:
+    dependency: "direct main"
+    description:
+      name: genius_api_unofficial
+      sha256: d098951237cfdfec0377d944ed61b7cfda8aaf8448166feb3ad5669001613474
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   get_it:
     dependency: "direct main"
     description:

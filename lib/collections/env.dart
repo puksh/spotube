@@ -3,10 +3,7 @@ import 'package:spotube/utils/platform.dart';
 
 part 'env.g.dart';
 
-enum ReleaseChannel {
-  nightly,
-  stable,
-}
+enum ReleaseChannel { nightly, stable }
 
 @Envied(obfuscate: true, requireEnvFile: true, path: ".env")
 abstract class Env {
@@ -15,6 +12,9 @@ abstract class Env {
 
   @EnviedField(varName: 'LASTFM_API_SECRET')
   static final String lastFmApiSecret = _Env.lastFmApiSecret;
+
+  @EnviedField(varName: 'GENIUS_CLIENT_ACCESS_TOKEN', defaultValue: "")
+  static final String geniusClientAccessToken = _Env.geniusClientAccessToken;
 
   @EnviedField(varName: 'HIDE_DONATIONS', defaultValue: "0")
   static final int _hideDonations = _Env._hideDonations;
