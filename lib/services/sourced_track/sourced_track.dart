@@ -325,6 +325,18 @@ class SourcedTrack extends BasicSourcedTrack {
       videoResults.addAll(fallback);
     }
 
+    if (videoResults.isEmpty && rawResults.isNotEmpty) {
+      AppLogger.log.w(
+        "${query.name}: all results were filtered out by duration window. "
+        "Falling back to un-filtered results.",
+      );
+      if (ServiceUtils.onlyContainsEnglish(query.name)) {
+        videoResults.addAll(rawResults);
+      } else {
+        videoResults.addAll(rankResults(rawResults, query));
+      }
+    }
+
     return videoResults.toSet().toList();
   }
 
