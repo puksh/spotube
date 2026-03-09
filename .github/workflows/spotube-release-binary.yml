@@ -20,8 +20,8 @@ on:
         description: Dry run without uploading to release
 
 env:
-  FLUTTER_VERSION: 3.35.2
-  FLUTTER_CHANNEL: master
+  FLUTTER_VERSION: stable
+  FLUTTER_CHANNEL: stable
 
 permissions:
   contents: write
@@ -71,21 +71,20 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.18.0
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION  }}
-          channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: 'stable'
           cache: true
           git-source: https://github.com/flutter/flutter.git
 
-      # - name: free disk space
-      #   if: ${{ matrix.platform == 'android' }}
-      #   run: |
-      #     sudo swapoff -a
-      #     sudo rm -f /swapfile
-      #     sudo apt clean
-      #     docker rmi $(docker image ls -aq)
-      #     df -h
+      - name: Verify flutter
+        run: flutter --version
+
+      - name: Run pub get
+        run: flutter pub get
+
       - name: Setup Java
         if: ${{matrix.platform == 'android'}}
         uses: actions/setup-java@v4
@@ -108,7 +107,6 @@ jobs:
 
       - name: Install ${{matrix.platform}} dependencies
         run: |
-          flutter pub get
           dart cli/cli.dart install-dependencies --platform=${{matrix.platform}} --arch=${{matrix.arch}}
 
       - name: Sign Apk
