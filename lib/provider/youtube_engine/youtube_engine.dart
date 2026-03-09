@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
+import 'package:spotube/services/youtube_engine/piped_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 
@@ -16,6 +17,8 @@ final youtubeEngineProvider = Provider((ref) {
   } else if (engineMode == YoutubeClientEngine.ytDlp &&
       YtDlpEngine.isAvailableForPlatform) {
     return YtDlpEngine();
+  } else if (engineMode == YoutubeClientEngine.piped) {
+    return PipedEngine();
   } else {
     return YouTubeExplodeEngine();
   }

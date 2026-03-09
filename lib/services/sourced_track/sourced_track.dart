@@ -18,6 +18,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
+import 'package:spotube/services/youtube_engine/piped_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
@@ -257,6 +258,9 @@ class SourcedTrack extends BasicSourcedTrack {
     if (currentEngineMode != YoutubeClientEngine.newPipe &&
         NewPipeEngine.isAvailableForPlatform) {
       fallbackEngines.add(NewPipeEngine());
+    }
+    if (currentEngineMode != YoutubeClientEngine.piped) {
+      fallbackEngines.add(PipedEngine());
     }
 
     for (final engine in fallbackEngines) {

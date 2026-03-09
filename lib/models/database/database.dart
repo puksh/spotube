@@ -20,6 +20,7 @@ import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
+import 'package:spotube/services/youtube_engine/piped_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 import 'package:spotube/utils/platform.dart';
