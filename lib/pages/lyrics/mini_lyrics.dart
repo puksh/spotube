@@ -122,9 +122,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                         variance: showLyrics.value
                             ? ButtonVariance.secondary
                             : ButtonVariance.ghost,
-                        icon: showLyrics.value
-                            ? const Icon(SpotubeIcons.lyrics)
-                            : const Icon(SpotubeIcons.lyricsOff),
+                        icon: const Icon(SpotubeIcons.music),
                         onPressed: () async {
                           showLyrics.value = !showLyrics.value;
                           areaActive.value = true;
@@ -280,7 +278,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                       child: Text(context.l10n.exit_mini_player),
                     ).call,
                     child: IconButton.ghost(
-                      icon: const Icon(SpotubeIcons.maximize),
+                      icon: const Icon(SpotubeIcons.close),
                       onPressed: () async {
                         if (!kIsDesktop) return;
 
