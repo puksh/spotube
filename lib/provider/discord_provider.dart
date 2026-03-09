@@ -22,7 +22,8 @@ class DiscordNotifier extends AsyncNotifier<void> {
     _current = this;
 
     final enabled = ref.watch(
-        userPreferencesProvider.select((s) => s.discordPresence && kIsDesktop));
+      userPreferencesProvider.select((s) => s.discordPresence && kIsDesktop),
+    );
 
     var lastPosition = audioPlayer.position;
 
@@ -60,7 +61,7 @@ class DiscordNotifier extends AsyncNotifier<void> {
         } catch (e, stack) {
           AppLogger.reportError(e, stack);
         }
-      })
+      }),
     ]);
 
     ref.onDispose(() {
@@ -101,10 +102,7 @@ class DiscordNotifier extends AsyncNotifier<void> {
           smallText: "Spotube",
         ),
         buttons: [
-          RPCButton(
-            label: "Listen on Spotube",
-            url: track.externalUri,
-          ),
+          RPCButton(label: "Listen on Spotube", url: track.externalUri),
         ],
         timestamps: RPCTimestamps(
           start: isPlaying
@@ -118,11 +116,13 @@ class DiscordNotifier extends AsyncNotifier<void> {
 
   Future<void> clear() async {
     if (!kIsDesktop) return;
+    if (!FlutterDiscordRPC.instance.isConnected) return;
     await FlutterDiscordRPC.instance.clearActivity();
   }
 
   Future<void> close() async {
     if (!kIsDesktop) return;
+    if (!FlutterDiscordRPC.instance.isConnected) return;
     await FlutterDiscordRPC.instance.disconnect();
   }
 
@@ -144,14 +144,20 @@ class DiscordNotifier extends AsyncNotifier<void> {
       await clear();
     } catch (e, stack) {
       AppLogger.reportError(
-          e, stack, 'Discord clear activity failed during shutdown');
+        e,
+        stack,
+        'Discord clear activity failed during shutdown',
+      );
     }
 
     try {
       await close();
     } catch (e, stack) {
       AppLogger.reportError(
-          e, stack, 'Discord disconnect failed during shutdown');
+        e,
+        stack,
+        'Discord disconnect failed during shutdown',
+      );
     }
 
     try {
@@ -162,5 +168,6 @@ class DiscordNotifier extends AsyncNotifier<void> {
   }
 }
 
-final discordProvider =
-    AsyncNotifierProvider<DiscordNotifier, void>(() => DiscordNotifier());
+final discordProvider = AsyncNotifierProvider<DiscordNotifier, void>(
+  () => DiscordNotifier(),
+);
