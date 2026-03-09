@@ -97,39 +97,58 @@ class PlainLyrics extends HookConsumerWidget {
                           );
                         }
 
-                        final lyrics = lyricsQuery.asData?.value.lyrics
-                            .mapIndexed((i, e) {
-                              final next = lyricsQuery.asData?.value.lyrics
-                                  .elementAtOrNull(i + 1);
-                              if (next != null &&
-                                  e.time - next.time >
-                                      const Duration(milliseconds: 700)) {
-                                return "${e.text}\n";
-                              }
-
-                              return e.text;
-                            })
-                            .join("\n");
-
-                        return AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 200),
-                          style: TextStyle(
-                            color: isModal == true
-                                ? context.theme.colorScheme.foreground
-                                : palette.bodyTextColor,
-                            fontSize: 24 * textZoomLevel.value / 100,
-                            height: textZoomLevel.value < 70
-                                ? 1.5
-                                : textZoomLevel.value > 150
-                                ? 1.7
-                                : 2,
-                          ),
-                          child: SelectableText(
-                            lyrics == null && playlist.activeTrack == null
-                                ? context.l10n.no_tracks_playing
-                                : lyrics ?? "",
+                        if (lyricsQuery.asData == null &&
+                            playlist.activeTrack == null) {
+                          return Text(
+                            context.l10n.no_tracks_playing,
+                            style: typography.large.copyWith(
+                              color: context.theme.colorScheme.foreground,
+                            ),
                             textAlign: TextAlign.center,
-                          ),
+                          );
+                        }
+
+                        final rawLines =
+                            lyricsQuery.asData?.value.lyrics
+                                .map((e) => e.text)
+                                .toList() ??
+                            [];
+
+                        // Group consecutive non-empty lines into paragraphs
+                        final paragraphs = <List<String>>[];
+                        var current = <String>[];
+                        for (final line in rawLines) {
+                          if (line.trim().isEmpty) {
+                            if (current.isNotEmpty) {
+                              paragraphs.add(current);
+                              current = [];
+                            }
+                          } else {
+                            current.add(line);
+                          }
+                        }
+                        if (current.isNotEmpty) paragraphs.add(current);
+
+                        final textColor = context.theme.colorScheme.foreground;
+                        final fontSize = 20.0 * textZoomLevel.value / 100;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            for (final paragraph in paragraphs) ...[
+                              SelectableText(
+                                paragraph.join('\n'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontSize: fontSize,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.8,
+                                ),
+                              ),
+                              SizedBox(height: fontSize * 1.2),
+                            ],
+                          ],
                         );
                       },
                     ),
