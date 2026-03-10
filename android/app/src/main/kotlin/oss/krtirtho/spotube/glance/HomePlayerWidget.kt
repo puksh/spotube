@@ -1,7 +1,7 @@
 package oss.krtirtho.spotube.glance
 
-import HomeWidgetGlanceState
-import HomeWidgetGlanceStateDefinition
+import es.antonborri.home_widget.HomeWidgetGlanceState
+import es.antonborri.home_widget.HomeWidgetGlanceStateDefinition
 import android.R
 import android.content.Context
 import android.graphics.drawable.Icon
