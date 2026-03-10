@@ -8,7 +8,15 @@ import 'package:pubspec_parse/pubspec_parse.dart';
 import '../../core/env.dart';
 
 mixin BuildCommandCommonSteps on Command {
-  final shell = Shell();
+  Shell get shell {
+    final pathSep = Platform.isWindows ? ';' : ':';
+    final pubCacheBin = Platform.isWindows
+        ? '${Platform.environment['LOCALAPPDATA']}\\Pub\\Cache\\bin'
+        : '${Platform.environment['HOME']}/.pub-cache/bin';
+    final currentPath = Platform.environment['PATH'] ?? '';
+    return Shell(environment: {'PATH': '$currentPath$pathSep$pubCacheBin'});
+  }
+
   Directory get cwd => Directory.current;
 
   Pubspec? _pubspec;
@@ -46,22 +54,20 @@ mixin BuildCommandCommonSteps on Command {
 
       pubspecFile.writeAsStringSync(
         pubspecFile.readAsStringSync().replaceAll(
-              "version: ${pubspec.version!.canonicalizedVersion}",
-              "version: $versionWithoutBuildNumber+${CliEnv.ghRunNumber}",
-            ),
+          "version: ${pubspec.version!.canonicalizedVersion}",
+          "version: $versionWithoutBuildNumber+${CliEnv.ghRunNumber}",
+        ),
       );
 
       _pubspec = null;
       pubspec;
     }
 
-    await shell.run(
-      """
+    await shell.run("""
       flutter pub get
       dart run build_runner build --delete-conflicting-outputs
       dart pub global activate fastforge
-      """,
-    );
+      """);
   }
 
   String get architecture => parent?.argResults?.option("arch") as String;
